@@ -65,10 +65,10 @@ enum {
 };
 
 enum {
-//    INVENTORY_FOOD1 = 0,
-//    INVENTORY_FOOD2 = 1,
-//    INVENTORY_FOOD3 = 2,
-//    INVENTORY_FOOD4 = 3,
+    INVENTORY_FOOD1 = 0,
+    INVENTORY_FOOD2 = 1,
+    INVENTORY_FOOD3 = 2,
+    INVENTORY_FOOD4 = 3,
     INVENTORY_GOOD1 = 5,
     INVENTORY_GOOD2 = 7,
     INVENTORY_GOOD3 = 6,
@@ -82,6 +82,7 @@ enum {
 };
 
 int ALLOWED_FOODS(int i);
+
 bool is_food_allowed(int resource);
 
 const int INV_RESOURCES[2][20] = {

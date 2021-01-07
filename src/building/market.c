@@ -105,16 +105,17 @@ int building_market_get_storage_destination(building *market) {
             if (scenario_property_rome_supplies_wheat())
                 continue;
             if (GAME_ENV == ENGINE_ENV_C3) {
-                update_food_resource(&resources[0], RESOURCE_WHEAT, b, distance);
-                update_food_resource(&resources[1], RESOURCE_VEGETABLES, b, distance);
-                update_food_resource(&resources[2], RESOURCE_FRUIT, b, distance);
-                update_food_resource(&resources[3], RESOURCE_MEAT_C3, b, distance);
+                update_food_resource(&resources[INVENTORY_FOOD1], RESOURCE_WHEAT, b, distance);
+                update_food_resource(&resources[INVENTORY_FOOD2], RESOURCE_VEGETABLES, b, distance);
+                update_food_resource(&resources[INVENTORY_FOOD3], RESOURCE_FRUIT, b, distance);
+                update_food_resource(&resources[INVENTORY_FOOD4], RESOURCE_MEAT_C3, b, distance);
             } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
                 // todo: fetch map available foods?
-                update_food_resource(&resources[0], ALLOWED_FOODS(0), b, distance);
-                update_food_resource(&resources[1], ALLOWED_FOODS(1), b, distance);
-                update_food_resource(&resources[2], ALLOWED_FOODS(2), b, distance);
-                update_food_resource(&resources[3], ALLOWED_FOODS(3), b, distance);
+                // TODO: Load from the save
+                update_food_resource(&resources[INVENTORY_FOOD1], ALLOWED_FOODS(INVENTORY_FOOD1), b, distance);
+                update_food_resource(&resources[INVENTORY_FOOD2], ALLOWED_FOODS(INVENTORY_FOOD2), b, distance);
+                update_food_resource(&resources[INVENTORY_FOOD3], ALLOWED_FOODS(INVENTORY_FOOD3), b, distance);
+                update_food_resource(&resources[INVENTORY_FOOD4], ALLOWED_FOODS(INVENTORY_FOOD4), b, distance);
             }
         } else if (b->type == BUILDING_WAREHOUSE) {
             // goods

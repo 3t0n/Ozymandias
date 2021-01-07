@@ -58,17 +58,17 @@ int figure::create_delivery_boy(int leader_id) {
 int figure::take_food_from_granary(int market_id, int granary_id) {
     int resource;
     switch (collecting_item_id) {
-        case 0:
-            resource = ALLOWED_FOODS(0);
+        case INVENTORY_FOOD1:
+            resource = ALLOWED_FOODS(INVENTORY_FOOD1);
             break;
-        case 1:
-            resource = ALLOWED_FOODS(1);
+        case INVENTORY_FOOD2:
+            resource = ALLOWED_FOODS(INVENTORY_FOOD2);
             break;
-        case 2:
-            resource = ALLOWED_FOODS(2);
+        case INVENTORY_FOOD3:
+            resource = ALLOWED_FOODS(INVENTORY_FOOD3);
             break;
-        case 3:
-            resource = ALLOWED_FOODS(3);
+        case INVENTORY_FOOD4:
+            resource = ALLOWED_FOODS(INVENTORY_FOOD4);
             break;
         default:
             return 0;

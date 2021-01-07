@@ -539,6 +539,13 @@ static void save_main_data(buffer *main) {
 #include "core/game_environment.h"
 
 static void load_main_data(buffer *buf) {
+
+    FILE *fp1 = fopen("/Volumes/SYSTEM/Users/skipper/Downloads/Pharaoh/buffer.bin", "w");
+    if (fp1 != nullptr) {
+        buf->to_file(buf->size(), fp1);
+        fclose(fp1);
+    }
+
     if (GAME_ENV == ENGINE_ENV_C3)
         buf->read_raw(city_data.unused.other_player, 18068);
     else
