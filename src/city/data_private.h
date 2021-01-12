@@ -328,7 +328,7 @@ extern struct city_data_t {
         int8_t food_types_available_arr[9];
         int8_t food_types_eaten_arr[9];
 
-        // TODO:
+        // TODO: Fix getting allowed food from the file
         int8_t food_types_allowed[4] = {RESOURCE_GRAIN, RESOURCE_CHICKPEAS, RESOURCE_FIGS, RESOURCE_GAMEMEAT};
         int32_t food_types_available_num;
         int32_t food_types_eaten_num;
