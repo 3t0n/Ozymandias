@@ -113,21 +113,40 @@ int figure::take_food_from_granary(int market_id, int granary_id) {
 }
 int figure::take_resource_from_warehouse(int warehouse_id) {
     int resource;
-    switch (collecting_item_id) {
-        case INVENTORY_GOOD1:
-            resource = RESOURCE_POTTERY_C3;
-            break;
-        case INVENTORY_GOOD2:
-            resource = RESOURCE_FURNITURE;
-            break;
-        case INVENTORY_GOOD3:
-            resource = RESOURCE_OIL_C3;
-            break;
-        case INVENTORY_GOOD4:
-            resource = RESOURCE_WINE;
-            break;
-        default:
-            return 0;
+    if (GAME_ENV == ENGINE_ENV_C3) {
+        switch (collecting_item_id) {
+            case INVENTORY_GOOD1:
+                resource = RESOURCE_POTTERY_C3;
+                break;
+            case INVENTORY_GOOD2:
+                resource = RESOURCE_FURNITURE;
+                break;
+            case INVENTORY_GOOD3:
+                resource = RESOURCE_OIL_C3;
+                break;
+            case INVENTORY_GOOD4:
+                resource = RESOURCE_WINE;
+                break;
+            default:
+                return 0;
+        }
+    } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+        switch (collecting_item_id) {
+            case INVENTORY_GOOD1:
+                resource = RESOURCE_POTTERY_PH;
+                break;
+            case INVENTORY_GOOD2:
+                resource = RESOURCE_LUXURY_GOODS;
+                break;
+            case INVENTORY_GOOD3:
+                resource = RESOURCE_LINEN;
+                break;
+            case INVENTORY_GOOD4:
+                resource = RESOURCE_BEER;
+                break;
+            default:
+                return 0;
+        }
     }
     building *warehouse = building_get(warehouse_id);
     int num_loads;
