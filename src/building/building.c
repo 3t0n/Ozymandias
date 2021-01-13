@@ -203,19 +203,19 @@ building *building_create(int type, int x, int y) {
                 break;
             case BUILDING_BEER_WORKSHOP:
                 b->output_resource_id = RESOURCE_BEER;
-                b->subtype.workshop_type = WORKSHOP_VINES_TO_WINE; // todo
+                b->subtype.workshop_type = WORKSHOP_BARLEY_TO_BEER;
                 break;
             case BUILDING_LINEN_WORKSHOP:
                 b->output_resource_id = RESOURCE_LINEN;
-                b->subtype.workshop_type = WORKSHOP_OLIVES_TO_OIL; // todo
+                b->subtype.workshop_type = WORKSHOP_FLAX_TO_LINEN;
                 break;
             case BUILDING_WEAPONS_WORKSHOP:
-                b->output_resource_id = RESOURCE_WEAPONS_C3;
-                b->subtype.workshop_type = WORKSHOP_IRON_TO_WEAPONS; // todo
+                b->output_resource_id = RESOURCE_WEAPONS_PH;
+                b->subtype.workshop_type = WORKSHOP_COPPER_TO_WEAPONS;
                 break;
             case BUILDING_JEWELS_WORKSHOP:
                 b->output_resource_id = RESOURCE_LUXURY_GOODS;
-                b->subtype.workshop_type = WORKSHOP_TIMBER_TO_FURNITURE; // todo
+                b->subtype.workshop_type = WORKSHOP_TIMBER_TO_FURNITURE;
                 break;
             case BUILDING_POTTERY_WORKSHOP:
                 b->output_resource_id = RESOURCE_POTTERY_PH;
@@ -242,11 +242,11 @@ building *building_create(int type, int x, int y) {
                 break;
             case BUILDING_PAPYRUS_WORKSHOP:
                 b->output_resource_id = RESOURCE_PAPYRUS;
-//                b->subtype.workshop_type = ??? todo
+                b->subtype.workshop_type = WORKSHOP_PAPYRUS_TO_PAPER;
                 break;
             case BUILDING_BRICKS_WORKSHOP:
                 b->output_resource_id = RESOURCE_BRICKS;
-//                b->subtype.workshop_type = ??? todo
+                b->subtype.workshop_type = WORKSHOP_CLAY_TO_BRICKS;
                 break;
             case BUILDING_CHARIOTS_WORKSHOP:
                 b->output_resource_id = RESOURCE_CHARIOTS;

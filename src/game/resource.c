@@ -41,29 +41,52 @@ int resource_image_offset(int resource, int type) {
 #include "core/game_environment.h"
 
 int resource_is_food(int resource) {
-    if (GAME_ENV == ENGINE_ENV_C3)
+    if (GAME_ENV == ENGINE_ENV_C3) {
         return resource == RESOURCE_WHEAT || resource == RESOURCE_VEGETABLES ||
                resource == RESOURCE_FRUIT || resource == RESOURCE_MEAT_C3;
-    else if (GAME_ENV == ENGINE_ENV_PHARAOH)
+    } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
         return resource == RESOURCE_GRAIN || resource == RESOURCE_MEAT_PH ||
                resource == RESOURCE_LETTUCE || resource == RESOURCE_CHICKPEAS ||
                resource == RESOURCE_POMEGRANATES || resource == RESOURCE_FIGS ||
                resource == RESOURCE_FISH || resource == RESOURCE_GAMEMEAT;
+    }
 }
 
 int resource_to_workshop_type(int resource) {
-    switch (resource) {
-        case RESOURCE_OLIVES:
-            return WORKSHOP_OLIVES_TO_OIL;
-        case RESOURCE_VINES:
-            return WORKSHOP_VINES_TO_WINE;
-        case RESOURCE_IRON:
-            return WORKSHOP_IRON_TO_WEAPONS;
-        case RESOURCE_TIMBER_C3:
-            return WORKSHOP_TIMBER_TO_FURNITURE;
-        case RESOURCE_CLAY_C3:
-            return WORKSHOP_CLAY_TO_POTTERY;
-        default:
-            return WORKSHOP_NONE;
+    if (GAME_ENV == ENGINE_ENV_C3) {
+        switch (resource) {
+            case RESOURCE_OLIVES:
+                return WORKSHOP_OLIVES_TO_OIL;
+            case RESOURCE_VINES:
+                return WORKSHOP_VINES_TO_WINE;
+            case RESOURCE_IRON:
+                return WORKSHOP_IRON_TO_WEAPONS;
+            case RESOURCE_TIMBER_C3:
+                return WORKSHOP_TIMBER_TO_FURNITURE;
+            case RESOURCE_CLAY_C3:
+                return WORKSHOP_CLAY_TO_POTTERY;
+            default:
+                return WORKSHOP_NONE;
+        }
+    } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+        switch (resource) {
+            case RESOURCE_CLAY_PH:
+                return WORKSHOP_CLAY_TO_POTTERY;
+// TODO: How to use clay both for pottery and bricks workshop?
+//            case RESOURCE_CLAY_PH:
+//                return WORKSHOP_CLAY_TO_BRICKS;
+            case RESOURCE_TIMBER_PH:
+                return WORKSHOP_TIMBER_TO_FURNITURE;
+            case RESOURCE_BARLEY:
+                return WORKSHOP_BARLEY_TO_BEER;
+            case RESOURCE_FLAX:
+                return WORKSHOP_FLAX_TO_LINEN;
+            case RESOURCE_PAPYRUS:
+                return WORKSHOP_PAPYRUS_TO_PAPER;
+            case RESOURCE_COPPER:
+                return WORKSHOP_COPPER_TO_WEAPONS;
+            default:
+                return WORKSHOP_NONE;
+        }
     }
 }

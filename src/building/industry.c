@@ -108,13 +108,9 @@ static int max_progress(const building *b) {
     return b->subtype.workshop_type ? MAX_PROGRESS_WORKSHOP : MAX_PROGRESS_RAW;
 }
 static void update_farm_image(const building *b) {
-//    if (GAME_ENV == ENGINE_ENV_C3)
         map_building_tiles_add_farm(b->id, b->x, b->y,
                                     image_id_from_group(GROUP_BUILDING_FARMLAND) + 5 * (b->output_resource_id - 1),
                                     b->data.industry.progress);
-//    else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
-//
-//    };
 }
 
 int building_determine_worker_needed() {

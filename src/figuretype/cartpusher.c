@@ -366,8 +366,9 @@ void figure::warehouseman_action() {
                         if (dest->loads_stored < 2) {
                             building_workshop_add_raw_material(dest);
                             delivery_check = true; // temp
-                        } else
+                        } else {
                             advance_action(ACTION_8_RECALCULATE);
+                        }
                         break;
                 }
                 if (delivery_check)
