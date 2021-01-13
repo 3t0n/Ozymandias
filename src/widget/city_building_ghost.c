@@ -450,8 +450,9 @@ static void draw_regular_building(int type, int image_id, int x, int y, int grid
         if (GAME_ENV == ENGINE_ENV_C3) {
             for (int i = 4; i < 9; i++)
                 image_draw_isometric_footprint(image_id + 1, x + X_VIEW_OFFSETS[i], y + Y_VIEW_OFFSETS[i], COLOR_MASK_GREEN);
-        } else if (GAME_ENV == ENGINE_ENV_PHARAOH)
-            draw_ph_crops(type, 0, grid_offset, x, y, COLOR_MASK_GREEN);
+        } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+            draw_ph_crops(type, 0, grid_offset, x - 60, y + 30, COLOR_MASK_GREEN);
+        }
     } else if (type == BUILDING_WAREHOUSE)
         image_draw_warehouse(image_id, x, y);
     else if (type == BUILDING_GRANARY) {
@@ -459,23 +460,29 @@ static void draw_regular_building(int type, int image_id, int x, int y, int grid
             image_draw_isometric_footprint(image_id, x, y, COLOR_MASK_GREEN);
             const image *img = image_get(image_id + 1);
             image_draw(image_id + 1, x + img->sprite_offset_x - 32, y + img->sprite_offset_y - 64, COLOR_MASK_GREEN);
-        } else
+        } else {
             draw_building(image_id, x, y);
-    } else if (type == BUILDING_HOUSE_VACANT_LOT)
+        }
+    } else if (type == BUILDING_HOUSE_VACANT_LOT) {
         draw_building(image_id_from_group(GROUP_BUILDING_HOUSE_VACANT_LOT), x, y);
+    }
     else if (type == BUILDING_TRIUMPHAL_ARCH) {
         draw_building(image_id, x, y);
         const image *img = image_get(image_id + 1);
-        if (image_id == image_id_from_group(GROUP_BUILDING_TRIUMPHAL_ARCH))
+        if (image_id == image_id_from_group(GROUP_BUILDING_TRIUMPHAL_ARCH)) {
             image_draw(image_id + 1, x + img->sprite_offset_x + 4, y + img->sprite_offset_y - 51, COLOR_MASK_GREEN);
-        else
+        }
+        else {
             image_draw(image_id + 1, x + img->sprite_offset_x - 33, y + img->sprite_offset_y - 56, COLOR_MASK_GREEN);
+        }
     } else if (type == BUILDING_WELL) {
-        if (config_get(CONFIG_UI_SHOW_WATER_STRUCTURE_RANGE))
+        if (config_get(CONFIG_UI_SHOW_WATER_STRUCTURE_RANGE)) {
             city_view_foreach_tile_in_range(grid_offset, 1, 2, draw_fountain_range);
+        }
         draw_building(image_id, x, y);
-    } else if (type != BUILDING_CLEAR_LAND)
+    } else if (type != BUILDING_CLEAR_LAND) {
         draw_building(image_id, x, y);
+    }
 }
 static void draw_default(const map_tile *tile, int x_view, int y_view, int type) {
     const building_properties *props = building_properties_for_type(type);
