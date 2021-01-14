@@ -81,8 +81,8 @@ int resource_to_workshop_type(int resource) {
                 return WORKSHOP_BARLEY_TO_BEER;
             case RESOURCE_FLAX:
                 return WORKSHOP_FLAX_TO_LINEN;
-            case RESOURCE_PAPYRUS:
-                return WORKSHOP_PAPYRUS_TO_PAPER;
+            case RESOURCE_REEDS:
+                return WORKSHOP_REEDS_TO_PAPYRUS;
             case RESOURCE_COPPER:
                 return WORKSHOP_COPPER_TO_WEAPONS;
             default:
