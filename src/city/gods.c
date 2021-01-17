@@ -81,13 +81,18 @@ static void perform_small_curse(int god) {
             city_message_post(1, MESSAGE_MERCURY_IS_UPSET, 0, 0);
             building_granary_warehouse_curse(0);
             break;
-        case GOD_MARS:
-            if (scenario_invasion_start_from_mars())
+        case GOD_MARS: {
+            int invasion = 0;
+            if (GAME_ENV == ENGINE_ENV_C3) { // Temporary disable Seth invasion
+                invasion = scenario_invasion_start_from_mars();
+            }
+            if (invasion)
                 city_message_post(1, MESSAGE_MARS_IS_UPSET, 0, 0);
             else {
                 city_message_post(1, MESSAGE_WRATH_OF_MARS_NO_MILITARY, 0, 0);
             }
             break;
+        }
         case GOD_VENUS:
             city_message_post(1, MESSAGE_VENUS_IS_UPSET, 0, 0);
             city_sentiment_set_max_happiness(50);
@@ -122,7 +127,9 @@ static int perform_large_curse(int god) {
         case GOD_MARS:
             if (formation_legion_curse()) {
                 city_message_post(1, MESSAGE_WRATH_OF_MARS, 0, 0);
-                scenario_invasion_start_from_mars();
+                if (GAME_ENV == ENGINE_ENV_C3) { // Temporary disable Seth invasion
+                    scenario_invasion_start_from_mars();
+                }
             } else {
                 city_message_post(1, MESSAGE_WRATH_OF_MARS_NO_MILITARY, 0, 0);
             }
