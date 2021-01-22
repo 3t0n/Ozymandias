@@ -75,7 +75,7 @@ int building_animation_offset(building *b, int image_id, int grid_offset) {
     }
 
     const image *img = image_get(image_id);
-    if (!game_animation_should_advance(img->animation_speed_id))
+    if (!game_animation_should_advance(img->get_animation_speed_id()))
         return map_sprite_animation_at(grid_offset) & 0x7f;
 
     // advance animation
@@ -110,7 +110,7 @@ int building_animation_offset(building *b, int image_id, int grid_offset) {
                     new_sprite = 12;
             }
         }
-    } else if (img->animation_can_reverse) {
+    } else if (img->get_animation_can_reverse()) {
         if (map_sprite_animation_at(grid_offset) & 0x80)
             is_reverse = 1;
 
@@ -123,15 +123,15 @@ int building_animation_offset(building *b, int image_id, int grid_offset) {
             }
         } else {
             new_sprite = current_sprite + 1;
-            if (new_sprite > img->num_animation_sprites) {
-                new_sprite = img->num_animation_sprites;
+            if (new_sprite > img->get_num_animation_sprites()) {
+                new_sprite = img->get_num_animation_sprites();
                 is_reverse = 1;
             }
         }
     } else {
         // Absolutely normal case
         new_sprite = map_sprite_animation_at(grid_offset) + 1;
-        if (new_sprite > img->num_animation_sprites)
+        if (new_sprite > img->get_num_animation_sprites())
             new_sprite = 1;
     }
 

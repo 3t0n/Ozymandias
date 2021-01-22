@@ -334,7 +334,7 @@ static void draw_dock_workers(const building *b, int x, int y, color_t color_mas
             image_dockers += 2;
 
         const image *img = image_get(image_dockers);
-        image_draw(image_dockers, x + img->sprite_offset_x, y + img->sprite_offset_y, color_mask);
+        image_draw(image_dockers, x + img->get_sprite_offset_x(), y + img->get_sprite_offset_y(), color_mask);
     }
 }
 static void draw_warehouse_ornaments(const building *b, int x, int y, color_t color_mask) {
@@ -446,11 +446,11 @@ static void draw_hippodrome_ornaments(int x, int y, int grid_offset) {
     int image_id = map_image_at(grid_offset);
     const image *img = image_get(image_id);
     building *b = building_get(map_building_at(grid_offset));
-    if (img->num_animation_sprites
+    if (img->get_num_animation_sprites()
         && map_property_is_draw_tile(grid_offset)
         && b->type == BUILDING_HIPPODROME) {
         image_draw(image_id + 1,
-                   x + img->sprite_offset_x, y + img->sprite_offset_y - img->height + 90,
+                   x + img->get_sprite_offset_x(), y + img->get_sprite_offset_y() - img->get_height() + 90,
                    draw_building_as_deleted(b) ? COLOR_MASK_RED : 0
         );
     }
@@ -763,7 +763,7 @@ static void draw_normal_anim(int x, int y, building *b, int sprite_id, int color
     if (base_id != sprite_id)
         image_draw_sprite(sprite_id + animation_offset, x, y, color_mask);
     else
-        image_draw(sprite_id + animation_offset, x + base->sprite_offset_x, y + base->sprite_offset_y - base->height + ydiff, color_mask);
+        image_draw(sprite_id + animation_offset, x + base->get_sprite_offset_x(), y + base->get_sprite_offset_y() - base->get_height() + ydiff, color_mask);
 }
 static void draw_fort_anim(int x, int y, building *b) {
     if (map_property_is_draw_tile(b->grid_offset)) {
@@ -892,8 +892,8 @@ static void draw_animation(int x, int y, int grid_offset) {
         case BUILDING_WELL:
                 if (map_water_supply_is_well_unnecessary(b->id, 3) == WELL_NECESSARY) {
                     const image *img = image_get(image_id_from_group(GROUP_BUILDING_WELL));
-                    image_draw(image_id_from_group(GROUP_BUILDING_WELL) + 1, x + img->sprite_offset_x,
-                               y + img->sprite_offset_y - 20, color_mask);
+                    image_draw(image_id_from_group(GROUP_BUILDING_WELL) + 1, x + img->get_sprite_offset_x(),
+                               y + img->get_sprite_offset_y() - 20, color_mask);
                 }
             break;
         case BUILDING_BANDSTAND:

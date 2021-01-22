@@ -72,25 +72,25 @@ int image_collection::load_sgx(const char *filename_sgx, int shift) {
     int bmp_lastindex = 1;
     for (size_t i = 0; i < entries_num; i++) {
         image img;
-        img.draw.offset = buffer_sgx.read_i32();
-        img.draw.data_length = buffer_sgx.read_i32();
-        img.draw.uncompressed_length = buffer_sgx.read_i32();
+        img.set_offset(buffer_sgx.read_i32());
+        img.set_data_length(buffer_sgx.read_i32());
+        img.set_uncompressed_length(buffer_sgx.read_i32());
         buffer_sgx.skip(4);
-        img.offset_mirror = buffer_sgx.read_i32(); // .sg3 only
-        img.width = buffer_sgx.read_u16();
-        img.height = buffer_sgx.read_u16();
+        img.set_offset_mirror(buffer_sgx.read_i32()); // .sg3 only
+        img.set_width(buffer_sgx.read_u16());
+        img.set_height(buffer_sgx.read_u16());
         buffer_sgx.skip(6);
-        img.num_animation_sprites = buffer_sgx.read_u16();
+        img.set_num_animation_sprites(buffer_sgx.read_u16());
         buffer_sgx.skip(2);
-        img.sprite_offset_x = buffer_sgx.read_i16();
-        img.sprite_offset_y = buffer_sgx.read_i16();
+        img.set_sprite_offset_x(buffer_sgx.read_i16());
+        img.set_sprite_offset_y(buffer_sgx.read_i16());
         buffer_sgx.skip(10);
-        img.animation_can_reverse = buffer_sgx.read_i8();
+        img.set_animation_can_reverse(buffer_sgx.read_i8());
         buffer_sgx.skip(1);
-        img.draw.type = buffer_sgx.read_u8();
-        img.draw.is_fully_compressed = buffer_sgx.read_i8();
-        img.draw.is_external = buffer_sgx.read_i8();
-        img.draw.has_compressed_part = buffer_sgx.read_i8();
+        img.set_type(buffer_sgx.read_u8());
+        img.set_fully_compressed(buffer_sgx.read_i8());
+        img.set_external(buffer_sgx.read_i8());
+        img.set_compressed_part(buffer_sgx.read_i8());
         buffer_sgx.skip(2);
         int bitmap_id = buffer_sgx.read_u8();
         const char *bmn = bmp_names[bitmap_id];
@@ -99,10 +99,10 @@ int image_collection::load_sgx(const char *filename_sgx, int shift) {
             bmp_lastindex = 1;
             bmp_lastbmp = bitmap_id;
         }
-        img.draw.bmp_index = bmp_lastindex;
+        img.set_bmp_index(bmp_lastindex);
         bmp_lastindex++;
         buffer_sgx.skip(1);
-        img.animation_speed_id = buffer_sgx.read_u8();
+        img.set_animation_speed_id(buffer_sgx.read_u8());
         if (header_data[1] < 214) {
             buffer_sgx.skip(5);
         } else {
@@ -116,12 +116,13 @@ int image_collection::load_sgx(const char *filename_sgx, int shift) {
     int offset = 4;
     for (size_t i = 1; i < entries_num; i++) {
         image *img = &images.at(i);
-        if (img->draw.is_external) {
-            if (!img->draw.offset)
-                img->draw.offset = 1;
+        if (img->is_external()) {
+            if (!img->get_offset()) {
+                img->set_offset(1);
+            }
         } else {
-            img->draw.offset = offset;
-            offset += img->draw.data_length;
+            img->set_offset(offset);
+            offset += img->get_data_length();
         }
     }
 
@@ -152,32 +153,32 @@ int image_collection::load_555(const char *filename_555) {
     dst++; // make sure img->offset > 0
     for (size_t i = 0; i < entries_num; i++) {
         image *img = &images.at(i);
-        if (img->draw.is_external) {
+        if (img->is_external()) {
             continue;
         }
-        buffer_555.set_offset(img->draw.offset);
+        buffer_555.set_offset(img->get_offset());
         int img_offset = (int) (dst - start_dst);
 
         size_t image_size = 0;
-        if (img->draw.is_fully_compressed) {
-            image_size = convert_compressed(&buffer_555, img->draw.data_length, dst);
+        if (img->is_fully_compressed()) {
+            image_size = convert_compressed(&buffer_555, img->get_data_length(), dst);
             dst+=image_size;
-        } else if (img->draw.has_compressed_part) { // isometric tile
-            size_t uncompressed_size = convert_uncompressed(&buffer_555, img->draw.uncompressed_length, dst);
+        } else if (img->has_compressed_part()) { // isometric tile
+            size_t uncompressed_size = convert_uncompressed(&buffer_555, img->get_uncompressed_length(), dst);
             dst+=uncompressed_size;
 
-            size_t compressed_size = convert_compressed(&buffer_555, img->draw.data_length - img->draw.uncompressed_length, dst);
+            size_t compressed_size = convert_compressed(&buffer_555, img->get_data_length() - img->get_uncompressed_length(), dst);
             dst+=compressed_size;
 
             image_size = uncompressed_size + compressed_size;
         } else {
-            image_size = convert_uncompressed(&buffer_555, img->draw.data_length, dst);
+            image_size = convert_uncompressed(&buffer_555, img->get_data_length(), dst);
             dst+=image_size;
         }
 
-        img->draw.offset = img_offset;
-        img->draw.uncompressed_length /= 2;
-        img->draw.size = image_size;
+        img->set_offset(img_offset);
+        img->set_uncompressed_length(img->get_uncompressed_length()/2);
+        img->set_full_length(image_size);
         img->set_data(&data[img_offset], image_size);
     }
 

@@ -281,7 +281,7 @@ int convert_compressed(buffer *buf, int amount, color_t *dst) {
 static const color_t *load_external_data(const image *img) {
     char filename[FILE_NAME_MAX];
     int size = 0;
-    buffer *buf = new buffer(img->draw.data_length);
+    buffer *buf = new buffer(img->get_data_length());
     switch (GAME_ENV) {
         case ENGINE_ENV_C3:
             strcpy(&filename[0], "555/");
@@ -289,7 +289,7 @@ static const color_t *load_external_data(const image *img) {
             file_change_extension(filename, "555");
             size = io_read_file_part_into_buffer(
                     &filename[4], MAY_BE_LOCALIZED, buf,
-                    img->draw.data_length, img->draw.offset - 1
+                    img->get_data_length(), img->get_offset() - 1
             );
             break;
         case ENGINE_ENV_PHARAOH:
@@ -298,7 +298,7 @@ static const color_t *load_external_data(const image *img) {
             file_change_extension(filename, "555");
             size = io_read_file_part_into_buffer(
                     &filename[5], MAY_BE_LOCALIZED, buf,
-                    img->draw.data_length, img->draw.offset - 1
+                    img->get_data_length(), img->get_offset() - 1
             );
             break;
     }
@@ -306,7 +306,7 @@ static const color_t *load_external_data(const image *img) {
         // try in 555 dir
         size = io_read_file_part_into_buffer(
                 filename, MAY_BE_LOCALIZED, buf,
-                img->draw.data_length, img->draw.offset - 1
+                img->get_data_length(), img->get_offset() - 1
         );
         if (!size) {
             log_error("unable to load external image", img->get_name(), 0);
@@ -315,10 +315,10 @@ static const color_t *load_external_data(const image *img) {
     }
 
     // NB: isometric images are never external
-    if (img->draw.is_fully_compressed)
-        convert_compressed(buf, img->draw.data_length, data.tmp_image_data);
+    if (img->is_fully_compressed())
+        convert_compressed(buf, img->get_data_length(), data.tmp_image_data);
     else {
-        convert_uncompressed(buf, img->draw.data_length, data.tmp_image_data);
+        convert_uncompressed(buf, img->get_data_length(), data.tmp_image_data);
     }
     return data.tmp_image_data;
 }
@@ -413,21 +413,23 @@ const image *image_get_enemy(int id) {
 }
 const color_t *image_data(int id) {
     const image *lookup = image_get(id);
-    const image *img = image_get(id + lookup->offset_mirror);
-    if (img->draw.is_external)
+    const image *img = image_get(id + lookup->get_offset_mirror());
+    if (img->is_external()) {
         return load_external_data(img);
-    else
+    } else {
         return img->get_data(); // todo: mods
+    }
 }
 const color_t *image_data_letter(int letter_id) {
     return image_letter(letter_id)->get_data();
 }
 const color_t *image_data_enemy(int id) {
     const image *lookup = image_get(id);
-    const image *img = image_get(id + lookup->offset_mirror);
-    id += img->offset_mirror;
-    if (img->draw.offset > 0)
+    const image *img = image_get(id + lookup->get_offset_mirror());
+    id += img->get_offset_mirror();
+    if (img->get_offset() > 0) {
         return img->get_data();
+    }
     return nullptr;
 }
 
@@ -607,22 +609,157 @@ int image_load_fonts(encoding_type encoding) {
 //}
 
 void image::set_data(color_t *image_data, size_t size) {
-    draw.data.reserve(size);
-    std::copy(image_data, image_data + size, std::back_inserter(draw.data));
+    data.reserve(size);
+    std::copy(image_data, image_data + size, std::back_inserter(data));
 }
 
 const color_t *image::image::get_data() const {
-    return draw.data.data();
+    return data.data();
 }
 
 const char *image::get_name() const {
-    return draw.bitmap_name.c_str();
+    return bitmap_name.c_str();
 }
 
 void image::set_name(const char *filename) {
-    draw.bitmap_name = std::string(filename);
+    bitmap_name = std::string(filename);
 }
 
 void image::set_name(const char *filename, size_t size) {
-    draw.bitmap_name = std::string(filename, size);
+    bitmap_name = std::string(filename, size);
+}
+
+int image::get_width() const {
+    return width;
+}
+
+void image::set_width(int new_width) {
+    width = new_width;
+}
+
+int image::get_height() const {
+    return height;
+}
+
+void image::set_height(int new_height) {
+    height = new_height;
+}
+
+int image::get_type() const {
+    return type;
+}
+
+void image::set_type(int new_type) {
+    type = new_type;
+}
+
+int image::is_fully_compressed() const {
+    return fully_compressed;
+}
+
+void image::set_fully_compressed(int new_fully_compressed) {
+    fully_compressed = new_fully_compressed;
+}
+
+int image::has_compressed_part() const {
+    return compressed_part;
+}
+
+void image::set_compressed_part(int new_compressed_part) {
+    compressed_part = new_compressed_part;
+}
+
+int image::get_offset() const {
+    return offset;
+}
+
+void image::set_offset(int new_offset) {
+    offset = new_offset;
+}
+
+size_t image::get_data_length() const {
+    return data_length;
+}
+
+void image::set_data_length(int new_data_length) {
+    data_length = new_data_length;
+}
+
+int image::is_external() const {
+    return external;
+}
+void image::set_external(int new_external) {
+    external = new_external;
+}
+
+size_t image::get_uncompressed_length() const {
+    return uncompressed_length;
+}
+
+void image::set_uncompressed_length(int new_uncompressed_length) {
+    uncompressed_length = new_uncompressed_length;
+}
+
+size_t image::get_full_length() const {
+    return full_length;
+}
+
+void image::set_full_length(int new_full_length) {
+    full_length = new_full_length;
+}
+
+size_t image::get_bmp_index() const {
+    return bmp_index;
+}
+
+void image::set_bmp_index(int new_bmp_index) {
+    bmp_index = new_bmp_index;
+}
+
+int image::get_num_animation_sprites() const {
+    return num_animation_sprites;
+}
+
+void image::set_num_animation_sprites(int new_num_animation_sprites) {
+    num_animation_sprites = new_num_animation_sprites;
+}
+
+int image::get_sprite_offset_x() const {
+    return sprite_offset_x;
+}
+
+void image::set_sprite_offset_x(int new_sprite_offset_x) {
+    sprite_offset_x = new_sprite_offset_x;
+}
+
+int image::get_sprite_offset_y() const {
+    return sprite_offset_y;
+}
+
+void image::set_sprite_offset_y(int new_sprite_offset_y) {
+    sprite_offset_y = new_sprite_offset_y;
+}
+
+int image::get_animation_can_reverse() const {
+    return animation_can_reverse;
+}
+
+void image::set_animation_can_reverse(int new_animation_can_reverse) {
+    animation_can_reverse = new_animation_can_reverse;
+}
+
+int image::get_animation_speed_id() const {
+    return animation_speed_id;
+}
+
+void image::set_animation_speed_id(int new_animation_speed_id) {
+    animation_speed_id = new_animation_speed_id;
+}
+
+int image::get_offset_mirror() const {
+    return offset_mirror;
+}
+
+void image::set_offset_mirror(int new_offset_mirror) {
+    offset_mirror = new_offset_mirror;
 }

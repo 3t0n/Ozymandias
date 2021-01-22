@@ -323,11 +323,11 @@ static int get_animation_offset(int image_id, int current_index) {
         current_index = 1;
 
     const image *img = image_get(image_id);
-    int animation_speed = img->animation_speed_id;
+    int animation_speed = img->get_animation_speed_id();
     if (!game_animation_should_advance(animation_speed))
         return current_index;
 
-    if (img->animation_can_reverse) {
+    if (img->get_animation_can_reverse()) {
         int is_reverse = 0;
         if (current_index & 0x80)
             is_reverse = 1;
@@ -341,8 +341,8 @@ static int get_animation_offset(int image_id, int current_index) {
             }
         } else {
             current_index = current_sprite + 1;
-            if (current_index > img->num_animation_sprites) {
-                current_index = img->num_animation_sprites;
+            if (current_index > img->get_num_animation_sprites()) {
+                current_index = img->get_num_animation_sprites();
                 is_reverse = 1;
             }
         }
@@ -352,7 +352,7 @@ static int get_animation_offset(int image_id, int current_index) {
     } else {
         // Absolutely normal case
         current_index++;
-        if (current_index > img->num_animation_sprites)
+        if (current_index > img->get_num_animation_sprites())
             current_index = 1;
 
     }
