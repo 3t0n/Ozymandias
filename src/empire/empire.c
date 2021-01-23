@@ -31,25 +31,25 @@ static struct {
 } data;
 
 void empire_load(int is_custom_scenario, int empire_id) {
-    buffer *buf = new buffer(EMPIRE_DATA_SIZE);
+    buffer buf(EMPIRE_DATA_SIZE);
     const char *filename = is_custom_scenario ? "c32.emp" : "c3.emp";
 
     // read header with scroll positions
-    if (!io_read_file_part_into_buffer(filename, NOT_LOCALIZED, buf, 4, 32 * empire_id)) {
-        buf->write_u32(0);
-        buf->reset_offset();
+    if (!io_read_file_part_into_buffer(filename, NOT_LOCALIZED, &buf, 4, 32 * empire_id)) {
+        buf.write_u32(0);
+        buf.reset_offset();
     }
-    data.initial_scroll_x = buf->read_i16();
-    data.initial_scroll_y = buf->read_i16();
+    data.initial_scroll_x = buf.read_i16();
+    data.initial_scroll_y = buf.read_i16();
 
     // read data section with objects
     int offset = EMPIRE_HEADER_SIZE + EMPIRE_DATA_SIZE * empire_id;
-    if (io_read_file_part_into_buffer(filename, NOT_LOCALIZED, buf, EMPIRE_DATA_SIZE, offset) != EMPIRE_DATA_SIZE) {
+    if (io_read_file_part_into_buffer(filename, NOT_LOCALIZED, &buf, EMPIRE_DATA_SIZE, offset) != EMPIRE_DATA_SIZE) {
         // load empty empire when loading fails
         log_error("Unable to load empire data from file", filename, 0);
-        buf->fill(0);
+        buf.fill(0);
     }
-    empire_object_load(buf);
+    empire_object_load(&buf);
 }
 
 static void check_scroll_boundaries(void) {
