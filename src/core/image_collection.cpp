@@ -6,10 +6,6 @@
 #include "core/mods.h"
 #include "core/image_collection.h"
 
-image_collection::image_collection():
-    id_shift_overall(0), name{0}, entries_num(0), groups_num(0), header_data{0} {
-}
-
 int image_collection::load_sgx(const char *filename_sgx, int shift) {
     // prepare sgx data
     size_t file_size = io_get_file_size(filename_sgx);
@@ -36,11 +32,19 @@ int image_collection::load_sgx(const char *filename_sgx, int shift) {
     }
 
     // read header
-    buffer_sgx.read_raw(header_data, sizeof(uint32_t) * HEADER_DATA_SIZE);
+    sgx_filesize = buffer_sgx.read_u32();
+    sgx_version = buffer_sgx.read_u32();
+    unknown1 = buffer_sgx.read_u32();
+    max_image_records = buffer_sgx.read_i32();
+    num_image_records = buffer_sgx.read_i32();
+    num_bitmap_records = buffer_sgx.read_i32();
+    num_bitmap_records_without_system = buffer_sgx.read_i32(); /* ? */
+    total_filesize = buffer_sgx.read_u32();
+    filesize_555 = buffer_sgx.read_u32();
+    filesize_external = buffer_sgx.read_u32();
 
     // allocate arrays
-    entries_num = (size_t) header_data[4] + 1;
-    images.reserve(entries_num);
+    images.reserve(num_image_records);
 
     set_shift(shift);
     set_name(filename_sgx);
@@ -48,21 +52,20 @@ int image_collection::load_sgx(const char *filename_sgx, int shift) {
     buffer_sgx.skip(40); // skip remaining 40 bytes
 
     // parse groups (always a fixed 300 pool)
-    groups_num = 0;
+    num_groups_records = 0;
     for (size_t i = 0; i < GROUP_IMAGE_IDS_SIZE; i++) {
         auto image_id = buffer_sgx.read_u16();
         group_image_ids.push_back(image_id);
         if (image_id != 0) {
-            groups_num++;
-//            SDL_Log("%s group %i -> id %i", filename_sgx, i, group_image_ids[i]);
+            num_groups_records++;
+            SDL_Log("%s group %i -> id %i", filename_sgx, i, group_image_ids[i]);
         }
     }
 
     // parse bitmap names
-    int num_bmp_names = (int) header_data[5];
-    char bmp_names[num_bmp_names][BMP_NAME_SIZE];
+    char bmp_names[num_bitmap_records][BMP_NAME_SIZE + BMP_COMMENT_SIZE];
     // every line is 200 chars - 97 entries in the original c3.sg2 header (100 for good measure) and 18 in Pharaoh_General.sg3
-    buffer_sgx.read_raw(bmp_names, BMP_NAME_SIZE * num_bmp_names);
+    buffer_sgx.read_raw(bmp_names, (BMP_NAME_SIZE + BMP_COMMENT_SIZE) * num_bitmap_records);
 
     // move on to the rest of the content
     buffer_sgx.set_offset(header_size);
@@ -70,7 +73,7 @@ int image_collection::load_sgx(const char *filename_sgx, int shift) {
     // fill in image data
     int bmp_lastbmp = 0;
     int bmp_lastindex = 1;
-    for (size_t i = 0; i < entries_num; i++) {
+    for (size_t i = 0; i < num_image_records; i++) {
         image img;
         img.set_offset(buffer_sgx.read_i32());
         img.set_data_length(buffer_sgx.read_i32());
@@ -92,10 +95,12 @@ int image_collection::load_sgx(const char *filename_sgx, int shift) {
         img.set_external(buffer_sgx.read_i8());
         img.set_compressed_part(buffer_sgx.read_i8());
         buffer_sgx.skip(2);
-        int bitmap_id = buffer_sgx.read_u8();
+        uint8_t bitmap_id = buffer_sgx.read_u8();
         const char *bmn = bmp_names[bitmap_id];
         img.set_name(bmn, BMP_NAME_SIZE);
-        if (bitmap_id != bmp_lastbmp) {// new bitmap name, reset bitmap grouping index
+        img.set_comment(bmn + BMP_NAME_SIZE, BMP_COMMENT_SIZE);
+        // new bitmap name, reset bitmap grouping index
+        if (bitmap_id != bmp_lastbmp) {
             bmp_lastindex = 1;
             bmp_lastbmp = bitmap_id;
         }
@@ -103,10 +108,11 @@ int image_collection::load_sgx(const char *filename_sgx, int shift) {
         bmp_lastindex++;
         buffer_sgx.skip(1);
         img.set_animation_speed_id(buffer_sgx.read_u8());
-        if (header_data[1] < 214) {
-            buffer_sgx.skip(5);
-        } else {
-            buffer_sgx.skip(5 + 8);
+        buffer_sgx.skip(5);
+        // Read alphas for 0xD6 SG3 versions only
+        if (get_sgx_version() >= 0xd6) {
+            img.set_alpha_offset(buffer_sgx.read_u32());
+            img.set_alpha_length(buffer_sgx.read_u32());
         }
         images.push_back(img); // TODO: fix this shit
         images.at(i) = img;
@@ -114,7 +120,7 @@ int image_collection::load_sgx(const char *filename_sgx, int shift) {
 
     // fill in bmp offset data
     int offset = 4;
-    for (size_t i = 1; i < entries_num; i++) {
+    for (size_t i = 1; i < num_image_records; i++) {
         image *img = &images.at(i);
         if (img->is_external()) {
             if (!img->get_offset()) {
@@ -123,6 +129,25 @@ int image_collection::load_sgx(const char *filename_sgx, int shift) {
         } else {
             img->set_offset(offset);
             offset += img->get_data_length();
+        }
+    }
+
+//    for (size_t i = 0; i < group_image_ids.size() - 1; ++i) {
+//        uint16_t current = group_image_ids.at(i);
+//        uint16_t next = group_image_ids.at(i + 1);
+//        for (size_t j = current; j <= next; ++j){
+//            images.at(j).set_group_id(current);
+//        }
+//    }
+
+    // go to the end to get group names for sg3
+    // always 299 x 48 bytes = 14352
+    if (get_sgx_version() >= 0xd5) {
+        buffer_sgx.set_offset(buffer_sgx.size() - IMAGE_TAGS_OFFSET);
+        for (size_t i = 0; i < GROUP_IMAGE_IDS_SIZE - 1; i++) {
+            char group_tag[GROUP_IMAGE_TAG_SIZE] = {};
+            buffer_sgx.read_raw(group_tag, GROUP_IMAGE_TAG_SIZE);
+            group_image_tags.emplace_back(group_tag);
         }
     }
 
@@ -146,13 +171,13 @@ int image_collection::load_555(const char *filename_555) {
     }
 
     // temp variable for image data
-    auto *data = new color_t[entries_num * MAX_IMAGE_SIZE];
+    auto *data = new color_t[num_image_records * MAX_IMAGE_SIZE];
 
     // convert bitmap data for image pool
     color_t *start_dst = data;
     color_t *dst = data;
     dst++; // make sure img->offset > 0
-    for (size_t i = 0; i < entries_num; i++) {
+    for (size_t i = 0; i < num_image_records; i++) {
         image *img = &images.at(i);
         // if external, image will automatically loaded in the runtime
         if (img->is_external()) {
@@ -201,11 +226,11 @@ int image_collection::load_files(const char *filename_555, const char *filename_
 }
 
 int image_collection::size() const {
-    return entries_num;
+    return num_image_records;
 }
 
 int image_collection::get_id(int group) {
-    if (group >= groups_num) {
+    if (group >= num_groups_records) {
         group = 0;
     }
     return group_image_ids.at(group) + get_shift();
@@ -215,7 +240,7 @@ image *image_collection::get_image(int id, bool relative) {
     if (!relative) {
         id -= get_shift();
     }
-    if (id < 0 || id >= entries_num) {
+    if (id < 0 || id >= num_image_records) {
         return &image::dummy();
     }
     return &images.at(id);
@@ -235,4 +260,15 @@ const char *image_collection::get_name() const {
 
 void image_collection::set_name(const char *filename) {
     name = std::string(filename);
+}
+
+uint32_t image_collection::get_sgx_version() const {
+    return sgx_version;
+}
+
+void image_collection::print() {
+    SDL_Log("Collection '%s', size %d", get_name(), size());
+    for (auto &img: images) {
+        img.print();
+    }
 }

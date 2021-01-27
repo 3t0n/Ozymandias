@@ -44,7 +44,14 @@ private:
     int32_t data_length = 0;
     int32_t uncompressed_length = 0;
     int32_t full_length = 0;
-    std::string bitmap_name;
+    uint32_t alpha_offset = 0;
+    uint32_t alpha_length = 0;
+
+    uint16_t group_id = 0;
+    std::string bitmap_name; // group_name
+    std::string group_tag;
+    std::string group_comment;
+
     std::vector<color_t> data;
 
     static color_t to_32_bit(uint16_t c);
@@ -103,6 +110,16 @@ public:
     void set_animation_speed_id(uint8_t new_animation_speed_id);
     int get_offset_mirror() const;
     void set_offset_mirror(int new_offset_mirror);
+    uint16_t get_group_id() const;
+    void set_group_id(uint16_t new_group_id);
+    uint32_t get_alpha_offset() const;
+    void set_alpha_offset(uint32_t new_alpha_offset);
+    uint32_t get_alpha_length() const;
+    void set_alpha_length(uint32_t new_alpha_length);
+    const char *get_comment() const;
+    void set_comment(const char *comment, size_t size);
+
+    void print() const;
 };
 
 #endif // CORE_IMAGE_H

@@ -1,3 +1,4 @@
+#include "SDL.h"
 #include "core/image.h"
 #include "core/file.h"
 #include "core/io.h"
@@ -200,4 +201,41 @@ void image::set_offset_mirror(int32_t new_offset_mirror) {
 
 bool image::is_dummy() const {
     return (this == &dummy());
+}
+
+uint16_t image::get_group_id() const {
+    return group_id;
+}
+
+void image::set_group_id(uint16_t new_group_id) {
+    group_id = new_group_id;
+}
+
+uint32_t image::get_alpha_offset() const {
+    return alpha_offset;
+}
+
+void image::set_alpha_offset(uint32_t new_alpha_offset) {
+    alpha_offset = new_alpha_offset;
+}
+
+uint32_t image::get_alpha_length() const {
+    return alpha_length;
+}
+
+void image::set_alpha_length(uint32_t new_alpha_length) {
+    alpha_length = new_alpha_length;
+}
+
+const char *image::get_comment() const {
+    return group_comment.c_str();
+}
+
+void image::set_comment(const char *comment, size_t size) {
+    group_comment = std::string(comment, size);
+}
+
+void image::print() const {
+    SDL_Log("gr_id: %d, bmp_id: %d, name: '%s', type: %u, ext: %d, fcompr: %d, width: %u, height: %u",
+            get_group_id(), get_bmp_index(), get_name(), get_type(), is_external(), is_fully_compressed(), get_width(), get_height());
 }

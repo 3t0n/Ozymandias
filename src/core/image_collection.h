@@ -13,24 +13,36 @@
 
 class image_collection {
 private:
-    static const size_t HEADER_DATA_SIZE = 10;
-    static const size_t BMP_NAME_SIZE = 200;
+    static const size_t BMP_NAME_SIZE = 65;
+    static const size_t BMP_COMMENT_SIZE = 135;
     static const size_t GROUP_IMAGE_IDS_SIZE = 300;
+    static const size_t GROUP_IMAGE_TAG_SIZE = 48;
     static const size_t MAX_FILE_SIZE = 20000000;
     static const size_t MAX_IMAGE_SIZE = 10000;
     static const size_t HEADER_SG2_SIZE = 20680;
     static const size_t HEADER_SG3_SIZE = 40680;
+    static const size_t IMAGE_TAGS_OFFSET = 14352;
 
-    int32_t id_shift_overall;
+    uint32_t sgx_filesize = 0;
+    uint32_t sgx_version = 0;
+    uint32_t unknown1 = 0;
+    int32_t max_image_records = 0;
+    int32_t num_image_records = 0;
+    int32_t num_bitmap_records = 0;
+    int32_t num_bitmap_records_without_system = 0; /* ? */
+    uint32_t total_filesize = 0;
+    uint32_t filesize_555 = 0;
+    uint32_t filesize_external = 0;
+
+    int32_t id_shift_overall = 0;
     std::string name;
-    size_t entries_num;
-    size_t groups_num;
-    uint32_t header_data[HEADER_DATA_SIZE];
+    size_t num_groups_records = 0;
     std::vector<uint16_t> group_image_ids;
+    std::vector<std::string> group_image_tags;
     std::vector<image> images;
 
 public:
-    image_collection();
+    image_collection() = default;
     ~image_collection() = default;
 
     int load_sgx(const char *filename_sgx, int shift = 0);
@@ -45,6 +57,8 @@ public:
     int size() const;
     int get_id(int group);
     image *get_image(int id, bool relative = false);
+    uint32_t get_sgx_version() const;
+    void print();
 };
 
 #endif //IMAGE_COLLECTION_H
