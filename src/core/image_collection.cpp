@@ -36,7 +36,7 @@ int image_collection::load_sgx(const char *filename_sgx, int shift) {
     sgx_version = buffer_sgx.read_u32();
     unknown1 = buffer_sgx.read_u32();
     max_image_records = buffer_sgx.read_i32();
-    num_image_records = buffer_sgx.read_i32();
+    num_image_records = buffer_sgx.read_i32() + 1; // TODO: actual number of images +1
     num_bitmap_records = buffer_sgx.read_i32();
     unknown2 = buffer_sgx.read_i32();
     total_filesize = buffer_sgx.read_u32();
@@ -53,10 +53,12 @@ int image_collection::load_sgx(const char *filename_sgx, int shift) {
 
     // parse groups (always a fixed 300 pool)
     num_groups_records = 0;
+    // added a zero item, because counting from one
+    group_image_ids.push_back(0);
     for (size_t i = 0; i < GROUP_IMAGE_IDS_SIZE; i++) {
         auto image_id = buffer_sgx.read_u16();
-        group_image_ids.push_back(image_id);
         if (image_id != 0) {
+            group_image_ids.push_back(image_id);
             num_groups_records++;
 //            SDL_Log("%s group %i -> id %i", filename_sgx, i, group_image_ids[i]);
         }
@@ -120,8 +122,7 @@ int image_collection::load_sgx(const char *filename_sgx, int shift) {
             img.set_alpha_offset(buffer_sgx.read_u32());
             img.set_alpha_length(buffer_sgx.read_u32());
         }
-        images.push_back(img); // TODO: fix this shit
-        images.at(i) = img;
+        images.emplace_back(img);
     }
 
     // fill in bmp offset data
@@ -144,7 +145,7 @@ int image_collection::load_sgx(const char *filename_sgx, int shift) {
     group_image_tags.emplace_back("");
     if (get_sgx_version() >= 0xd5) {
         buffer_sgx.set_offset(buffer_sgx.size() - IMAGE_TAGS_OFFSET);
-        for (size_t i = 0; i < GROUP_IMAGE_IDS_SIZE; i++) {
+        for (size_t i = 0; i < num_groups_records; i++) {
             char group_tag[GROUP_IMAGE_TAG_SIZE] = {};
             buffer_sgx.read_raw(group_tag, GROUP_IMAGE_TAG_SIZE);
             group_image_tags.emplace_back(group_tag);
@@ -226,15 +227,15 @@ int image_collection::load_files(const char *filename_555, const char *filename_
     return 1;
 }
 
-int image_collection::size() const {
+int32_t image_collection::get_num_image_records() const {
     return num_image_records;
 }
 
-int image_collection::get_id(int group) {
-    if (group >= num_groups_records) {
-        group = 0;
+int32_t image_collection::get_id(int group_id) {
+    if (group_id >= num_groups_records) {
+        group_id = 0;
     }
-    return group_image_ids.at(group) + get_shift();
+    return group_image_ids.at(group_id) + get_shift();
 }
 
 image *image_collection::get_image(int id, bool relative) {
@@ -242,9 +243,22 @@ image *image_collection::get_image(int id, bool relative) {
         id -= get_shift();
     }
     if (id < 0 || id >= num_image_records) {
+//        SDL_Log("Wrong image index: %d, expected < %d, relative:%d", id, num_image_records, relative);
         return &image::dummy();
     }
     return &images.at(id);
+}
+
+image *image_collection::get_image(const char *search_tag) {
+    auto result = &image::dummy();
+    for (size_t i = 0; i < group_image_tags.size(); ++i) {
+        if (group_image_tags.at(i) == search_tag) {
+            auto image_id = group_image_ids.at(i);
+            result = &images.at(image_id);
+            break;
+        }
+    }
+    return result;
 }
 
 int32_t image_collection::get_shift() const {
@@ -272,20 +286,21 @@ image *image_collection::get_image_by_group(int group_id) {
 }
 
 void image_collection::print() {
-    SDL_Log("Collection filename: '%s', size %d", get_sgx_filename(), size());
+    SDL_Log("Collection filename: '%s', number of images %d", get_sgx_filename(), get_num_image_records());
     // skip 'system.bmp' folder
     for (size_t i = 1; i < bitmap_image_names.size(); i++) {
-        SDL_Log("Folder name: '%s', comment: '%s'",
+        SDL_Log("Bitmap name: '%s', comment: '%s'",
                 bitmap_image_names.at(i).c_str(), bitmap_image_comments.at(i).c_str());
 
         // check all images for corresponding index
         for (size_t j = 0; j < group_image_ids.size(); j++) {
             auto image_id = group_image_ids.at(j);
-            if (i == images.at(image_id).get_bitmap_index()) {
+            image &image = images.at(image_id);
+            if (i == image.get_bitmap_index()) {
                 SDL_Log("Group: tag: '%s', id: %zu", group_image_tags.at(j).c_str(), j);
 
                 // print all images related to this group
-                auto num_images = images.at(image_id).get_num_animation_sprites();
+                auto num_images = image.get_num_animation_sprites();
                 for (size_t z = image_id; z <= image_id + num_images; z++) {
                     images.at(z).print();
                 }

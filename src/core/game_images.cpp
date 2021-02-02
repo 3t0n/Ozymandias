@@ -57,6 +57,7 @@ struct graphics_files_collection {
     const char PH_EDITOR_GRAPHICS_555[NAME_SIZE];
     const char PH_EDITOR_GRAPHICS_SG3[NAME_SIZE];
     const char PH_EMPIRE_555[NAME_SIZE];
+    const char PH_EMPIRE_SG3[NAME_SIZE];
     const char PH_ENEMY_555[20][NAME_SIZE];
     const char PH_ENEMY_SG2[20][NAME_SIZE];
     const char PH_EXPANSION_555[NAME_SIZE];
@@ -145,6 +146,7 @@ struct graphics_files_collection {
         "",
         "",
         "data/Empire.555",
+        "data/Empire.sg3",
         {
                 "data/Assyrian.555",
                 "data/Egyptian.555",
@@ -322,8 +324,63 @@ image *game_images::get_image(int id, int mode) {
             if (!img->is_dummy()) {
                 return img;
             }
+
+            img = empire.get_image(id);
+            if (!img->is_dummy()) {
+                return img;
+            }
+
             break;
     }
+
+    SDL_Log("Image with group id '%d' not found", id);
+    return img;
+}
+
+image *game_images::get_image(const char* search_tag) {
+    image* img = &image::dummy();
+
+    img = ph_expansion.get_image(search_tag);
+    if (!img->is_dummy()) {
+        return img;
+    }
+
+    img = ph_sprmain.get_image(search_tag);
+    if (!img->is_dummy()) {
+        return img;
+    }
+
+    img = ph_unloaded.get_image(search_tag);
+    if (!img->is_dummy()){
+        return img;
+    }
+
+    img = main.get_image(search_tag);
+    if (!img->is_dummy()) {
+        return img;
+    }
+
+    img = ph_terrain.get_image(search_tag);
+    if (!img->is_dummy()) {
+        return img;
+    }
+
+    img = font.get_image(search_tag);
+    if (!img->is_dummy()) {
+        return img;
+    }
+
+    img = ph_sprambient.get_image(search_tag);
+    if (!img->is_dummy()) {
+        return img;
+    }
+
+    img = empire.get_image(search_tag);
+    if (!img->is_dummy()) {
+        return img;
+    }
+
+    SDL_Log("Image with tag '%s' not found", search_tag);
     return img;
 }
 
@@ -358,6 +415,10 @@ const image *image_get_enemy(int id) {
 const color_t *game_images::image_data(int id) {
     const image *lookup = get_image(id);
     image *img = get_image(id + lookup->get_offset_mirror());
+    return image_data(img);
+}
+
+const color_t *game_images::image_data(image* img) {
     if (img->is_external()) {
         return load_external_data(img); // TODO: move to image collection class ?
     } else {
@@ -367,6 +428,10 @@ const color_t *game_images::image_data(int id) {
 
 const color_t *image_data(int id) {
     return game_images::get().image_data(id);
+}
+
+const color_t *image_data(image* img) {
+    return game_images::get().image_data(img);
 }
 
 const color_t *game_images::image_data_letter(int letter_id) {
@@ -430,6 +495,9 @@ int game_images::load_main(int climate_id, int is_editor, int force_reload) {
                 return 0;
             }
             if (!font.load_files(gfc.PH_FONTS_555, gfc.PH_FONTS_SG3, 18764)) {
+                return 0;
+            }
+            if (!empire.load_files(gfc.PH_EMPIRE_555, gfc.PH_EMPIRE_SG3, 0)) {
                 return 0;
             }
             break;
@@ -517,105 +585,3 @@ int game_images::get_terrain_ph_offset() const {
 void game_images::set_terrain_ph_offset(int new_terrain_ph_offset) {
     terrain_ph_offset = new_terrain_ph_offset;
 }
-
-//void image_pak_table_generate() {
-//    // are you SURE you want to read through this mess?
-//    // I warn thee, you should stay away for your mental sanity's sake
-//    static imagepak c3_main;
-//    static imagepak ph_terr;
-//    static imagepak ph_main;
-//    static imagepak ph_unl;
-//    static imagepak ph_font;
-//    image_load_555(&c3_main, "DEV_TESTING/C3.555", "DEV_TESTING/C3.sg2");
-//    image_load_555(&ph_terr, gfc.PH_TERRAIN_555, gfc.PH_TERRAIN_SG3); // 1-2000
-//    image_load_555(&ph_main, gfc.PH_MAIN_555, gfc.PH_MAIN_SG3); // 2001-5000
-//    image_load_555(&ph_unl, gfc.PH_UNLOADED_555, gfc.PH_UNLOADED_SG3); // 5001-6000
-//    image_load_555(&ph_font, gfc.PH_FONTS_555, gfc.PH_FONTS_SG3); // 6001-8000
-//
-//    FILE *fp = fopen("table_translation.txt", "w+"); // E:/Git/augustus/src/core/table_translation.h
-//    fprintf(fp, "#ifndef GRAPHICS_TABLE_TRANSLATION_H\n"
-//                "#define GRAPHICS_TABLE_TRANSLATION_H\n\n"
-//                "static int groupid_translation_table_ph[] = {\n");
-//
-//    for (int group = 1; group <= 254; group++) {
-//        // get image index from c3
-//        int c3_id = c3_main.group_image_ids[group];
-//
-//        // get bitmap name
-//        image c3_img = c3_main.images[c3_id];
-//        const char *bmp = c3_img.draw.bitmap_name;
-//        int bmp_index = c3_img.draw.bmp_index;
-//
-//        // look up bitmap name in other files
-//        for (int i = 1; i < 7000; i++) {
-//            image img;
-//            imagepak *ph_pak;
-//            int id_offset;
-//            int group_offset;
-//            int ph_id;
-//
-//            if (i > 6000) {
-//                ph_pak = &ph_font;
-//                id_offset = 5999;
-//                group_offset = 332;
-//            } else if (i > 5000) {
-//                ph_pak = &ph_unl;
-//                id_offset = 4999;
-//                group_offset = 294;
-//            } else if (i > 2000) {
-//                ph_pak = &ph_main;
-//                id_offset = 1999;
-//                group_offset = 66;
-//            } else if (i <= ph_terr.entries_num) {
-//                ph_pak = &ph_terr;
-//                id_offset = 0;
-//                group_offset = 0;
-//            }
-//
-//            // convert global index into local pak index
-//            ph_id = i - id_offset;
-//
-//            if (ph_id > ph_pak->entries_num)
-//                continue;
-//            img = ph_pak->images[ph_id];
-//
-//            if (strcasecmp(bmp, img.draw.bitmap_name) == 0) { // yay, the image has the same bitmap name!
-//
-//                int gfirst = 1;
-//                if (bmp_index == img.draw.bmp_index)
-//                    gfirst = 0;
-//
-//                // look through the ph imagepak groups and see if one points to the same image
-//                for (int ph_group = 1; ph_group <= ph_pak->groups_num; ph_group++) {
-//                    int check_id = ph_pak->group_image_ids[ph_group];
-//                    if (check_id == ph_id) { // yay, there's a group that points to this image!
-//                        if (gfirst && ph_group != group)
-//                            goto nextindex;
-////                        if (group != ph_group + group_offset)
-//                        fprintf(fp, "    %i, %i, // %s %s\n", group, ph_group + group_offset, ph_pak->name, bmp);
-//                        SDL_Log("[c3] group %i >> img %i (%s : %i) >> [ph] img %i (%i) >> group %i (%i)", group,
-//                                c3_id - 1, bmp, bmp_index, ph_id - 1, ph_id - 1 + id_offset, ph_group,
-//                                ph_group + group_offset);
-//                        goto nextgroup;
-//                    }
-//                }
-//                if (gfirst)
-//                    goto nextindex;
-//                // no matching group found....
-//                SDL_Log("[c3] group %i >> img %i (%s : %i) >> [ph] img %i (%i) >> ????????????", group, c3_id - 1, bmp,
-//                        bmp_index, ph_id - 1, ph_id - 1 + id_offset);
-//                goto nextgroup;
-//            }
-//            nextindex:
-//            continue;
-//        }
-//        // no matching image found....
-////        SDL_Log("[c3] group %i >> img %i (%s : %i) >> ????????????", group, c3_id-1, bmp, bmp_index);
-//        nextgroup:
-//        continue;
-//    }
-//
-//    fprintf(fp, "};\n\n"
-//                "#endif // GRAPHICS_TABLE_TRANSLATION_H");
-//    fclose(fp);
-//}

@@ -725,50 +725,38 @@ static void draw_footprint_size5(int image_id, int x, int y, color_t color_mask)
     draw_footprint_tile(tile_data(data, index++), x, y + 120, color_mask);
 }
 
-void image_draw(int image_id, int x, int y, color_t color_mask) {
-    const image *img = image_get(image_id);
-    const color_t *data = image_data(image_id);
-    if (!data)
+void image_draw(image *img, const color_t *data, int x, int y, color_t color_mask) {
+    if (!data) {
+        log_error("Image data is empty", "index", img->get_index());
         return;
+    }
     if (img->get_type() == IMAGE_TYPE_ISOMETRIC) {
-        log_error("use image_draw_isometric_footprint for isometric!", 0, image_id);
+        log_error("use image_draw_isometric_footprint for isometric!", "index", img->get_index());
         return;
     }
 
-//    switch (mode) {
-//        case 0:
-//            break;
-//        case 1:
-//            x -= img->sprite_offset_x;
-//            y -= img->sprite_offset_y;
-//            break;
-//        case 2:
-//            x += img->sprite_offset_x;
-//            y += img->sprite_offset_y;
-//            break;
-//        case 3:
-//            y -= img->get_height();
-//            break;
-//        case 4:
-//            x -= img->sprite_offset_x;
-//            y -= img->sprite_offset_y;
-//            y -= img->get_height();
-//            break;
-//        case 5:
-//            x += img->sprite_offset_x;
-//            y += img->sprite_offset_y;
-//            y -= img->get_height();
-//            break;
-//    }
-
     if (img->is_fully_compressed()) {
-        if (!color_mask)
+        if (!color_mask) {
             draw_compressed(img, data, x, y, img->get_height());
-        else
+        } else {
             draw_compressed_and(img, data, x, y, img->get_height(), color_mask);
-    } else
+        }
+    } else {
         draw_uncompressed(img, data, x, y, color_mask, color_mask ? DRAW_TYPE_AND : DRAW_TYPE_NONE);
+    }
 }
+
+void image_draw(int image_id, int x, int y, color_t color_mask) {
+    image *img = image_get(image_id);
+    const color_t *data = image_data(image_id);
+    image_draw(img, data, x, y, color_mask);
+}
+
+void image_draw(image *img, int x, int y, color_t color_mask) {
+    const color_t *data = image_data(img);
+    image_draw(img, data, x, y, color_mask);
+}
+
 void image_draw_sprite(int image_id, int x, int y, color_t color_mask) {
     const image *img = image_get(image_id);
     image_draw(image_id, x - img->get_sprite_offset_x(), y - img->get_sprite_offset_y(), color_mask);

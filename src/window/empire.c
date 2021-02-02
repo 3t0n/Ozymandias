@@ -377,7 +377,9 @@ static void draw_map(void) {
     data.x_draw_offset = data.x_min + 16;
     data.y_draw_offset = data.y_min + 16;
     empire_adjust_scroll(&data.x_draw_offset, &data.y_draw_offset);
-    image_draw(image_id_from_group(GROUP_EMPIRE_MAP), data.x_draw_offset, data.y_draw_offset);
+//    image_draw(image_id_from_group(GROUP_EMPIRE_MAP), data.x_draw_offset, data.y_draw_offset);
+    auto map = game_images::get().get_image("SPR_EMP_MAP");
+    image_draw(map, data.x_draw_offset, data.y_draw_offset);
 
     empire_object_foreach(draw_empire_object);
 

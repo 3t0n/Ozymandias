@@ -64,9 +64,10 @@ public:
     const char *get_sgx_filename() const;
     void set_sgx_filename(const char *filename);
 
-    int size() const;
-    int get_id(int group_id);
+    int32_t get_num_image_records() const;
+    int32_t get_id(int group_id);
     image *get_image(int id, bool relative = false);
+    image *get_image(const char* group_tag);
     image *get_image_by_group(int group_id);
     uint32_t get_sgx_version() const;
     void print();

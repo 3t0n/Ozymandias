@@ -228,6 +228,6 @@ void image::set_bitmap_index(uint8_t new_bmp_index) {
 }
 
 void image::print() const {
-    SDL_Log("Image id: %d, type: %u, ext: %d, fcompr: %d, width: %u, height: %u",
-            get_index(), get_type(), is_external(), is_fully_compressed(), get_width(), get_height());
+    SDL_Log("Image id: %d, type: %u, ext: %d, fcompr: %d, width: %u, height: %u, size: %u",
+            get_index(), get_type(), is_external(), is_fully_compressed(), get_width(), get_height(), get_full_length());
 }

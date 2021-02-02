@@ -54,9 +54,11 @@ public:
     // getting images
     int get_image_id(int group);
     image *get_image(int id, int mode = 0);
+    image *get_image(const char* search_tag);
     const image *image_letter(int letter_id);
     const image *image_get_enemy(int id);
     const color_t *image_data(int id);
+    const color_t *image_data(image *img);
     const color_t *image_data_letter(int letter_id);
     const color_t *image_data_enemy(int id);
     int image_groupid_translation(int *table, int group);
@@ -81,6 +83,7 @@ image *image_get(int id, int mode = 0);
 const image *image_letter(int letter_id);
 const image *image_get_enemy(int id);
 const color_t *image_data(int id);
+const color_t *image_data(image* img);
 const color_t *image_data_letter(int letter_id);
 const color_t *image_data_enemy(int id);
 
