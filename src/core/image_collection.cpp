@@ -5,30 +5,96 @@
 #include "core/log.h"
 #include "core/mods.h"
 #include "core/image_collection.h"
+#include "core/game_environment.h"
 
-int image_collection::load_sgx(const char *filename_sgx, int shift) {
+image_collection::image_collection(std::string new_filename, int32_t new_shift) {
+    set_filename(new_filename);
+    set_shift(new_shift);
+}
+
+color_t image_collection::to_32_bit(uint16_t c) {
+    return ALPHA_OPAQUE |
+           ((c & 0x7c00) << 9) | ((c & 0x7000) << 4) |
+           ((c & 0x3e0) << 6) | ((c & 0x380) << 1) |
+           ((c & 0x1f) << 3) | ((c & 0x1c) >> 2);
+}
+
+int32_t image_collection::convert_uncompressed(buffer *buf, int32_t amount, color_t *dst) {
+    for (int i = 0; i < amount; i += 2) {
+        color_t c = to_32_bit(buf->read_u16());
+        *dst = c;
+        dst++;
+    }
+    return amount / 2;
+}
+
+int32_t image_collection::convert_compressed(buffer *buf, int32_t amount, color_t *dst) {
+    int dst_length = 0;
+    while (amount > 0) {
+        int control = buf->read_u8();
+        if (control == 255) {
+            // next byte = transparent pixels to skip
+            *dst++ = 255;
+            *dst++ = buf->read_u8();
+            dst_length += 2;
+            amount -= 2;
+        } else {
+            // control = number of concrete pixels
+            *dst++ = control;
+            for (int i = 0; i < control; i++) {
+                *dst++ = to_32_bit(buf->read_u16());
+            }
+            dst_length += control + 1;
+            amount -= control * 2 + 1;
+        }
+    }
+    return dst_length;
+}
+
+int32_t image_collection::convert(const image *img, buffer &buffer, color_t* dst) {
+    int32_t image_size = 0;
+
+    // NB: isometric images are never external
+    if (img->is_fully_compressed()) {
+        image_size = convert_compressed(&buffer, img->get_data_length(), dst);
+    } else if (img->has_compressed_part()) { // isometric tile
+        size_t uncompressed_size = convert_uncompressed(&buffer, img->get_uncompressed_length(), dst);
+        size_t compressed_size = convert_compressed(&buffer, img->get_data_length() - img->get_uncompressed_length(), dst + uncompressed_size);
+
+        image_size = uncompressed_size + compressed_size;
+    } else {
+        image_size = convert_uncompressed(&buffer, img->get_data_length(), dst);
+    }
+    return image_size;
+}
+
+bool image_collection::is_dummy() const {
+    return (this == &dummy());
+}
+
+bool image_collection::load_sgx() {
     // prepare sgx data
-    size_t file_size = io_get_file_size(filename_sgx);
-    SDL_Log("Loading image collection from file '%s': %zu", filename_sgx, file_size);
+    size_t file_size = io_get_file_size(get_filename_sgx());
+    SDL_Log("Loading image collection from file '%s': %zu", get_filename_sgx(), file_size);
     if (!file_size) {
-        SDL_Log("Loading image collection from file '%s': empty file", filename_sgx);
-        return 0;
+        SDL_Log("Loading image collection from file '%s': empty file", get_filename_sgx());
+        return false;
     }
 
     buffer buffer_sgx(file_size);
-    if (!io_read_file_into_buffer(filename_sgx, MAY_BE_LOCALIZED, &buffer_sgx, MAX_FILE_SIZE)) { //int MAIN_INDEX_SIZE = 660680;
-        SDL_Log("Loading image collection from file '%s': can't read file", filename_sgx);
-        return 0;
+    if (!io_read_file_into_buffer(get_filename_sgx(), MAY_BE_LOCALIZED, &buffer_sgx, MAX_FILE_SIZE)) { //int MAIN_INDEX_SIZE = 660680;
+        SDL_Log("Loading image collection from file '%s': can't read file", get_filename_sgx());
+        return false;
     }
     
     size_t header_size = HEADER_SG3_SIZE;
-    if (file_has_extension(filename_sgx, "sg2")) {
+    if (file_has_extension(get_filename_sgx(), "sg2")) {
         header_size = HEADER_SG2_SIZE; // sg2 has 100 bitmap entries
-    } else if (file_has_extension(filename_sgx, "sg3")) {
+    } else if (file_has_extension(get_filename_sgx(), "sg3")) {
         header_size = HEADER_SG3_SIZE;
     } else {
-        SDL_Log("Loading image collection from file '%s': wrong extension", filename_sgx);
-        return 0;
+        SDL_Log("Loading image collection from file '%s': wrong extension", get_filename_sgx());
+        return false;
     }
 
     // read header
@@ -36,7 +102,8 @@ int image_collection::load_sgx(const char *filename_sgx, int shift) {
     sgx_version = buffer_sgx.read_u32();
     unknown1 = buffer_sgx.read_u32();
     max_image_records = buffer_sgx.read_i32();
-    num_image_records = buffer_sgx.read_i32() + 1; // TODO: actual number of images +1
+    // First image is empty, so actual number of images +1
+    num_image_records = buffer_sgx.read_i32() + 1;
     num_bitmap_records = buffer_sgx.read_i32();
     unknown2 = buffer_sgx.read_i32();
     total_filesize = buffer_sgx.read_u32();
@@ -45,9 +112,6 @@ int image_collection::load_sgx(const char *filename_sgx, int shift) {
 
     // allocate arrays
     images.reserve(num_image_records);
-
-    set_shift(shift);
-    set_sgx_filename(filename_sgx);
 
     buffer_sgx.skip(40); // skip remaining 40 bytes
 
@@ -84,6 +148,7 @@ int image_collection::load_sgx(const char *filename_sgx, int shift) {
     int bmp_lastindex = 1;
     for (size_t i = 0; i < num_image_records; i++) {
         image img;
+        img.set_collection(this);
         img.set_offset(buffer_sgx.read_i32());
         img.set_data_length(buffer_sgx.read_i32());
         img.set_uncompressed_length(buffer_sgx.read_i32());
@@ -153,23 +218,23 @@ int image_collection::load_sgx(const char *filename_sgx, int shift) {
         }
     }
 
-    return 1;
+    return true;
 }
 
-int image_collection::load_555(const char *filename_555) {
+bool image_collection::load_555() {
     // prepare bitmap data
-    size_t file_size = io_get_file_size(filename_555);
-    SDL_Log("Loading image collection from file '%s': %zu", filename_555, file_size);
+    size_t file_size = io_get_file_size(get_filename_555());
+    SDL_Log("Loading image collection from file '%s': %zu", get_filename_555(), file_size);
     if (!file_size) {
-        SDL_Log("Loading image collection from file '%s': empty file", filename_555);
-        return 0;
+        SDL_Log("Loading image collection from file '%s': empty file", get_filename_555());
+        return false;
     }
 
     buffer buffer_555(file_size);
-    int data_size = io_read_file_into_buffer(filename_555, MAY_BE_LOCALIZED, &buffer_555, MAX_FILE_SIZE);
+    int data_size = io_read_file_into_buffer(get_filename_555(), MAY_BE_LOCALIZED, &buffer_555, MAX_FILE_SIZE);
     if (!data_size) {
-        SDL_Log("Loading image collection from file '%s': can't read file", filename_555);
-        return 0;
+        SDL_Log("Loading image collection from file '%s': can't read file", get_filename_555());
+        return false;
     }
 
     // temp variable for image data
@@ -187,23 +252,8 @@ int image_collection::load_555(const char *filename_555) {
         }
         buffer_555.set_offset(img->get_offset());
         int img_offset = (int) (dst - start_dst);
-
-        size_t image_size = 0;
-        if (img->is_fully_compressed()) {
-            image_size = image::convert_compressed(&buffer_555, img->get_data_length(), dst);
-            dst+=image_size;
-        } else if (img->has_compressed_part()) { // isometric tile
-            size_t uncompressed_size = image::convert_uncompressed(&buffer_555, img->get_uncompressed_length(), dst);
-            dst+=uncompressed_size;
-
-            size_t compressed_size = image::convert_compressed(&buffer_555, img->get_data_length() - img->get_uncompressed_length(), dst);
-            dst+=compressed_size;
-
-            image_size = uncompressed_size + compressed_size;
-        } else {
-            image_size = image::convert_uncompressed(&buffer_555, img->get_data_length(), dst);
-            dst+=image_size;
-        }
+        size_t image_size = convert(img, buffer_555, dst);
+        dst += image_size;
 
         img->set_offset(img_offset);
         img->set_uncompressed_length(img->get_uncompressed_length()/2);
@@ -212,26 +262,52 @@ int image_collection::load_555(const char *filename_555) {
     }
 
     delete[] data;
-
-    return 1;
+    return true;
 }
 
-int image_collection::load_files(const char *filename_555, const char *filename_sgx, int shift) {
-    if (!load_sgx(filename_sgx, shift)) {
-        return 0;
-    }
-    if (!load_555(filename_555)) {
-        return 0;
+bool image_collection::load_files() {
+    return load_sgx() && load_555();
+}
+
+const color_t *image_collection::load_external(image *img) const {
+    std::string external_filename = img->get_bitmap_name();
+    file_change_extension(external_filename, extension_555);
+
+    log_info("Load external image from", external_filename.c_str(), img->get_data_length());
+
+    // Check root folder first
+    buffer buf(img->get_data_length());
+    size_t size = io_read_file_part_into_buffer(external_filename.c_str(), MAY_BE_LOCALIZED, &buf,
+                                                img->get_data_length(), img->get_offset() - 1);
+
+    // Try in 555/data dir
+    if (!size) {
+        std::string data_filename = data_folder + "/" + external_filename;
+
+        size = io_read_file_part_into_buffer(data_filename.c_str(),MAY_BE_LOCALIZED, &buf,
+                                             img->get_data_length(), img->get_offset() - 1);
+
+        if (!size) {
+            log_error("Unable to load external image from data folder", data_filename.c_str(), img->get_data_length());
+            return nullptr;
+        }
     }
 
-    return 1;
+    auto* external_image_data = new color_t[img->get_data_length()];
+    convert(img, buf, external_image_data);
+
+    img->set_data(external_image_data, img->get_data_length());
+    img->set_external(0);
+
+    delete[] external_image_data;
+    return img->get_data();
 }
 
 int32_t image_collection::get_num_image_records() const {
     return num_image_records;
 }
 
-int32_t image_collection::get_id(int group_id) {
+int32_t image_collection::get_id(int group_id) const {
     if (group_id >= num_groups_records) {
         group_id = 0;
     }
@@ -269,16 +345,49 @@ void image_collection::set_shift(int32_t shift) {
     id_shift_overall = shift;
 }
 
-const char *image_collection::get_sgx_filename() const {
-    return sgx_filename.c_str();
+const char *image_collection::get_filename() const {
+    return filename.c_str();
 }
 
-void image_collection::set_sgx_filename(const char *filename) {
-    sgx_filename = std::string(filename);
+void image_collection::set_filename(std::string& new_filename) {
+    filename = new_filename;
+    extension_555 = EXTENSION_555;
+
+    if (GAME_ENV == ENGINE_ENV_C3) {
+        data_folder = DATA_FOLDER_C3;
+        extension_sgx = EXTENSION_SG2;
+        filename_sgx = filename + "." + extension_sgx;
+    } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+        data_folder = DATA_FOLDER_PH;
+        extension_sgx = EXTENSION_SG3;
+        filename_sgx = data_folder + "/" + filename + "." + extension_sgx;
+    }
+
+    filename_555 = data_folder + "/" + filename + "." + extension_555;
+}
+
+const char *image_collection::get_filename_sgx() const {
+    return filename_sgx.c_str();
+}
+
+const char *image_collection::get_filename_555() const {
+    return filename_555.c_str();
 }
 
 uint32_t image_collection::get_sgx_version() const {
     return sgx_version;
+}
+
+const char *image_collection::get_data_folder() const {
+    return data_folder.c_str();
+}
+
+const char *image_collection::get_extension_sgx() const {
+    return extension_sgx.c_str();
+}
+
+const char *image_collection::get_extension_555() const {
+    return extension_555.c_str();
 }
 
 image *image_collection::get_image_by_group(int group_id) {
@@ -286,7 +395,7 @@ image *image_collection::get_image_by_group(int group_id) {
 }
 
 void image_collection::print() {
-    SDL_Log("Collection filename: '%s', number of images %d", get_sgx_filename(), get_num_image_records());
+    SDL_Log("Collection filename: '%s', number of images %d", get_filename_sgx(), get_num_image_records());
     // skip 'system.bmp' folder
     for (size_t i = 1; i < bitmap_image_names.size(); i++) {
         SDL_Log("Bitmap name: '%s', comment: '%s'",

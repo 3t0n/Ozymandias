@@ -2,45 +2,7 @@
 #include "core/image.h"
 #include "core/file.h"
 #include "core/io.h"
-
-color_t image::to_32_bit(uint16_t c) {
-    return ALPHA_OPAQUE |
-           ((c & 0x7c00) << 9) | ((c & 0x7000) << 4) |
-           ((c & 0x3e0) << 6) | ((c & 0x380) << 1) |
-           ((c & 0x1f) << 3) | ((c & 0x1c) >> 2);
-}
-
-int32_t image::convert_uncompressed(buffer *buf, int32_t amount, color_t *dst) {
-    for (int i = 0; i < amount; i += 2) {
-        color_t c = to_32_bit(buf->read_u16());
-        *dst = c;
-        dst++;
-    }
-    return amount / 2;
-}
-
-int32_t image::convert_compressed(buffer *buf, int32_t amount, color_t *dst) {
-    int dst_length = 0;
-    while (amount > 0) {
-        int control = buf->read_u8();
-        if (control == 255) {
-            // next byte = transparent pixels to skip
-            *dst++ = 255;
-            *dst++ = buf->read_u8();
-            dst_length += 2;
-            amount -= 2;
-        } else {
-            // control = number of concrete pixels
-            *dst++ = control;
-            for (int i = 0; i < control; i++) {
-                *dst++ = to_32_bit(buf->read_u16());
-            }
-            dst_length += control + 1;
-            amount -= control * 2 + 1;
-        }
-    }
-    return dst_length;
-}
+#include "core/image_collection.h"
 
 void image::set_data(color_t *image_data, size_t size) {
     data.reserve(size);
@@ -48,6 +10,10 @@ void image::set_data(color_t *image_data, size_t size) {
 }
 
 const color_t *image::image::get_data() const {
+    if (is_external() && data.empty()) {
+        collection->load_external(const_cast<image *>(this));
+    }
+
     return data.data();
 }
 
@@ -225,6 +191,14 @@ uint8_t image::get_bitmap_index() const {
 
 void image::set_bitmap_index(uint8_t new_bmp_index) {
     bitmap_index = new_bmp_index;
+}
+
+const image_collection *image::get_collection() const {
+    return collection;
+}
+
+void image::set_collection(const image_collection *new_collection) {
+    collection = new_collection;
 }
 
 void image::print() const {

@@ -138,11 +138,6 @@ int game_pre_init(void) {
     return 1;
 }
 int game_init(void) {
-//    if (!image_init()) {
-//        errlog("unable to init graphics");
-//        return 0;
-//    }
-
     if (!game_images::get().load_main(CLIMATE_CENTRAL, 0, 0)) {
         errlog("unable to load main graphics");
         return 0;

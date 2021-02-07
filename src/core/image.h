@@ -21,10 +21,10 @@ enum {
     IMAGE_TYPE_MOD = 40
 };
 
+// Pre-definition of image_collection class
+class image_collection;
 
-/**
- * Image class
- */
+// Image class
 class image {
 private:
     uint16_t width = 0;
@@ -48,17 +48,15 @@ private:
     uint32_t alpha_offset = 0;
     uint32_t alpha_length = 0;
 
+    // pointer to the parent collection
+    const image_collection* collection = nullptr;
+
     std::string bitmap_name;
     std::vector<color_t> data;
-
-    static color_t to_32_bit(uint16_t c);
 
 public:
     image() = default;
     ~image() = default;
-
-    static int32_t convert_uncompressed(buffer *buf, int32_t amount, color_t *dst);
-    static int32_t convert_compressed(buffer *buf, int32_t amount, color_t *dst);
 
     // dummy image
     static image& dummy() {
@@ -113,6 +111,8 @@ public:
     void set_alpha_offset(uint32_t new_alpha_offset);
     uint32_t get_alpha_length() const;
     void set_alpha_length(uint32_t new_alpha_length);
+    const image_collection *get_collection() const;
+    void set_collection(const image_collection *new_collection);
 
     void print() const;
 };
