@@ -537,6 +537,7 @@ static void draw_background(void) {
                 window_building_draw_clinic(&context); break;
             case BUILDING_HOSPITAL:
                 window_building_draw_hospital(&context); break;
+            case BUILDING_PHYSICIAN:
             case BUILDING_BATHHOUSE:
                 window_building_draw_bathhouse(&context); break;
             case BUILDING_BARBER:
@@ -549,18 +550,23 @@ static void draw_background(void) {
                 window_building_draw_library(&context); break;
             case BUILDING_SMALL_TEMPLE_CERES:
             case BUILDING_LARGE_TEMPLE_CERES:
+            case BUILDING_SHRINE_OSIRIS:
                 window_building_draw_temple_ceres(&context); break;
             case BUILDING_SMALL_TEMPLE_NEPTUNE:
             case BUILDING_LARGE_TEMPLE_NEPTUNE:
+            case BUILDING_SHRINE_RA:
                 window_building_draw_temple_neptune(&context); break;
             case BUILDING_SMALL_TEMPLE_MERCURY:
             case BUILDING_LARGE_TEMPLE_MERCURY:
+            case BUILDING_SHRINE_PTAH:
                 window_building_draw_temple_mercury(&context); break;
             case BUILDING_SMALL_TEMPLE_MARS:
             case BUILDING_LARGE_TEMPLE_MARS:
+            case BUILDING_SHRINE_SETH:
                 window_building_draw_temple_mars(&context); break;
             case BUILDING_SMALL_TEMPLE_VENUS:
             case BUILDING_LARGE_TEMPLE_VENUS:
+            case BUILDING_SHRINE_BAST:
                 window_building_draw_temple_venus(&context); break;
             case BUILDING_ORACLE:
                 window_building_draw_oracle(&context); break;
@@ -571,8 +577,13 @@ static void draw_background(void) {
             case BUILDING_FORUM:
             case BUILDING_FORUM_UPGRADED:
                 window_building_draw_forum(&context); break;
+            case BUILDING_COURTHOUSE:
+                window_building_draw_courthouse(&context); break;
             case BUILDING_SENATE:
             case BUILDING_SENATE_UPGRADED:
+            case BUILDING_VILLAGE_PALACE:
+            case BUILDING_TOWN_PALACE:
+            case BUILDING_CITY_PALACE:
                 window_building_draw_senate(&context); break;
             case BUILDING_ENGINEERS_POST:
                 window_building_draw_engineers_post(&context); break;
@@ -589,6 +600,7 @@ static void draw_background(void) {
             case BUILDING_RESERVOIR:
                 window_building_draw_reservoir(&context); break;
             case BUILDING_FOUNTAIN:
+            case BUILDING_WATER_SUPPLY:
                 window_building_draw_fountain(&context); break;
             case BUILDING_WELL:
                 window_building_draw_well(&context); break;
@@ -626,6 +638,12 @@ static void draw_background(void) {
                 window_building_draw_native_crops(&context); break;
             case BUILDING_MISSION_POST:
                 window_building_draw_mission_post(&context); break;
+            case BUILDING_FIREHOUSE:
+                window_building_draw_firehouse(&context); break;
+            case BUILDING_WORK_CAMP:
+                window_building_draw_work_camp(&context); break;
+            case BUILDING_FESTIVAL_SQUARE:
+                window_building_draw_festival_square(&context); break;
         }
 
     } else if (context.type == BUILDING_INFO_LEGION)

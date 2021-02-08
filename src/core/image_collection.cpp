@@ -396,8 +396,8 @@ image *image_collection::get_image_by_group(int group_id) {
 
 void image_collection::print() {
     SDL_Log("Collection filename: '%s', number of images %d", get_filename_sgx(), get_num_image_records());
-    // skip 'system.bmp' folder
-    for (size_t i = 1; i < bitmap_image_names.size(); i++) {
+
+    for (size_t i = 0; i < bitmap_image_names.size(); i++) {
         SDL_Log("Bitmap name: '%s', comment: '%s'",
                 bitmap_image_names.at(i).c_str(), bitmap_image_comments.at(i).c_str());
 

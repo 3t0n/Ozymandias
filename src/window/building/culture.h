@@ -45,4 +45,6 @@ void window_building_draw_lion_house(building_info_context *c);
 
 void window_building_draw_chariot_maker(building_info_context *c);
 
+void window_building_draw_festival_square(building_info_context *c);
+
 #endif // WINDOW_BUILDING_CULTURE_H

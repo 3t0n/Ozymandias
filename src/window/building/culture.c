@@ -284,3 +284,13 @@ void window_building_draw_lion_house(building_info_context *c) {
 void window_building_draw_chariot_maker(building_info_context *c) {
     draw_entertainment_school(c, "wavs/char_pit.wav", 78);
 }
+
+// TODO: fix festival square panel
+void window_building_draw_festival_square(building_info_context *c) {
+    const int32_t group_id = 188;
+    c->help_id = 75;
+    window_building_play_sound(c, "wavs/prefecture.wav"); // TODO: change to festival square
+
+    outer_panel_draw(c->x_offset, c->y_offset, c->width_blocks, c->height_blocks);
+    lang_text_draw_centered(group_id, 0, c->x_offset, c->y_offset + 10, 16 * c->width_blocks, FONT_LARGE_BLACK);
+}
