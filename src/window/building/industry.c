@@ -128,6 +128,11 @@ void window_building_draw_clay_pit(building_info_context *c) {
     draw_raw_material(c, 92, "wavs/clay.wav", 121, RESOURCE_CLAY_C3);
 }
 
+// TODO: fix reed gatherer panel
+void window_building_draw_reed_gatherer(building_info_context *c) {
+    draw_raw_material(c, 92, "wavs/clay.wav", 116, RESOURCE_REEDS);
+}
+
 static void draw_workshop(building_info_context *c, int help_id, const char *sound_file, int group_id, int resource,
                           int input_resource) {
     c->help_id = help_id;
@@ -193,6 +198,11 @@ void window_building_draw_furniture_workshop(building_info_context *c) {
 
 void window_building_draw_pottery_workshop(building_info_context *c) {
     draw_workshop(c, 1, "wavs/pottery_workshop.wav", 126, RESOURCE_POTTERY_C3, RESOURCE_CLAY_C3);
+}
+
+// TODO: fix papyrus workshop panel
+void window_building_draw_papyrus_workshop(building_info_context *c) {
+    draw_workshop(c, 1, "wavs/pottery_workshop.wav", 190, RESOURCE_PAPYRUS, RESOURCE_REEDS);
 }
 
 void window_building_draw_shipyard(building_info_context *c) {

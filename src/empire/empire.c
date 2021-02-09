@@ -11,13 +11,21 @@
 #include "empire/object.h"
 #include "empire/trade_route.h"
 
-#include <string.h>
+static const char *const CUSTOM_SCENARIO_EMPIRE_C3 = "c32.emp";
+static const char *const CAMPAIGN_SCENARIO_EMPIRE_E3 = "c3.emp";
+static const char *const CUSTOM_SCENARIO_EMPIRE_PH = "Pharaoh2.emp";
+static const char *const CAMPAIGN_SCENARIO_EMPIRE_PH = "Pharaoh2.emp";
 
 enum {
-    EMPIRE_WIDTH = 2000,
-    EMPIRE_HEIGHT = 1000,
-    EMPIRE_HEADER_SIZE = 1280,
-    EMPIRE_DATA_SIZE = 12800
+    EMPIRE_WIDTH_C3 = 2000,
+    EMPIRE_HEIGHT_C3 = 1000,
+    EMPIRE_HEADER_SIZE_C3 = 1280,
+    EMPIRE_DATA_SIZE_C3 = 12800,
+
+    EMPIRE_WIDTH_PH = 1200,
+    EMPIRE_HEIGHT_PH = 1600,
+    EMPIRE_HEADER_SIZE_PH = 1280, // TODO: reverse new empire format
+    EMPIRE_DATA_SIZE_PH = 12800 // TODO: reverse new empire format
 };
 
 static struct {
@@ -31,9 +39,21 @@ static struct {
 } data;
 
 void empire_load(int is_custom_scenario, int empire_id) {
-    buffer buf(EMPIRE_DATA_SIZE);
-    const char *filename = is_custom_scenario ? "c32.emp" : "c3.emp";
+    const char *filename;
+    uint32_t data_size = 0;
+    uint32_t header_size = 0;
 
+    if (GAME_ENV == ENGINE_ENV_C3) {
+        filename = is_custom_scenario ? CUSTOM_SCENARIO_EMPIRE_C3 : CAMPAIGN_SCENARIO_EMPIRE_E3;
+        data_size = EMPIRE_DATA_SIZE_C3;
+        header_size = EMPIRE_HEADER_SIZE_C3;
+    } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+        filename = is_custom_scenario ? CUSTOM_SCENARIO_EMPIRE_PH : CAMPAIGN_SCENARIO_EMPIRE_PH;
+        data_size = EMPIRE_DATA_SIZE_PH;
+        header_size = EMPIRE_HEADER_SIZE_PH;
+    }
+
+    buffer buf(data_size);
     // read header with scroll positions
     if (!io_read_file_part_into_buffer(filename, NOT_LOCALIZED, &buf, 4, 32 * empire_id)) {
         buf.write_u32(0);
@@ -43,18 +63,28 @@ void empire_load(int is_custom_scenario, int empire_id) {
     data.initial_scroll_y = buf.read_i16();
 
     // read data section with objects
-    int offset = EMPIRE_HEADER_SIZE + EMPIRE_DATA_SIZE * empire_id;
-    if (io_read_file_part_into_buffer(filename, NOT_LOCALIZED, &buf, EMPIRE_DATA_SIZE, offset) != EMPIRE_DATA_SIZE) {
+    int offset = header_size + data_size * empire_id;
+    if (io_read_file_part_into_buffer(filename, NOT_LOCALIZED, &buf, data_size, offset) != data_size) {
         // load empty empire when loading fails
         log_error("Unable to load empire data from file", filename, 0);
-        buf.fill(0);
     }
     empire_object_load(&buf);
 }
 
 static void check_scroll_boundaries(void) {
-    int max_x = EMPIRE_WIDTH - data.viewport_width;
-    int max_y = EMPIRE_HEIGHT - data.viewport_height;
+    uint32_t empire_width = 0;
+    uint32_t empire_height = 0;
+
+    if (GAME_ENV == ENGINE_ENV_C3) {
+        empire_width = EMPIRE_WIDTH_C3;
+        empire_height = EMPIRE_HEIGHT_C3;
+    } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+        empire_width = EMPIRE_WIDTH_PH;
+        empire_height = EMPIRE_HEIGHT_PH;
+    }
+
+    int max_x = empire_width - data.viewport_width;
+    int max_y = empire_height - data.viewport_height;
 
     data.scroll_x = calc_bound(data.scroll_x, 0, max_x);
     data.scroll_y = calc_bound(data.scroll_y, 0, max_y);
@@ -79,10 +109,21 @@ void empire_load_editor(int empire_id, int viewport_width, int viewport_height) 
 }
 
 void empire_init_scenario(void) {
+    uint32_t empire_width = 0;
+    uint32_t empire_height = 0;
+
+    if (GAME_ENV == ENGINE_ENV_C3) {
+        empire_width = EMPIRE_WIDTH_C3;
+        empire_height = EMPIRE_HEIGHT_C3;
+    } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+        empire_width = EMPIRE_WIDTH_PH;
+        empire_height = EMPIRE_HEIGHT_PH;
+    }
+
     data.scroll_x = data.initial_scroll_x;
     data.scroll_y = data.initial_scroll_y;
-    data.viewport_width = EMPIRE_WIDTH;
-    data.viewport_height = EMPIRE_HEIGHT;
+    data.viewport_width = empire_width;
+    data.viewport_height = empire_height;
 
     empire_object_init_cities();
 }

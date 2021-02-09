@@ -11,6 +11,7 @@
 #include "scenario/criteria.h"
 #include "scenario/property.h"
 #include <algorithm>
+#include <empire/city.h>
 
 static tutorial_flags data;
 
@@ -186,6 +187,18 @@ void tutorial_menu_update(int tut) {
                 building_menu_update(BUILDSET_TUT5_TRADING);
             if (data.pharaoh.bricks_bought)
                 building_menu_update(BUILDING_MENU_MONUMENTS);
+
+            // TODO: manually open a trade
+            empire_city *city = empire_city_get(1);
+            city->sells_resource[RESOURCE_BRICKS] = 1;
+            city->buys_resource[RESOURCE_PAPYRUS] = 1;
+            city->buys_resource[RESOURCE_BEER] = 1;
+            city->buys_resource[RESOURCE_POTTERY_PH] = 1;
+            city->is_sea_trade = 0;
+            city->type = 2;
+            city->in_use = 1;
+            city->route_id = 1;
+            city->is_open = 1;
         } else if (tut == 6) {
             building_menu_update(BUILDSET_TUT6_START);
         } else if (tut == 7) {

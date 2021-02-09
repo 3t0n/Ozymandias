@@ -480,6 +480,7 @@ static void draw_background(void) {
             case BUILDING_VINES_FARM:
                 window_building_draw_vines_farm(&context); break;
             case BUILDING_PIG_FARM:
+            case BUILDING_HUNTING_LODGE:
                 window_building_draw_pig_farm(&context); break;
             case BUILDING_MARBLE_QUARRY:
                 window_building_draw_marble_quarry(&context); break;
@@ -489,6 +490,8 @@ static void draw_background(void) {
                 window_building_draw_timber_yard(&context); break;
             case BUILDING_CLAY_PIT:
                 window_building_draw_clay_pit(&context); break;
+            case BUILDING_REED_GATHERER:
+                window_building_draw_reed_gatherer(&context); break;
             case BUILDING_WINE_WORKSHOP:
                 window_building_draw_wine_workshop(&context); break;
             case BUILDING_OIL_WORKSHOP:
@@ -499,6 +502,8 @@ static void draw_background(void) {
                 window_building_draw_furniture_workshop(&context); break;
             case BUILDING_POTTERY_WORKSHOP:
                 window_building_draw_pottery_workshop(&context); break;
+            case BUILDING_PAPYRUS_WORKSHOP:
+                window_building_draw_papyrus_workshop(&context); break;
             case BUILDING_MARKET:
                 if (context.storage_show_special_orders)
                     window_building_draw_market_orders(&context);
