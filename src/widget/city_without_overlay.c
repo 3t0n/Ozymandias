@@ -815,10 +815,10 @@ static void draw_entertainment_anim_ph(int x, int y, building *b, int color_mask
             break;
         case BUILDING_BANDSTAND:
             // todo: orientation
-            draw_normal_anim(x, y, b, image_id_from_group(GROUP_BUILDING_COLOSSEUM_SHOW) - 1, color_mask);
+            draw_normal_anim(x + 25, y + 25, b, image_id_from_group(GROUP_BUILDING_COLOSSEUM_SHOW) - 1, color_mask);
             break;
         case BUILDING_PAVILLION:
-            draw_normal_anim(x, y, b, image_id_from_group(GROUP_BUILDING_AMPHITHEATER_SHOW) - 1, color_mask);
+            draw_normal_anim(x + 15, y, b, image_id_from_group(GROUP_BUILDING_AMPHITHEATER_SHOW) - 1, color_mask);
             break;
     }
 }
@@ -895,6 +895,12 @@ static void draw_animation(int x, int y, int grid_offset) {
                     image_draw(image_id_from_group(GROUP_BUILDING_WELL) + 1, x + img->get_sprite_offset_x(),
                                y + img->get_sprite_offset_y() - 20, color_mask);
                 }
+            break;
+        case BUILDING_CONSERVATORY:
+            draw_normal_anim(x + 100, y, b, image_id_from_group(GROUP_BUILDING_COLOSSEUM_SHOW) + 11, color_mask);
+            break;
+        case BUILDING_DANCE_SCHOOL:
+            draw_normal_anim(x + 100, y, b, image_id_from_group(GROUP_BUILDING_AMPHITHEATER_SHOW) - 1, color_mask);
             break;
         case BUILDING_BANDSTAND:
         case BUILDING_BOOTH:

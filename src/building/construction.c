@@ -351,9 +351,30 @@ static void add_entertainment_venue(building *b) {
                     break;
             }
             break;
+        // todo: fix pavilion
         case BUILDING_PAVILLION:
-            // todo
-            break;
+            switch (orientation / 2) {
+                case 0:
+                    latch_on_venue(BUILDING_BANDSTAND, b, 1, 0, 1, true);
+                    latch_on_venue(BUILDING_BOOTH, b, 0, 0, 0);
+                    latch_on_venue(BUILDING_PAVILLION, b, 2, 0, 0);
+                    break;
+                case 1:
+                    latch_on_venue(BUILDING_BANDSTAND, b, 1, 0, 2, true);
+                    latch_on_venue(BUILDING_BOOTH, b, 2, 2, 0);
+                    latch_on_venue(BUILDING_PAVILLION, b, 2, 2, 0);
+                    break;
+                case 2:
+                    latch_on_venue(BUILDING_BANDSTAND, b, 0, 1, 1, true);
+                    latch_on_venue(BUILDING_BOOTH, b, 2, 2, 0);
+                    latch_on_venue(BUILDING_PAVILLION, b, 2, 2, 0);
+                    break;
+                case 3:
+                    latch_on_venue(BUILDING_BANDSTAND, b, 0, 0, 2, true);
+                    latch_on_venue(BUILDING_BOOTH, b, 0, 2, 0);
+                    latch_on_venue(BUILDING_PAVILLION, b, 0, 2, 0);
+                    break;
+            }
     }
 }
 static building *add_warehouse_space(int x, int y, building *prev) {
@@ -914,7 +935,7 @@ int building_construction_place_building(int type, int x, int y) {
             return 0;
         }
     }
-    if (type == BUILDING_HIPPODROME) {
+    if (GAME_ENV == ENGINE_ENV_C3 && type == BUILDING_HIPPODROME) {
         if (city_buildings_has_hippodrome()) {
             city_warning_show(WARNING_ONE_BUILDING_OF_TYPE);
             return 0;

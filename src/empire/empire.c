@@ -72,8 +72,8 @@ void empire_load(int is_custom_scenario, int empire_id) {
 }
 
 static void check_scroll_boundaries(void) {
-    uint32_t empire_width = 0;
-    uint32_t empire_height = 0;
+    int32_t empire_width = 0;
+    int32_t empire_height = 0;
 
     if (GAME_ENV == ENGINE_ENV_C3) {
         empire_width = EMPIRE_WIDTH_C3;
@@ -109,8 +109,8 @@ void empire_load_editor(int empire_id, int viewport_width, int viewport_height) 
 }
 
 void empire_init_scenario(void) {
-    uint32_t empire_width = 0;
-    uint32_t empire_height = 0;
+    int32_t empire_width = 0;
+    int32_t empire_height = 0;
 
     if (GAME_ENV == ENGINE_ENV_C3) {
         empire_width = EMPIRE_WIDTH_C3;
