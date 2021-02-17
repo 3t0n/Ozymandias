@@ -15,7 +15,7 @@ int resource_image_offset(int resource, int type) {
                 case RESOURCE_IMAGE_FOOD_CART:
                     return 8;
                 case RESOURCE_IMAGE_ICON:
-                    return 11;
+                    return 0;
                 default:
                     return 0;
             }
@@ -31,14 +31,12 @@ int resource_image_offset(int resource, int type) {
             case RESOURCE_IMAGE_FOOD_CART:
                 return 8;
             case RESOURCE_IMAGE_ICON:
-                return 11;
+                return 0;
             default:
                 return 0;
         }
     }
 }
-
-#include "core/game_environment.h"
 
 int resource_is_food(int resource) {
     if (GAME_ENV == ENGINE_ENV_C3) {
@@ -63,14 +61,14 @@ int resource_to_workshop_type(int resource) {
                 return WORKSHOP_IRON_TO_WEAPONS;
             case RESOURCE_TIMBER_C3:
                 return WORKSHOP_TIMBER_TO_FURNITURE;
-            case RESOURCE_CLAY_C3:
+            case RESOURCE_CLAY:
                 return WORKSHOP_CLAY_TO_POTTERY;
             default:
                 return WORKSHOP_NONE;
         }
     } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
         switch (resource) {
-            case RESOURCE_CLAY_PH:
+            case RESOURCE_CLAY:
                 return WORKSHOP_CLAY_TO_POTTERY;
 // TODO: How to use clay both for pottery and bricks workshop?
 //            case RESOURCE_CLAY_PH:
@@ -88,5 +86,13 @@ int resource_to_workshop_type(int resource) {
             default:
                 return WORKSHOP_NONE;
         }
+    }
+}
+
+int resource_get_gold() {
+    if (GAME_ENV == ENGINE_ENV_C3) {
+        return RESOURCE_DENARII;
+    } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+        return RESOURCE_GOLD;
     }
 }
