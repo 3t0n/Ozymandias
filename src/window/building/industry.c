@@ -51,27 +51,67 @@ static void draw_farm(building_info_context *c, int help_id, const char *sound_f
 }
 
 void window_building_draw_wheat_farm(building_info_context *c) {
-    draw_farm(c, 89, "wavs/wheat_farm.wav", 112, RESOURCE_WHEAT);
+    int farm_group_id = 181;
+    int output_resource = RESOURCE_BARLEY;
+    if (GAME_ENV == ENGINE_ENV_C3) {
+        farm_group_id = 112;
+        output_resource = RESOURCE_WHEAT;
+    }
+    draw_farm(c, 89, "wavs/wheat_farm.wav", farm_group_id, output_resource);
 }
 
 void window_building_draw_vegetable_farm(building_info_context *c) {
-    draw_farm(c, 90, "wavs/veg_farm.wav", 113, RESOURCE_VEGETABLES);
+    int farm_group_id = 115;
+    int output_resource = RESOURCE_FLAX;
+    if (GAME_ENV == ENGINE_ENV_C3) {
+        farm_group_id = 113;
+        output_resource = RESOURCE_VEGETABLES;
+    }
+    draw_farm(c, 90, "wavs/veg_farm.wav", farm_group_id, output_resource);
 }
 
 void window_building_draw_fruit_farm(building_info_context *c) {
-    draw_farm(c, 90, "wavs/figs_farm.wav", 114, RESOURCE_FRUIT);
+    int farm_group_id = 112;
+    int output_resource = RESOURCE_GRAIN;
+    if (GAME_ENV == ENGINE_ENV_C3) {
+        farm_group_id = 114;
+        output_resource = RESOURCE_WHEAT;
+    }
+    draw_farm(c, 90, "wavs/figs_farm.wav", farm_group_id, output_resource);
 }
 
 void window_building_draw_olive_farm(building_info_context *c) {
-    draw_farm(c, 91, "wavs/olives_farm.wav", 115, RESOURCE_OLIVES);
+    int farm_group_id = 113;
+    int output_resource = RESOURCE_LETTUCE;
+    if (GAME_ENV == ENGINE_ENV_C3) {
+        farm_group_id = 115;
+        output_resource = RESOURCE_OLIVES;
+    }
+    draw_farm(c, 91, "wavs/olives_farm.wav", farm_group_id, output_resource);
 }
 
 void window_building_draw_vines_farm(building_info_context *c) {
-    draw_farm(c, 91, "wavs/vines_farm.wav", 116, RESOURCE_VINES);
+    int farm_group_id = 114;
+    int output_resource = RESOURCE_POMEGRANATES;
+    if (GAME_ENV == ENGINE_ENV_C3) {
+        farm_group_id = 116;
+        output_resource = RESOURCE_VINES;
+    }
+    draw_farm(c, 91, "wavs/vines_farm.wav", farm_group_id, output_resource);
 }
 
 void window_building_draw_pig_farm(building_info_context *c) {
-    draw_farm(c, 90, "wavs/meat_farm.wav", 117, RESOURCE_MEAT_C3);
+    int farm_group_id = 182;
+    int output_resource = RESOURCE_CHICKPEAS;
+    if (GAME_ENV == ENGINE_ENV_C3) {
+        farm_group_id = 117;
+        output_resource = RESOURCE_MEAT_C3;
+    }
+    draw_farm(c, 90, "wavs/meat_farm.wav", farm_group_id, output_resource);
+}
+
+void window_building_draw_hunting_lodge(building_info_context *c) {
+    draw_farm(c, 90, "wavs/meat_farm.wav", 154, RESOURCE_MEAT_PH);
 }
 
 static void draw_raw_material(building_info_context *c, int help_id, const char *sound_file, int group_id, int resource) {

@@ -480,8 +480,9 @@ static void draw_background(void) {
             case BUILDING_VINES_FARM:
                 window_building_draw_vines_farm(&context); break;
             case BUILDING_PIG_FARM:
-            case BUILDING_HUNTING_LODGE:
                 window_building_draw_pig_farm(&context); break;
+            case BUILDING_HUNTING_LODGE:
+                window_building_draw_hunting_lodge(&context); break;
             case BUILDING_MARBLE_QUARRY:
                 window_building_draw_marble_quarry(&context); break;
             case BUILDING_IRON_MINE:

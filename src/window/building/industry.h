@@ -9,6 +9,7 @@ void window_building_draw_fruit_farm(building_info_context *c);
 void window_building_draw_olive_farm(building_info_context *c);
 void window_building_draw_vines_farm(building_info_context *c);
 void window_building_draw_pig_farm(building_info_context *c);
+void window_building_draw_hunting_lodge(building_info_context *c);
 
 void window_building_draw_marble_quarry(building_info_context *c);
 void window_building_draw_iron_mine(building_info_context *c);
