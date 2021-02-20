@@ -168,6 +168,12 @@ static void prefect_coverage(building *b, int *min_happiness_seen) {
         *min_happiness_seen = b->sentiment.house_happiness;
 
 }
+static void policeman_coverage(building *b, int *max_anger_seen) {
+    b->house_criminal_active = 0;
+    if (b->sentiment.native_anger > *max_anger_seen) {
+        *max_anger_seen = b->damage_risk;
+    }
+}
 static void tax_collector_coverage(building *b, int *max_tax_multiplier) {
     if (b->house_size && b->house_population > 0) {
         int tax_multiplier = model_get_house(b->subtype.house_level)->tax_multiplier;
@@ -395,6 +401,17 @@ int figure::figure_service_provide_coverage() {
         case FIGURE_RIOTER:
             if (figure_rioter_collapse_building() == 1)
                 return 1;
+            break;
+        case FIGURE_POLICEMAN:
+        case FIGURE_MAGISTRATE:
+            int max_anger = 0;
+            houses_serviced = provide_service(tile_x, tile_y, &max_anger, policeman_coverage);
+            if (max_anger > min_max_seen)
+                min_max_seen = max_anger;
+            else if (min_max_seen <= 10)
+                min_max_seen = 0;
+            else
+                min_max_seen -= 10;
             break;
     }
     if (building_id) {

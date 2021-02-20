@@ -292,6 +292,7 @@ public:
     // pharaoh
     void hunter_action();
     void policeman_action();
+    void magistrate_action();
 
     // migrant.c
     void update_direction_and_image();
