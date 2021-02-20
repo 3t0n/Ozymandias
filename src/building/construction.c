@@ -418,6 +418,7 @@ static void add_building_tiles_image(building *b, int image_id) {
     map_building_tiles_add(b->id, b->x, b->y, b->size, image_id, TERRAIN_BUILDING);
 }
 static void add_to_map(int type, building *b, int size, int orientation, int waterside_orientation_abs, int waterside_orientation_rel) {
+    auto properties = building_properties_for_type(b->type);
     switch (type) {
         // houses
         case BUILDING_HOUSE_LARGE_TENT:
@@ -517,10 +518,10 @@ static void add_to_map(int type, building *b, int size, int orientation, int wat
             add_building_tiles_image(b, image_id_from_group(GROUP_BUILDING_STATUE));
             break;
         case BUILDING_MEDIUM_STATUE:
-            add_building_tiles_image(b, image_id_from_group(GROUP_BUILDING_STATUE) + 1);
+            add_building_tiles_image(b, image_id_from_group(properties->image_group));
             break;
         case BUILDING_LARGE_STATUE:
-            add_building_tiles_image(b, image_id_from_group(GROUP_BUILDING_STATUE) + 2);
+            add_building_tiles_image(b, image_id_from_group(properties->image_group));
             break;
             // health
         case BUILDING_DOCTOR:
