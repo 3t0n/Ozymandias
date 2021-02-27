@@ -50,7 +50,6 @@ private:
     uint32_t total_filesize = 0;
     uint32_t filesize_555 = 0;
     uint32_t filesize_external = 0;
-    uint32_t num_groups_records = 0;
     int32_t id_shift_overall = 0;
 
     // image groups data
@@ -100,6 +99,7 @@ public:
 
 
     int32_t get_num_image_records() const;
+    uint32_t get_num_group_records() const;
     int32_t get_id(int group_id) const;
     image *get_image(int id, bool relative = false);
     image *get_image(const char* group_tag);

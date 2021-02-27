@@ -42,18 +42,21 @@ int32_t game_images::get_image_id(int group) {
             return get_collection(MAIN_FILENAME_C3).get_id(group);
         case ENGINE_ENV_PHARAOH:
             group = image_groupid_translation(groupid_translation_table_ph, group);
-            if (group < 67) {
-                return get_collection(TERRAIN_FILENAME_PH).get_id(group);
-            } else if (group < 295) {
-                return get_collection(MAIN_FILENAME_PH).get_id(group - 66);// + 2000;
-            } else if (group < 333) {
-                return get_collection(UNLOADED_FILENAME_PH).get_id(group - 294);// + 5000;
-            } else if (group < 340) {
-                return get_font().get_id(group - 332);// + 6000;
-            } else if (group < 554) {
-                return get_collection(SPRMAIN_FILENAME_PH).get_id(group - 340);// + 8000;
-            } else {
-                return get_collection(SPRAMBIENT_FILENAME_PH).get_id(group - 554);// + ????;
+
+            // All collections loaded one by one without free spaces,
+            // so, every image group have shift for number of all previous groups in collections
+            // For example: group >= 0 && group < 66 for the terrain collection and
+            // group >= 66 && group < 294 for the main collection
+            size_t right_bound = 0;
+            for (auto& collection: collections) {
+                size_t collection_size = collection.get_num_group_records();
+                right_bound += collection_size - 1;
+                int32_t left_bound = right_bound - collection_size - 1;
+
+                if (group > left_bound && group < right_bound) {
+                    int32_t shifted_group = group - right_bound + collection_size - 1;
+                    return collection.get_id(shifted_group);
+                }
             }
     }
     return -1;
@@ -162,6 +165,7 @@ bool game_images::load_main(int climate_id, int is_editor, int force_reload) {
         for (auto &collection : collections) {
             collection.load_files();
         }
+//        print();
 
         current_climate = climate_id;
         is_editor = is_editor;
@@ -262,9 +266,9 @@ const image_collection &game_images::get_collection(const char *collection_name)
 image_collection &game_images::get_enemy() {
     std::string enemy_filename;
     if (GAME_ENV == ENGINE_ENV_C3) {
-        enemy_filename = FONTS_FILENAMES_C3[enemy_id];
+        enemy_filename = ENEMY_FILENAMES_C3[enemy_id];
     } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
-        enemy_filename = FONTS_FILENAMES_PH[enemy_id];
+        enemy_filename = ENEMY_FILENAMES_PH[enemy_id];
     }
 
     return const_cast<image_collection &>(get_collection(enemy_filename));
@@ -279,4 +283,38 @@ image_collection &game_images::get_font() {
     }
 
     return const_cast<image_collection &>(get_collection(font_filename));
+}
+
+size_t game_images::get_images_shift(std::string &collection_name) {
+    size_t result = 0;
+    for (auto& c: collections) {
+        if (c.get_filename() != collection_name) {
+            result += c.get_num_image_records();
+        } else {
+            break;
+        }
+    }
+    return result;
+}
+
+size_t game_images::get_groups_shift(std::string &collection_name) {
+    size_t result = 0;
+    for (auto& c: collections) {
+        if (c.get_filename() != collection_name) {
+            result += c.get_num_group_records() - 1;
+        } else {
+            break;
+        }
+    }
+    return result;
+}
+
+void game_images::print() {
+    for (auto& c: collections) {
+        std::string collection_name(c.get_filename());
+        SDL_Log("---");
+        SDL_Log("Collection '%s': shift for groups: %zu, shift for images: %zu",
+                collection_name.c_str(), get_groups_shift(collection_name), get_images_shift(collection_name));
+        c.print();
+    }
 }

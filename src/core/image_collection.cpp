@@ -116,14 +116,12 @@ bool image_collection::load_sgx() {
     buffer_sgx.skip(40); // skip remaining 40 bytes
 
     // parse groups (always a fixed 300 pool)
-    num_groups_records = 0;
     // added a zero item, because counting from one
     group_image_ids.push_back(0);
     for (size_t i = 0; i < GROUP_IMAGE_IDS_SIZE; i++) {
         auto image_id = buffer_sgx.read_u16();
         if (image_id != 0) {
             group_image_ids.push_back(image_id);
-            num_groups_records++;
 //            SDL_Log("%s group %i -> id %i", filename_sgx, i, group_image_ids[i]);
         }
     }
@@ -149,6 +147,7 @@ bool image_collection::load_sgx() {
     for (size_t i = 0; i < num_image_records; i++) {
         image img;
         img.set_collection(this);
+        img.set_absolute_index(i);
         img.set_offset(buffer_sgx.read_i32());
         img.set_data_length(buffer_sgx.read_i32());
         img.set_uncompressed_length(buffer_sgx.read_i32());
@@ -210,13 +209,16 @@ bool image_collection::load_sgx() {
     group_image_tags.emplace_back("");
     if (get_sgx_version() >= 0xd5) {
         buffer_sgx.set_offset(buffer_sgx.size() - IMAGE_TAGS_OFFSET);
-        for (size_t i = 0; i < num_groups_records; i++) {
+        for (size_t i = 0; i < get_num_group_records() - 1; i++) {
             char group_tag[GROUP_IMAGE_TAG_SIZE] = {};
             buffer_sgx.read_raw(group_tag, GROUP_IMAGE_TAG_SIZE);
             group_image_tags.emplace_back(group_tag);
 //            SDL_Log("%s tag %i: '%s'", filename_sgx, i, group_tag);
         }
     }
+
+    SDL_Log("Loaded  image collection from file '%s': %d images and %d image groups",
+            get_filename_sgx(), get_num_image_records(), get_num_group_records());
 
     return true;
 }
@@ -240,6 +242,10 @@ bool image_collection::load_555() {
     // temp variable for image data
     auto *data = new color_t[num_image_records * MAX_IMAGE_SIZE];
 
+    // counters
+    size_t count_images = 0;
+    size_t count_external = 0;
+
     // convert bitmap data for image pool
     color_t *start_dst = data;
     color_t *dst = data;
@@ -248,6 +254,7 @@ bool image_collection::load_555() {
         image *img = &images.at(i);
         // if external, image will automatically loaded in the runtime
         if (img->is_external()) {
+            count_external++;
             continue;
         }
         buffer_555.set_offset(img->get_offset());
@@ -259,7 +266,12 @@ bool image_collection::load_555() {
         img->set_uncompressed_length(img->get_uncompressed_length()/2);
         img->set_full_length(image_size);
         img->set_data(&data[img_offset], image_size);
+
+        count_images++;
     }
+
+    SDL_Log("Loaded  image collection from file '%s': %zu images and %zu externals",
+            get_filename_555(), count_images, count_external);
 
     delete[] data;
     return true;
@@ -304,14 +316,21 @@ const color_t *image_collection::load_external(image *img) const {
 }
 
 int32_t image_collection::get_num_image_records() const {
-    return num_image_records;
+    return images.size();
+}
+
+uint32_t image_collection::get_num_group_records() const {
+    return group_image_ids.size();
 }
 
 int32_t image_collection::get_id(int group_id) const {
-    if (group_id >= num_groups_records) {
-        group_id = 0;
+    int32_t result = -1;
+    if (group_id >= 0 && group_id < group_image_ids.size()) {
+        result = group_image_ids.at(group_id) + get_shift();
+    } else {
+        SDL_Log("Wrong group index for collection: '%s': group_id: %d, expected > 0 and < %zu", get_filename(), group_id, group_image_ids.size());
     }
-    return group_image_ids.at(group_id) + get_shift();
+    return result;
 }
 
 image *image_collection::get_image(int id, bool relative) {

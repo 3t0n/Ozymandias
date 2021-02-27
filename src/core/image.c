@@ -193,6 +193,14 @@ void image::set_bitmap_index(uint8_t new_bmp_index) {
     bitmap_index = new_bmp_index;
 }
 
+uint32_t image::get_absolute_index() const {
+    return absolute_index;
+}
+
+void image::set_absolute_index(uint32_t new_abs_index) {
+    absolute_index = new_abs_index;
+}
+
 const image_collection *image::get_collection() const {
     return collection;
 }
@@ -202,6 +210,6 @@ void image::set_collection(const image_collection *new_collection) {
 }
 
 void image::print() const {
-    SDL_Log("Image id: %d, type: %u, ext: %d, fcompr: %d, width: %u, height: %u, size: %u",
-            get_index(), get_type(), is_external(), is_fully_compressed(), get_width(), get_height(), get_full_length());
+    SDL_Log("Image id: %d, abs_id: %d, type: %u, ext: %d, fcompr: %d, width: %u, height: %u, size: %u",
+            get_index(), get_absolute_index(), get_type(), is_external(), is_fully_compressed(), get_width(), get_height(), get_full_length());
 }

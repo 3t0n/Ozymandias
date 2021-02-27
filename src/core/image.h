@@ -41,6 +41,7 @@ private:
     int8_t compressed_part = 0;
     uint8_t index = 0;
     uint8_t bitmap_index = 0;
+    uint32_t absolute_index = 0;
     int32_t offset = 0;
     int32_t data_length = 0;
     int32_t uncompressed_length = 0;
@@ -93,6 +94,8 @@ public:
     void set_index(uint8_t new_bmp_index);
     uint8_t get_bitmap_index() const;
     void set_bitmap_index(uint8_t new_bmp_index);
+    uint32_t get_absolute_index() const;
+    void set_absolute_index(uint32_t new_abs_index);
     int is_external() const;
     void set_external(int new_external);
     uint16_t get_num_animation_sprites() const;

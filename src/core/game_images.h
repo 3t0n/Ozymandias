@@ -70,6 +70,11 @@ static const char* SPRMAIN_FILENAME_PH = "SprMain";
 static const char* SPRMAIN2_FILENAME_PH = "SprMain2";
 static const char* SPRAMBIENT_FILENAME_PH = "SprAmbient";
 static const char* MASTABA_FILENAME_PH = "mastaba";
+static const char* TEMPLE_BAST_FILENAME_PH = "Temple_bast";
+static const char* TEMPLE_NILE_FILENAME_PH = "Temple_nile";
+static const char* TEMPLE_PTAH_FILENAME_PH = "Temple_ptah";
+static const char* TEMPLE_RA_FILENAME_PH = "Temple_ra";
+static const char* TEMPLE_SETH_FILENAME_PH = "Temple_seth";
 
 
 class game_images {
@@ -82,20 +87,26 @@ private:
     int32_t terrain_ph_offset;
     int32_t enemy_id;
 
+    // Sequence is important here for getting correct group_id
+    // shift is needed to support getting correct image_ids from different collections
     std::vector<image_collection> collections = {
-            {EXPANSION_FILENAME_PH, -200},
-            {SPRMAIN_FILENAME_PH, 700},
-            {UNLOADED_FILENAME_PH, 11025},
-            {MAIN_FILENAME_PH, 11706},
-            // ???? 539-long gap?
-            {TERRAIN_FILENAME_PH, 14252},
-            // ???? 64-long gap?
-            {SPRAMBIENT_FILENAME_PH, 15830},
-            {FONTS_FILENAMES_PH[0], 18764},
-            {EMPIRE_FILENAME_PH, 20105},
-            {SPRMAIN2_FILENAME_PH, 20105},
-            {MASTABA_FILENAME_PH, 20325},
-            {ENEMY_FILENAMES_PH[0], 21225},
+            // TODO: fix terrain offset, because it hardcoded somewhere
+            {TERRAIN_FILENAME_PH, 14252}, // 66 groups 1516 images
+            {MAIN_FILENAME_PH, 16000}, // 294 groups 2747 images
+            {UNLOADED_FILENAME_PH, 19000}, // 332 groups 683 images
+            {FONTS_FILENAMES_PH[0], 20000}, // 339 groups 1541 images
+            {SPRMAIN_FILENAME_PH, 22000}, // 553 groups 10326 images
+            {SPRAMBIENT_FILENAME_PH, 33000}, // 2935 images
+            {ENEMY_FILENAMES_PH[0], 36000}, // 900 images
+            {EXPANSION_FILENAME_PH, 37000},
+            {EMPIRE_FILENAME_PH, 38000},
+            {SPRMAIN2_FILENAME_PH, 39000},
+            {MASTABA_FILENAME_PH, 41000},
+            {TEMPLE_BAST_FILENAME_PH, 42000},
+            {TEMPLE_NILE_FILENAME_PH, 43000},
+            {TEMPLE_PTAH_FILENAME_PH, 44000},
+            {TEMPLE_RA_FILENAME_PH, 45000},
+            {TEMPLE_SETH_FILENAME_PH, 46000},
     };
 
     image_collection& get_enemy();
@@ -134,7 +145,11 @@ public:
     const color_t *image_data(image *img);
     const color_t *image_data_letter(int letter_id);
     const color_t *image_data_enemy(int id);
-    int image_groupid_translation(int *table, int group);
+    static int image_groupid_translation(int *table, int group);
+
+    // getting collection shift to set proper image/group ids
+    size_t get_images_shift(std::string& collection_name);
+    size_t get_groups_shift(std::string& collection_name);
 
     // getters & setters
     int get_current_climate() const;
@@ -147,6 +162,9 @@ public:
     void set_font_base_offset(int new_font_base_offset);
     int get_terrain_ph_offset() const;
     void set_terrain_ph_offset(int new_terrain_ph_offset);
+
+    // Prints class information
+    void print();
 };
 
 // TODO: temporary functions to be removed
