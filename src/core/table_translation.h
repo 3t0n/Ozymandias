@@ -109,6 +109,8 @@ static int groupid_translation_table_ph[] = {
         123, 123 + 66, // weapons
         124, 119 + 66, // jewels
         125, 125 + 66, // pottery
+        126, 126 + 66, // fort flags
+        127, 127 + 66, // fort icons
         128, 128 + 66, // data/Pharaoh_General.sg3 paneling.bmp
         129, 129 + 66, // empire resources
         130, 20 + 555, // merchant caravan
@@ -164,8 +166,8 @@ static int groupid_translation_table_ph[] = {
         195, 296, // data/Pharaoh_Unloaded.sg3 panelwindows.BMP
         197, 295, // data/Pharaoh_Unloaded.sg3 panelwindows.BMP
         201, 173 + 66, // military academy
-        202, 66 + 66, // fort
-        204, 66 + 66, // fort
+//        202, 341 + 62, // soldier javelin
+//        204, 341 + 65, // soldier legionary
         206, 114 + 341, // seagulls
         208, 174 + 66, // bordered paneling
         209, 9 + 341, // delivery boy

@@ -281,7 +281,7 @@ int figure::find_mop_up_target() {
 }
 
 void figure::update_image_javelin(int dir) {
-    int image_id = image_id_from_group(GROUP_BUILDING_FORT_JAVELIN);
+    int image_id = image_id_from_group(GROUP_FIGURE_FORT_JAVELIN);
     if (action_state == FIGURE_ACTION_150_ATTACK) {
         if (attack_image_offset < 12)
             image_id = image_id + 96 + dir;
@@ -311,7 +311,7 @@ void figure::update_image_mounted(int dir) {
     }
 }
 void figure::update_image_legionary(const formation *m, int dir) {
-    int image_id = image_id_from_group(GROUP_BUILDING_FORT_LEGIONARY);
+    int image_id = image_id_from_group(GROUP_FIGURE_FORT_LEGIONARY);
     if (action_state == FIGURE_ACTION_150_ATTACK) {
         if (attack_image_offset < 12)
             image_id = image_id + 96 + dir;

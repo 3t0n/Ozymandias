@@ -589,9 +589,9 @@ void figure::enemy_caesar_legionary_action() {
             break;
         case FIGURE_ACTION_84_SOLDIER_AT_STANDARD:
             if (m->is_halted && m->layout == FORMATION_COLUMN && m->missile_attack_timeout)
-                sprite_image_id = image_id_from_group(GROUP_BUILDING_FORT_LEGIONARY) + dir + 144;
+                sprite_image_id = image_id_from_group(GROUP_FIGURE_FORT_LEGIONARY) + dir + 144;
             else {
-                sprite_image_id = image_id_from_group(GROUP_BUILDING_FORT_LEGIONARY) + dir;
+                sprite_image_id = image_id_from_group(GROUP_FIGURE_FORT_LEGIONARY) + dir;
             }
             break;
         default:
