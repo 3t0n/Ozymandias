@@ -205,7 +205,7 @@ static void refresh_background(void) {
     int image_base = image_id_from_group(GROUP_TOP_MENU_SIDEBAR);
     int s_width = screen_width();
 
-    if (GAME_ENV == ENGINE_ENV_C3) {
+    if (get_game_engine() == ENGINE_ENV_C3) {
         for (int i = 0; i * block_width < s_width; i++)
             image_draw(image_base + i % 8, i * block_width, 0);
 
@@ -221,7 +221,7 @@ static void refresh_background(void) {
             image_draw(image_base + 14, 624, 0);
             image_draw(image_base + 14, 840, 0);
         }
-    } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+    } else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
         block_width = 96;
         int s_end = s_width - 1000 - 24 + city_view_is_sidebar_collapsed() * (162 - 18);
         int s_start = s_end - ceil((float) s_end / (float) block_width) * block_width;
@@ -246,7 +246,7 @@ void widget_top_menu_draw(int force) {
         treasure_color = COLOR_FONT_RED;
     font_t treasure_font = treasury >= 0 ? FONT_NORMAL_GREEN : FONT_NORMAL_RED;
     int s_width = screen_width();
-    if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+    if (get_game_engine() == ENGINE_ENV_PHARAOH) {
         data.offset_funds = s_width - 540;
         data.offset_population = s_width - 400;
         data.offset_date = s_width - 150; // 135
@@ -259,7 +259,7 @@ void widget_top_menu_draw(int force) {
         image_buttons_draw(data.offset_rotate, 0, orientation_button, 1);
     }
     if (s_width < 800) {
-        if (GAME_ENV == ENGINE_ENV_C3) {
+        if (get_game_engine() == ENGINE_ENV_C3) {
             data.offset_funds = 338; // +2
             data.offset_population = 453; // +5
             data.offset_date = 547;
@@ -272,12 +272,12 @@ void widget_top_menu_draw(int force) {
             text_draw_number(city_population(), '@', " ", 450 + width, 5, FONT_NORMAL_GREEN);
 
             lang_text_draw_month_year_max_width(game_time_month(), game_time_year(), 540, 5, 100, FONT_NORMAL_GREEN, 0);
-        } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+        } else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
             // TODO: draw for 800x600 resolution
         }
 
     } else if (s_width < 1024) {
-        if (GAME_ENV == ENGINE_ENV_C3) {
+        if (get_game_engine() == ENGINE_ENV_C3) {
             data.offset_funds = 338; // +2
             data.offset_population = 458; // +2
             data.offset_date = 652;
@@ -291,7 +291,7 @@ void widget_top_menu_draw(int force) {
 
             lang_text_draw_month_year_max_width(game_time_month(), game_time_year(), 655, 5, 110, FONT_NORMAL_PLAIN,
                                                 COLOR_FONT_YELLOW);
-        } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+        } else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
             int width = lang_text_draw_colored(6, 0, data.offset_funds + 2 + 100, 5, treasure_font, 0);
             text_draw_number_colored(treasury, '@', " ", data.offset_funds + 7 + width + 100, 5, treasure_font, 0);
 
@@ -300,7 +300,7 @@ void widget_top_menu_draw(int force) {
                              FONT_NORMAL_GREEN);
         }
     } else {
-        if (GAME_ENV == ENGINE_ENV_C3) {
+        if (get_game_engine() == ENGINE_ENV_C3) {
             data.offset_funds = 493; // +2
             data.offset_population = 637; // +8
             data.offset_date = 852;
@@ -314,7 +314,7 @@ void widget_top_menu_draw(int force) {
 
             lang_text_draw_month_year_max_width(game_time_month(), game_time_year(), 850, 5, 110, FONT_NORMAL_PLAIN,
                                                 COLOR_FONT_YELLOW);
-        } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+        } else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
             int width = lang_text_draw_colored(6, 0, data.offset_funds + 2, 5, treasure_font, 0);
             text_draw_number_colored(treasury, '@', " ", data.offset_funds + 7 + width, 5, treasure_font, 0);
 

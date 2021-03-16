@@ -68,7 +68,7 @@ static void foreach_region_tile(int x_min, int y_min, int x_max, int y_max, void
             callback(xx, yy, grid_offset);
             ++grid_offset;
         }
-        grid_offset += grid_size[GAME_ENV] - (x_max - x_min + 1);
+        grid_offset += grid_size[get_game_engine()] - (x_max - x_min + 1);
     }
 }
 static void foreach_river_tile(void (*callback)(int x, int y, int grid_offset)) {
@@ -630,13 +630,13 @@ int get_aqueduct_image(int grid_offset, bool is_road, int terrain, const terrain
         water_offset = 0; // has water
     else { // has no water
         water_offset = 15;
-        if (GAME_ENV == ENGINE_ENV_PHARAOH)
+        if (get_game_engine() == ENGINE_ENV_PHARAOH)
             water_offset = 48;
     }
 
     // floodplains
     int floodplains_offset = 0;
-    if (terrain != 0 && GAME_ENV == ENGINE_ENV_PHARAOH)
+    if (terrain != 0 && get_game_engine() == ENGINE_ENV_PHARAOH)
         floodplains_offset = 21;
 
     // curve/connection offset
@@ -645,7 +645,7 @@ int get_aqueduct_image(int grid_offset, bool is_road, int terrain, const terrain
         int road_dir_right = map_terrain_is(grid_offset + map_grid_delta(0, -1), TERRAIN_ROAD);
         int is_paved = map_tiles_is_paved_road(grid_offset);
 
-        switch (GAME_ENV) {
+        switch (get_game_engine()) {
             case ENGINE_ENV_C3:
                 if (road_dir_right)
                     image_offset = 1;
@@ -665,7 +665,7 @@ int get_aqueduct_image(int grid_offset, bool is_road, int terrain, const terrain
                 } else
                     image_offset += 15;
         }
-    } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+    } else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
         if (image_offset <= 3)
             image_offset = !(image_offset - 2);
         else if (image_offset <= 7)
@@ -800,7 +800,7 @@ static void set_water_image(int x, int y, int grid_offset) {
 //    if ((map_terrain_get(grid_offset) & (TERRAIN_WATER | TERRAIN_BUILDING)) == TERRAIN_WATER) {
         const terrain_image *img = map_image_context_get_shore(grid_offset);
         int image_id = image_id_from_group(GROUP_TERRAIN_WATER) + img->group_offset + img->item_offset;
-        if (GAME_ENV == ENGINE_ENV_C3 && map_terrain_exists_tile_in_radius_with_type(x, y, 1, 2, TERRAIN_BUILDING)) {
+        if (get_game_engine() == ENGINE_ENV_C3 && map_terrain_exists_tile_in_radius_with_type(x, y, 1, 2, TERRAIN_BUILDING)) {
             // fortified shore
             int base = image_id_from_group(GROUP_TERRAIN_WATER_SHORE);
             switch (img->group_offset) {
@@ -1051,7 +1051,7 @@ static int get_access_ramp_image_offset(int x, int y) {
         for (int i = 0; i < 6; i++) {
             int grid_offset = base_offset;
 
-            switch (GAME_ENV) {
+            switch (get_game_engine()) {
                 case ENGINE_ENV_C3:
                     grid_offset += offsets_C3[dir][i];
                     break;

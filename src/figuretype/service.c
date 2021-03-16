@@ -25,7 +25,7 @@ void figure::school_child_action() {
     }
 }
 void figure::priest_action() {
-    if (GAME_ENV == ENGINE_ENV_C3)
+    if (get_game_engine() == ENGINE_ENV_C3)
         return;
     building *temple = building_get(building_id);
     switch (temple->type) {

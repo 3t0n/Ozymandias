@@ -372,11 +372,11 @@ void image_collection::set_filename(std::string& new_filename) {
     filename = new_filename;
     extension_555 = EXTENSION_555;
 
-    if (GAME_ENV == ENGINE_ENV_C3) {
+    if (get_game_engine() == ENGINE_ENV_C3) {
         data_folder = DATA_FOLDER_C3;
         extension_sgx = EXTENSION_SG2;
         filename_sgx = filename + "." + extension_sgx;
-    } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+    } else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
         data_folder = DATA_FOLDER_PH;
         extension_sgx = EXTENSION_SG3;
         filename_sgx = data_folder + "/" + filename + "." + extension_sgx;

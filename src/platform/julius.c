@@ -251,6 +251,9 @@ static void setup(const julius_args *args) {
     platform_init_callback();
 #endif
 
+    // init debug mode
+    init_debug_mode(args->debug);
+
     // pre-init engine: assert game directory, pref files, etc.
     init_game_environment(args->game_engine_env);
     if (!pre_init(args->data_directory)) {

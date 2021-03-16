@@ -43,11 +43,11 @@ void empire_load(int is_custom_scenario, int empire_id) {
     uint32_t data_size = 0;
     uint32_t header_size = 0;
 
-    if (GAME_ENV == ENGINE_ENV_C3) {
+    if (get_game_engine() == ENGINE_ENV_C3) {
         filename = is_custom_scenario ? CUSTOM_SCENARIO_EMPIRE_C3 : CAMPAIGN_SCENARIO_EMPIRE_E3;
         data_size = EMPIRE_DATA_SIZE_C3;
         header_size = EMPIRE_HEADER_SIZE_C3;
-    } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+    } else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
         filename = is_custom_scenario ? CUSTOM_SCENARIO_EMPIRE_PH : CAMPAIGN_SCENARIO_EMPIRE_PH;
         data_size = EMPIRE_DATA_SIZE_PH;
         header_size = EMPIRE_HEADER_SIZE_PH;
@@ -75,10 +75,10 @@ static void check_scroll_boundaries(void) {
     int32_t empire_width = 0;
     int32_t empire_height = 0;
 
-    if (GAME_ENV == ENGINE_ENV_C3) {
+    if (get_game_engine() == ENGINE_ENV_C3) {
         empire_width = EMPIRE_WIDTH_C3;
         empire_height = EMPIRE_HEIGHT_C3;
-    } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+    } else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
         empire_width = EMPIRE_WIDTH_PH;
         empire_height = EMPIRE_HEIGHT_PH;
     }
@@ -112,10 +112,10 @@ void empire_init_scenario(void) {
     int32_t empire_width = 0;
     int32_t empire_height = 0;
 
-    if (GAME_ENV == ENGINE_ENV_C3) {
+    if (get_game_engine() == ENGINE_ENV_C3) {
         empire_width = EMPIRE_WIDTH_C3;
         empire_height = EMPIRE_HEIGHT_C3;
-    } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+    } else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
         empire_width = EMPIRE_WIDTH_PH;
         empire_height = EMPIRE_HEIGHT_PH;
     }

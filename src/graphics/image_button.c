@@ -40,7 +40,7 @@ void image_buttons_draw(int x, int y, image_button *buttons, int num_buttons) {
         image_button *btn = &buttons[i];
 
         // hacky workaround
-        if (GAME_ENV == ENGINE_ENV_C3) {
+        if (get_game_engine() == ENGINE_ENV_C3) {
             if (btn->image_collection == GROUP_BUTTON_EXCLAMATION && btn->image_offset == 4) {
                 btn->image_collection = GROUP_SIDEBAR_BUTTONS;
                 btn->image_offset = 56;

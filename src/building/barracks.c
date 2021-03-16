@@ -27,7 +27,7 @@ int building_get_barracks_for_weapon(int x, int y, int resource, int road_networ
 
     int min_dist = INFINITE;
     building *min_building = 0;
-    for (int i = 1; i < MAX_BUILDINGS[GAME_ENV]; i++) {
+    for (int i = 1; i < MAX_BUILDINGS[get_game_engine()]; i++) {
         building *b = building_get(i);
         if (b->state != BUILDING_STATE_VALID || b->type != BUILDING_BARRACKS)
             continue;
@@ -94,7 +94,7 @@ static int get_closest_legion_needing_soldiers(const building *barracks) {
 static int get_closest_military_academy(const building *fort) {
     int min_building_id = 0;
     int min_distance = INFINITE;
-    for (int i = 1; i < MAX_BUILDINGS[GAME_ENV]; i++) {
+    for (int i = 1; i < MAX_BUILDINGS[get_game_engine()]; i++) {
         building *b = building_get(i);
         if (b->state == BUILDING_STATE_VALID && b->type == BUILDING_MILITARY_ACADEMY &&
             b->num_workers >= model_get_building(BUILDING_MILITARY_ACADEMY)->laborers) {
@@ -145,7 +145,7 @@ int building_barracks_create_tower_sentry(building *barracks, int x, int y) {
         return 0;
 
     building *tower = 0;
-    for (int i = 1; i < MAX_BUILDINGS[GAME_ENV]; i++) {
+    for (int i = 1; i < MAX_BUILDINGS[get_game_engine()]; i++) {
         building *b = building_get(i);
         if (b->state == BUILDING_STATE_VALID && b->type == BUILDING_TOWER && b->num_workers > 0 &&
             !b->figure_id &&

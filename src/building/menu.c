@@ -119,11 +119,11 @@ void building_menu_enable_all(void) {
 static void enable_building(int type, bool enabled = true) {
     for (int sub = 0; sub < BUILD_MENU_MAX; sub++) {
         for (int item = 0; item < BUILD_MENU_ITEM_MAX; item++) {
-            if (MENU_int[GAME_ENV][sub][item] == type) // found matching menu item!!!
+            if (MENU_int[get_game_engine()][sub][item] == type) // found matching menu item!!!
                 menu_enabled[sub][item] = enabled;
         }
     }
-    if (GAME_ENV == ENGINE_ENV_PHARAOH && enabled) {
+    if (get_game_engine() == ENGINE_ENV_PHARAOH && enabled) {
         if (building_is_farm(type)) {
             enable_building(BUILDING_MENU_FARMS);
 //            enable_building(BUILDING_WORK_CAMP);
@@ -186,7 +186,7 @@ static int disable_crafted_if_unavailable(int type, int resource) {
     return 1;
 }
 static void disable_resources() {
-    if (GAME_ENV == ENGINE_ENV_C3) {
+    if (get_game_engine() == ENGINE_ENV_C3) {
         int farms = 0;
         farms += disable_raw_if_unavailable(BUILDING_WHEAT_FARM, RESOURCE_WHEAT);
         farms += disable_raw_if_unavailable(BUILDING_VEGETABLE_FARM, RESOURCE_VEGETABLES);
@@ -205,7 +205,7 @@ static void disable_resources() {
         disable_crafted_if_unavailable(BUILDING_OIL_WORKSHOP, RESOURCE_OIL_C3);
         disable_crafted_if_unavailable(BUILDING_WINE_WORKSHOP, RESOURCE_WINE);
         disable_crafted_if_unavailable(BUILDING_WEAPONS_WORKSHOP, RESOURCE_WEAPONS_C3);
-    } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+    } else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
         disable_raw_if_unavailable(BUILDING_BARLEY_FARM, RESOURCE_BARLEY);
         disable_raw_if_unavailable(BUILDING_FLAX_FARM, RESOURCE_FLAX);
         disable_raw_if_unavailable(BUILDING_GRAIN_FARM, RESOURCE_GRAIN);
@@ -351,7 +351,7 @@ void building_menu_update(int build_set) {
             break;
         case BUILDSET_TUT2_START:
             building_menu_disable_all();
-            if (GAME_ENV == ENGINE_ENV_C3) {
+            if (get_game_engine() == ENGINE_ENV_C3) {
                 enable_building(BUILDING_PREFECTURE);
                 enable_building(BUILDING_ENGINEERS_POST);
                 enable_building(BUILDING_SENATE_UPGRADED);
@@ -360,7 +360,7 @@ void building_menu_update(int build_set) {
                 enable_building(BUILDING_GRANARY);
                 enable_building(BUILDING_MENU_FARMS);
                 enable_building(BUILDING_MENU_SMALL_TEMPLES);
-            } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+            } else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
                 enable_building(BUILDING_FIREHOUSE);
                 enable_building(BUILDING_ENGINEERS_POST);
                 enable_building(BUILDING_POLICE_STATION);
@@ -520,14 +520,14 @@ void building_menu_update(int build_set) {
 int building_menu_count_items(int submenu) {
     int count = 0;
     for (int item = 0; item < BUILD_MENU_ITEM_MAX; item++) {
-        if (menu_enabled[submenu][item] && MENU_int[GAME_ENV][submenu][item] > 0)
+        if (menu_enabled[submenu][item] && MENU_int[get_game_engine()][submenu][item] > 0)
             count++;
     }
     return count;
 }
 int building_menu_next_index(int submenu, int current_index) {
     for (int i = current_index + 1; i < BUILD_MENU_ITEM_MAX; i++) {
-        if (MENU_int[GAME_ENV][submenu][i] <= 0)
+        if (MENU_int[get_game_engine()][submenu][i] <= 0)
             return 0;
 
         if (menu_enabled[submenu][i])
@@ -537,7 +537,7 @@ int building_menu_next_index(int submenu, int current_index) {
     return 0;
 }
 int building_menu_type(int submenu, int item) {
-    return MENU_int[GAME_ENV][submenu][item];
+    return MENU_int[get_game_engine()][submenu][item];
 }
 
 int building_menu_has_changed(void) {

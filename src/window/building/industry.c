@@ -53,7 +53,7 @@ static void draw_farm(building_info_context *c, int help_id, const char *sound_f
 void window_building_draw_wheat_farm(building_info_context *c) {
     int farm_group_id = 181;
     int output_resource = RESOURCE_BARLEY;
-    if (GAME_ENV == ENGINE_ENV_C3) {
+    if (get_game_engine() == ENGINE_ENV_C3) {
         farm_group_id = 112;
         output_resource = RESOURCE_WHEAT;
     }
@@ -63,7 +63,7 @@ void window_building_draw_wheat_farm(building_info_context *c) {
 void window_building_draw_vegetable_farm(building_info_context *c) {
     int farm_group_id = 115;
     int output_resource = RESOURCE_FLAX;
-    if (GAME_ENV == ENGINE_ENV_C3) {
+    if (get_game_engine() == ENGINE_ENV_C3) {
         farm_group_id = 113;
         output_resource = RESOURCE_VEGETABLES;
     }
@@ -73,7 +73,7 @@ void window_building_draw_vegetable_farm(building_info_context *c) {
 void window_building_draw_fruit_farm(building_info_context *c) {
     int farm_group_id = 112;
     int output_resource = RESOURCE_GRAIN;
-    if (GAME_ENV == ENGINE_ENV_C3) {
+    if (get_game_engine() == ENGINE_ENV_C3) {
         farm_group_id = 114;
         output_resource = RESOURCE_WHEAT;
     }
@@ -83,7 +83,7 @@ void window_building_draw_fruit_farm(building_info_context *c) {
 void window_building_draw_olive_farm(building_info_context *c) {
     int farm_group_id = 113;
     int output_resource = RESOURCE_LETTUCE;
-    if (GAME_ENV == ENGINE_ENV_C3) {
+    if (get_game_engine() == ENGINE_ENV_C3) {
         farm_group_id = 115;
         output_resource = RESOURCE_OLIVES;
     }
@@ -93,7 +93,7 @@ void window_building_draw_olive_farm(building_info_context *c) {
 void window_building_draw_vines_farm(building_info_context *c) {
     int farm_group_id = 114;
     int output_resource = RESOURCE_POMEGRANATES;
-    if (GAME_ENV == ENGINE_ENV_C3) {
+    if (get_game_engine() == ENGINE_ENV_C3) {
         farm_group_id = 116;
         output_resource = RESOURCE_VINES;
     }
@@ -103,7 +103,7 @@ void window_building_draw_vines_farm(building_info_context *c) {
 void window_building_draw_pig_farm(building_info_context *c) {
     int farm_group_id = 182;
     int output_resource = RESOURCE_CHICKPEAS;
-    if (GAME_ENV == ENGINE_ENV_C3) {
+    if (get_game_engine() == ENGINE_ENV_C3) {
         farm_group_id = 117;
         output_resource = RESOURCE_MEAT_C3;
     }
@@ -153,7 +153,7 @@ static void draw_raw_material(building_info_context *c, int help_id, const char 
 
 void window_building_draw_marble_quarry(building_info_context *c) {
     int output_resource = RESOURCE_MARBLE_PH;
-    if (GAME_ENV == ENGINE_ENV_C3) {
+    if (get_game_engine() == ENGINE_ENV_C3) {
         output_resource = RESOURCE_MARBLE_C3;
     }
     draw_raw_material(c, 95, "wavs/quarry.wav", 118, output_resource);
@@ -161,7 +161,7 @@ void window_building_draw_marble_quarry(building_info_context *c) {
 
 void window_building_draw_iron_mine(building_info_context *c) {
     int output_resource = RESOURCE_COPPER;
-    if (GAME_ENV == ENGINE_ENV_C3) {
+    if (get_game_engine() == ENGINE_ENV_C3) {
         output_resource = RESOURCE_IRON;
     }
     draw_raw_material(c, 93, "wavs/mine.wav", 119, output_resource);
@@ -169,7 +169,7 @@ void window_building_draw_iron_mine(building_info_context *c) {
 
 void window_building_draw_timber_yard(building_info_context *c) {
     int output_resource = RESOURCE_TIMBER_PH;
-    if (GAME_ENV == ENGINE_ENV_C3) {
+    if (get_game_engine() == ENGINE_ENV_C3) {
         output_resource = RESOURCE_TIMBER_C3;
     }
     draw_raw_material(c, 94, "wavs/timber.wav", 120, output_resource);
@@ -233,7 +233,7 @@ static void draw_workshop(building_info_context *c, int help_id, const char *sou
 void window_building_draw_wine_workshop(building_info_context *c) {
     int input_resource = RESOURCE_BARLEY;
     int output_resource = RESOURCE_BEER;
-    if (GAME_ENV == ENGINE_ENV_C3) {
+    if (get_game_engine() == ENGINE_ENV_C3) {
         input_resource = RESOURCE_VINES;
         output_resource = RESOURCE_WINE;
     }
@@ -243,7 +243,7 @@ void window_building_draw_wine_workshop(building_info_context *c) {
 void window_building_draw_oil_workshop(building_info_context *c) {
     int input_resource = RESOURCE_FLAX;
     int output_resource = RESOURCE_LINEN;
-    if (GAME_ENV == ENGINE_ENV_C3) {
+    if (get_game_engine() == ENGINE_ENV_C3) {
         input_resource = RESOURCE_OLIVES;
         output_resource = RESOURCE_OIL_C3;
     }
@@ -252,7 +252,7 @@ void window_building_draw_oil_workshop(building_info_context *c) {
 
 void window_building_draw_weapons_workshop(building_info_context *c) {
     int output_resource = RESOURCE_WEAPONS_PH;
-    if (GAME_ENV == ENGINE_ENV_C3) {
+    if (get_game_engine() == ENGINE_ENV_C3) {
         output_resource = RESOURCE_WEAPONS_C3;
     }
     draw_workshop(c, 98, "wavs/weapons_workshop.wav", 124, output_resource, RESOURCE_IRON);
@@ -261,7 +261,7 @@ void window_building_draw_weapons_workshop(building_info_context *c) {
 void window_building_draw_furniture_workshop(building_info_context *c) {
     int input_resource = RESOURCE_GEMS;
     int output_resource = RESOURCE_LUXURY_GOODS;
-    if (GAME_ENV == ENGINE_ENV_C3) {
+    if (get_game_engine() == ENGINE_ENV_C3) {
         input_resource = RESOURCE_TIMBER_C3;
         output_resource = RESOURCE_FURNITURE;
     }
@@ -270,7 +270,7 @@ void window_building_draw_furniture_workshop(building_info_context *c) {
 
 void window_building_draw_pottery_workshop(building_info_context *c) {
     int output_resource = RESOURCE_POTTERY_PH;
-    if (GAME_ENV == ENGINE_ENV_C3) {
+    if (get_game_engine() == ENGINE_ENV_C3) {
         output_resource = RESOURCE_POTTERY_C3;
     }
     draw_workshop(c, 1, "wavs/pottery_workshop.wav", 126, output_resource, RESOURCE_CLAY);

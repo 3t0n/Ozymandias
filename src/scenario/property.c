@@ -25,9 +25,9 @@ void scenario_set_campaign_mission(int mission) {
 #include "game/mission.h"
 
 bool scenario_is_tutorial(int rank) {
-    if (GAME_ENV == ENGINE_ENV_C3)
+    if (get_game_engine() == ENGINE_ENV_C3)
         return !scenario.settings.is_custom && scenario.settings.campaign_rank == rank - 1;
-    else if (GAME_ENV == ENGINE_ENV_PHARAOH)
+    else if (get_game_engine() == ENGINE_ENV_PHARAOH)
         return !scenario.settings.is_custom && scenario_ph_mission_selector() == rank;
 }
 int scenario_is_tutorial_1(void) {

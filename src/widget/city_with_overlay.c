@@ -207,7 +207,7 @@ static int has_adjacent_deletion(int grid_offset) {
     int total_adjacent_offsets = size * 2 + 1;
     const int *adjacent_offset;
 
-    switch (GAME_ENV) {
+    switch (get_game_engine()) {
         case ENGINE_ENV_C3:
             adjacent_offset = ADJACENT_OFFSETS_C3[size - 2][city_view_orientation() / 2];
             break;

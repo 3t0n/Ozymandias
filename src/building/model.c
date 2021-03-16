@@ -69,7 +69,7 @@ int model_load(void) {
     buffer buf(TMP_BUFFER_SIZE);
     int filesize = 0;
 
-    switch (GAME_ENV) {
+    switch (get_game_engine()) {
         case ENGINE_ENV_C3:
             NUM_BUILDINGS = 130;
             NUM_HOUSES = 20;

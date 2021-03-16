@@ -28,7 +28,7 @@ enum {
 int figure::is_nearby(int category, int *distance, int max_distance, bool gang_on) {
     int figure_id = 0;
     int lowest_distance = max_distance;
-    for (int i = 1; i < MAX_FIGURES[GAME_ENV]; i++) {
+    for (int i = 1; i < MAX_FIGURES[get_game_engine()]; i++) {
         figure *f = figure_get(i);
         if (f->is_dead())
             continue;
@@ -240,7 +240,7 @@ void figure::engineer_action() {
     }
 }
 void figure::prefect_action() { // doubles as fireman! not as policeman!!!
-    if (GAME_ENV == ENGINE_ENV_C3) {
+    if (get_game_engine() == ENGINE_ENV_C3) {
         if (!fight_enemy(2, 22))
             fight_fire();
     } else

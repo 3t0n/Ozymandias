@@ -85,9 +85,9 @@ const int CATEGORY_FOR_building(building *b) {
     int type = b->type;
     if (type < 0 || type >= 240 - 1)
         type = 0;
-    if (GAME_ENV == ENGINE_ENV_C3)
+    if (get_game_engine() == ENGINE_ENV_C3)
         return CATEGORY_FOR_int_arr[type];
-    else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+    else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
         if (map_terrain_is(b->grid_offset, TERRAIN_FLOODPLAIN) && building_is_farm(type))
             return 255;
         return CATEGORY_FOR_int_arr_PH[type];
@@ -195,7 +195,7 @@ static int should_have_workers(building *b, int category, int check_access) {
 
     }
     // engineering and water are always covered in C3
-    if (GAME_ENV == ENGINE_ENV_C3 && (category == LABOR_CATEGORY_INFRASTRUCTURE || category == LABOR_CATEGORY_WATER_HEALTH))
+    if (get_game_engine() == ENGINE_ENV_C3 && (category == LABOR_CATEGORY_INFRASTRUCTURE || category == LABOR_CATEGORY_WATER_HEALTH))
         return 1;
 
     if (check_access)
@@ -210,7 +210,7 @@ static void calculate_workers_needed_per_category(void) {
         city_data.labor.categories[cat].workers_allocated = 0;
         city_data.labor.categories[cat].workers_needed = 0;
     }
-    for (int i = 1; i < MAX_BUILDINGS[GAME_ENV]; i++) {
+    for (int i = 1; i < MAX_BUILDINGS[get_game_engine()]; i++) {
         building *b = building_get(i);
         if (b->state != BUILDING_STATE_VALID)
             continue;
@@ -227,7 +227,7 @@ static void calculate_workers_needed_per_category(void) {
 }
 static void set_building_worker_weight(void) {
     int water_per_10k_per_building = calc_percentage(100, city_data.labor.categories[LABOR_CATEGORY_WATER_HEALTH].buildings);
-    for (int i = 1; i < MAX_BUILDINGS[GAME_ENV]; i++) {
+    for (int i = 1; i < MAX_BUILDINGS[get_game_engine()]; i++) {
         building *b = building_get(i);
         if (b->state != BUILDING_STATE_VALID)
             continue;
@@ -314,7 +314,7 @@ static void allocate_workers_to_categories(void) {
             calc_percentage(city_data.labor.workers_unemployed, city_data.labor.workers_available);
 }
 static void allocate_workers_to_water(void) {
-    if (GAME_ENV == ENGINE_ENV_PHARAOH)
+    if (get_game_engine() == ENGINE_ENV_PHARAOH)
         return;
     static int start_building_id = 1;
     labor_category_data *water_cat = &city_data.labor.categories[LABOR_CATEGORY_WATER_HEALTH];
@@ -331,8 +331,8 @@ static void allocate_workers_to_water(void) {
     }
     int building_id = start_building_id;
     start_building_id = 0;
-    for (int guard = 1; guard < MAX_BUILDINGS[GAME_ENV]; guard++, building_id++) {
-        if (building_id >= MAX_BUILDINGS[GAME_ENV])
+    for (int guard = 1; guard < MAX_BUILDINGS[get_game_engine()]; guard++, building_id++) {
+        if (building_id >= MAX_BUILDINGS[get_game_engine()])
             building_id = 1;
 
         building *b = building_get(building_id);
@@ -368,12 +368,12 @@ static void allocate_workers_to_non_water_buildings(void) {
                 city_data.labor.categories[i].workers_allocated < city_data.labor.categories[i].workers_needed
                 ? 1 : 0;
     }
-    for (int i = 1; i < MAX_BUILDINGS[GAME_ENV]; i++) {
+    for (int i = 1; i < MAX_BUILDINGS[get_game_engine()]; i++) {
         building *b = building_get(i);
         if (b->state != BUILDING_STATE_VALID)
             continue;
         int cat = CATEGORY_FOR_building(b);
-        if (GAME_ENV == ENGINE_ENV_C3 && cat == LABOR_CATEGORY_WATER_HEALTH)
+        if (get_game_engine() == ENGINE_ENV_C3 && cat == LABOR_CATEGORY_WATER_HEALTH)
             continue;
         if (cat == 255) {
             if (b->data.industry.labor_state <= 0)
@@ -408,14 +408,14 @@ static void allocate_workers_to_non_water_buildings(void) {
                 category_workers_needed[i] = city_data.labor.categories[i].workers_allocated - category_workers_allocated[i];
         }
     }
-    for (int i = 1; i < MAX_BUILDINGS[GAME_ENV]; i++) {
+    for (int i = 1; i < MAX_BUILDINGS[get_game_engine()]; i++) {
         building *b = building_get(i);
         if (b->state != BUILDING_STATE_VALID)
             continue;
         int cat = CATEGORY_FOR_building(b);
         if (cat < 0)
             continue;
-        if (GAME_ENV == ENGINE_ENV_C3)
+        if (get_game_engine() == ENGINE_ENV_C3)
             if (cat == LABOR_CATEGORY_WATER_HEALTH || cat == LABOR_CATEGORY_MILITARY)
                 continue;
         if (!should_have_workers(b, cat, 0))

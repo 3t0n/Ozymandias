@@ -307,7 +307,7 @@ void figure::tower_sentry_action() {
 }
 
 void figure_tower_sentry_reroute(void) {
-    for (int i = 1; i < MAX_FIGURES[GAME_ENV]; i++) {
+    for (int i = 1; i < MAX_FIGURES[get_game_engine()]; i++) {
         figure *f = figure_get(i);
         if (f->type != FIGURE_TOWER_SENTRY || map_routing_is_wall_passable(f->grid_offset_figure))
             continue;
@@ -342,7 +342,7 @@ void figure_tower_sentry_reroute(void) {
 }
 
 void figure_kill_tower_sentries_at(int x, int y) {
-    for (int i = 0; i < MAX_FIGURES[GAME_ENV]; i++) {
+    for (int i = 0; i < MAX_FIGURES[get_game_engine()]; i++) {
         figure *f = figure_get(i);
         if (!f->is_dead() && f->type == FIGURE_TOWER_SENTRY) {
             if (calc_maximum_distance(f->tile_x, f->tile_y, x, y) <= 1)

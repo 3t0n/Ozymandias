@@ -292,7 +292,7 @@ static void spawn_figure_actor_colony(building *b) {
         b->figure_spawn_delay++;
         if (b->figure_spawn_delay > spawn_delay) {
             b->figure_spawn_delay = 0;
-            if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+            if (get_game_engine() == ENGINE_ENV_PHARAOH) {
                 int dest = determine_venue_destination(road.x, road.y, BUILDING_THEATER, BUILDING_AMPHITHEATER, BUILDING_COLOSSEUM);
                 if (dest) {
                     figure *f = figure_create(FIGURE_ACTOR, road.x, road.y, DIR_0_TOP_RIGHT);
@@ -1166,7 +1166,7 @@ static bool can_spawn_hunter(building *b) { // no cache because fuck the system 
 //        if (building_get(b)->type == 115)
 //            lodges++;
 //    }
-    for (int i = 0; i < MAX_FIGURES[GAME_ENV]; i++) {
+    for (int i = 0; i < MAX_FIGURES[get_game_engine()]; i++) {
         figure *f = figure_get(i);
         if (f->type == 73) { // hunter
             hunters_total++;
@@ -1366,7 +1366,7 @@ void building_figure_generate(void) {
                 case BUILDING_ENGINEERS_POST:
                     spawn_figure_engineers_post(b); break;
                 case BUILDING_PREFECTURE:
-                    if (GAME_ENV == ENGINE_ENV_PHARAOH)
+                    if (get_game_engine() == ENGINE_ENV_PHARAOH)
                         spawn_figure_police(b);
                     else
                         spawn_figure_prefecture(b);

@@ -18,7 +18,7 @@ int building_animation_offset(building *b, int image_id, int grid_offset) {
                 return 0;
             break;
         case BUILDING_RESERVOIR:
-            if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+            if (is_game_pharaoh()) {
                 if (b->num_workers <= 0) {
                     return 0;
                 }
@@ -58,8 +58,9 @@ int building_animation_offset(building *b, int image_id, int grid_offset) {
         case BUILDING_MARBLE_QUARRY:
         case BUILDING_GLADIATOR_SCHOOL:
             if (b->num_workers <= 0) {
-                if (GAME_ENV == ENGINE_ENV_PHARAOH)
+                if (is_game_pharaoh()) {
                     return 0;
+                }
                 map_sprite_animation_set(grid_offset, 1);
                 return 1;
             } break;

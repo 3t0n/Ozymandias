@@ -52,20 +52,20 @@ static int view_to_grid_offset_lookup[500][500];
 static pixel_coordinate grid_offset_to_pixel_lookup[500][500];
 
 int VIEW_X_MAX() {
-    return grid_size[GAME_ENV] + 3;
+    return grid_size[get_game_engine()] + 3;
 }
 int VIEW_Y_MAX() {
-    return grid_size[GAME_ENV] * 2 + 1;
+    return grid_size[get_game_engine()] * 2 + 1;
 }
 
 static void check_camera_boundaries(void) {
     int x_min;
     int y_min;
-    if (GAME_ENV == ENGINE_ENV_C3) {
+    if (get_game_engine() == ENGINE_ENV_C3) {
         x_min = (VIEW_X_MAX() - map_grid_width()) / 2;
         y_min = (VIEW_Y_MAX() - 2 * map_grid_height()) / 2;
     }
-    if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+    if (get_game_engine() == ENGINE_ENV_PHARAOH) {
         x_min = (VIEW_X_MAX() - map_grid_width() / 2) / 2 + 2;
         y_min = (VIEW_Y_MAX() - map_grid_height()) / 2 + 2;
     }
@@ -140,7 +140,7 @@ static void calculate_lookup(void) {
     }
 
     int grid_s;
-    switch (GAME_ENV) {
+    switch (get_game_engine()) {
         case ENGINE_ENV_C3:
             grid_s = GRID_SIZE_C3;
             break;
@@ -264,7 +264,7 @@ void city_view_get_selected_tile_pixels(int *x_pixels, int *y_pixels) {
 }
 int city_view_pixels_to_view_tile(int x_pixels, int y_pixels, view_tile *tile) {
     if (config_get(CONFIG_UI_ZOOM))
-        y_pixels -= TOP_MENU_HEIGHT[GAME_ENV];
+        y_pixels -= TOP_MENU_HEIGHT[get_game_engine()];
 
     x_pixels = calc_adjust_with_percentage(x_pixels, data.scale);
     y_pixels = calc_adjust_with_percentage(y_pixels, data.scale);
@@ -378,14 +378,14 @@ static void set_viewport(int x_offset, int y_offset, int width, int height) {
 #include "core/game_environment.h"
 
 static void set_viewport_with_sidebar(void) {
-    return set_viewport(0, config_get(CONFIG_UI_ZOOM) ? 0 : TOP_MENU_HEIGHT[GAME_ENV],
-                        data.screen_width - SIDEBAR_EXPANDED_WIDTH[GAME_ENV] + 2,
-                        data.screen_height - TOP_MENU_HEIGHT[GAME_ENV]);
+    return set_viewport(0, config_get(CONFIG_UI_ZOOM) ? 0 : TOP_MENU_HEIGHT[get_game_engine()],
+                        data.screen_width - SIDEBAR_EXPANDED_WIDTH[get_game_engine()] + 2,
+                        data.screen_height - TOP_MENU_HEIGHT[get_game_engine()]);
 }
 static void set_viewport_without_sidebar(void) {
 
-    set_viewport(0, config_get(CONFIG_UI_ZOOM) ? 0 : TOP_MENU_HEIGHT[GAME_ENV],
-                 data.screen_width - 40, data.screen_height - TOP_MENU_HEIGHT[GAME_ENV]);
+    set_viewport(0, config_get(CONFIG_UI_ZOOM) ? 0 : TOP_MENU_HEIGHT[get_game_engine()],
+                 data.screen_width - 40, data.screen_height - TOP_MENU_HEIGHT[get_game_engine()]);
 }
 
 void city_view_set_scale(int scale) {

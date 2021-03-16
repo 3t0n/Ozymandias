@@ -68,7 +68,7 @@ static void draw_background(void) {
 static void draw_foreground(void) {
     graphics_in_dialog();
 
-    switch (GAME_ENV) {
+    switch (get_game_engine()) {
         case ENGINE_ENV_C3:
             for (int i = 0; i < MAX_BUTTONS; i++)
                 large_label_draw(buttons[i].x, buttons[i].y, buttons[i].width / 16, focus_button_id == i + 1 ? 1 : 0);
@@ -102,7 +102,7 @@ static void confirm_exit(int accepted) {
 }
 static void button_click(int type, int param2) {
     if (type == 1)
-        switch (GAME_ENV) {
+        switch (get_game_engine()) {
             case ENGINE_ENV_C3:
                 window_new_career_show();
                 break;
@@ -113,7 +113,7 @@ static void button_click(int type, int param2) {
                 break;
         }
     else if (type == 2)
-        switch (GAME_ENV) {
+        switch (get_game_engine()) {
             case ENGINE_ENV_C3:
                 window_file_dialog_show(FILE_TYPE_SAVED_GAME, FILE_DIALOG_LOAD);
                 break;

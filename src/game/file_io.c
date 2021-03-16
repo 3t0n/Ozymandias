@@ -331,7 +331,7 @@ static void init_savegame_data(int expanded) {
         savegame_data.num_pieces = 0;
     }
     savegame_state *state = &savegame_data.state;
-    switch (GAME_ENV) {
+    switch (get_game_engine()) {
         case ENGINE_ENV_C3: {
             state->scenario_campaign_mission = create_savegame_piece(4, 0, "scenario_campaign_mission");
             state->file_version = create_savegame_piece(4, 0, "file_version");
@@ -776,7 +776,7 @@ static void savegame_load_from_state(savegame_state *state) {
 //    scenario_invasion_load_state(state->last_invasion_id, state->invasion_warnings);
     map_bookmark_load_state(state->bookmarks);
 
-    if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+    if (get_game_engine() == ENGINE_ENV_PHARAOH) {
         map_temp_grid_load(state->GRID01_8BIT, 0);
         map_temp_grid_load(state->GRID02_8BIT, 1);
 //        map_temp_grid_load(state->GRID03_32BIT, 2);

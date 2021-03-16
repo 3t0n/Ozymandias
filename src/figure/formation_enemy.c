@@ -139,7 +139,7 @@ static const int LAYOUT_ORIENTATION_OFFSETS[13][4][40] = {
 int formation_rioter_get_target_building(int *x_tile, int *y_tile) {
     int best_type_index = 100;
     building *best_building = 0;
-    for (int i = 1; i < MAX_BUILDINGS[GAME_ENV]; i++) {
+    for (int i = 1; i < MAX_BUILDINGS[get_game_engine()]; i++) {
         building *b = building_get(i);
         if (b->state != BUILDING_STATE_VALID)
             continue;
@@ -176,7 +176,7 @@ static void set_enemy_target_building(formation *m) {
     int best_type_index = 100;
     building *best_building = 0;
     int min_distance = 10000;
-    for (int i = 1; i < MAX_BUILDINGS[GAME_ENV]; i++) {
+    for (int i = 1; i < MAX_BUILDINGS[get_game_engine()]; i++) {
         building *b = building_get(i);
         if (b->state != BUILDING_STATE_VALID || map_soldier_strength_get(b->grid_offset))
             continue;
@@ -198,7 +198,7 @@ static void set_enemy_target_building(formation *m) {
     }
     if (!best_building) {
         // no target buildings left: take rioter attack priority
-        for (int i = 1; i < MAX_BUILDINGS[GAME_ENV]; i++) {
+        for (int i = 1; i < MAX_BUILDINGS[get_game_engine()]; i++) {
             building *b = building_get(i);
             if (b->state != BUILDING_STATE_VALID || map_soldier_strength_get(b->grid_offset))
                 continue;
@@ -233,7 +233,7 @@ static void set_native_target_building(formation *m) {
     city_buildings_main_native_meeting_center(&meeting_x, &meeting_y);
     building *min_building = 0;
     int min_distance = 10000;
-    for (int i = 1; i < MAX_BUILDINGS[GAME_ENV]; i++) {
+    for (int i = 1; i < MAX_BUILDINGS[get_game_engine()]; i++) {
         building *b = building_get(i);
         if (b->state != BUILDING_STATE_VALID)
             continue;
@@ -337,7 +337,7 @@ static void mars_kill_enemies(void) {
     if (to_kill <= 0)
         return;
     int grid_offset = 0;
-    for (int i = 1; i < MAX_FIGURES[GAME_ENV] && to_kill > 0; i++) {
+    for (int i = 1; i < MAX_FIGURES[get_game_engine()] && to_kill > 0; i++) {
         figure *f = figure_get(i);
         if (f->state != FIGURE_STATE_ALIVE)
             continue;

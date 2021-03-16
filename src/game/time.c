@@ -34,7 +34,7 @@ int game_time_year(void) {
 
 int game_time_advance_tick(void) {
     if (++data.tick >= 50) {
-        if (GAME_ENV == ENGINE_ENV_PHARAOH && data.tick == 50)
+        if (get_game_engine() == ENGINE_ENV_PHARAOH && data.tick == 50)
             return 0;
         data.tick = 0;
         return 1;

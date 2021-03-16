@@ -355,7 +355,7 @@ static void draw_background(void) {
                            page_buttons[i].width, FONT_NORMAL_BLACK, 0);
     }
 
-    if (GAME_ENV==ENGINE_ENV_C3) { // TODO: temporary fix to mitigate translation exception
+    if (get_game_engine()==ENGINE_ENV_C3) { // TODO: temporary fix to mitigate translation exception
         text_draw_label_and_number_centered((const char *) translation_for(TR_CONFIG_PAGE_LABEL), data.page + 1, "", 60,
                                             416, 85, FONT_NORMAL_BLACK, 0);
     }

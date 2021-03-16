@@ -82,7 +82,7 @@ int building_market_get_storage_destination(building *market) {
         resources[i].num_buildings = 0;
         resources[i].distance = 40;
     }
-    for (int i = 1; i < MAX_BUILDINGS[GAME_ENV]; i++) {
+    for (int i = 1; i < MAX_BUILDINGS[get_game_engine()]; i++) {
         building *b = building_get(i);
         if (b->state != BUILDING_STATE_VALID)
             continue;
@@ -104,12 +104,12 @@ int building_market_get_storage_destination(building *market) {
         if (b->type == BUILDING_GRANARY) {
             if (scenario_property_rome_supplies_wheat())
                 continue;
-            if (GAME_ENV == ENGINE_ENV_C3) {
+            if (get_game_engine() == ENGINE_ENV_C3) {
                 update_food_resource(&resources[INVENTORY_FOOD1], RESOURCE_WHEAT, b, distance);
                 update_food_resource(&resources[INVENTORY_FOOD2], RESOURCE_VEGETABLES, b, distance);
                 update_food_resource(&resources[INVENTORY_FOOD3], RESOURCE_FRUIT, b, distance);
                 update_food_resource(&resources[INVENTORY_FOOD4], RESOURCE_MEAT_C3, b, distance);
-            } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+            } else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
                 // todo: fetch map available foods?
                 // TODO: Load from the save
                 update_food_resource(&resources[INVENTORY_FOOD1], ALLOWED_FOODS(INVENTORY_FOOD1), b, distance);
@@ -119,12 +119,12 @@ int building_market_get_storage_destination(building *market) {
             }
         } else if (b->type == BUILDING_WAREHOUSE) {
             // goods
-            if (GAME_ENV == ENGINE_ENV_C3) {
+            if (get_game_engine() == ENGINE_ENV_C3) {
                 update_good_resource(&resources[INVENTORY_GOOD1], RESOURCE_POTTERY_C3, b, distance);
                 update_good_resource(&resources[INVENTORY_GOOD2], RESOURCE_FURNITURE, b, distance);
                 update_good_resource(&resources[INVENTORY_GOOD3], RESOURCE_OIL_C3, b, distance);
                 update_good_resource(&resources[INVENTORY_GOOD4], RESOURCE_WINE, b, distance);
-            } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+            } else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
                 update_good_resource(&resources[INVENTORY_GOOD1], RESOURCE_POTTERY_PH, b, distance);
                 update_good_resource(&resources[INVENTORY_GOOD2], RESOURCE_LUXURY_GOODS, b, distance);
                 update_good_resource(&resources[INVENTORY_GOOD3], RESOURCE_LINEN, b, distance);

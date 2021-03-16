@@ -321,12 +321,12 @@ static char channel_filenames[2][SOUND_CHANNEL_MAX][CHANNEL_FILENAME_MAX] = {
 
 static void correct_channel_filenames(void) {
     for (int i = 1; i < SOUND_CHANNEL_MAX; i++) {
-        if (!channel_filenames[GAME_ENV][i][0])
+        if (!channel_filenames[get_game_engine()][i][0])
             continue;
 
-        char *original = channel_filenames[GAME_ENV][i];
+        char *original = channel_filenames[get_game_engine()][i];
         char str[CHANNEL_FILENAME_MAX];
-        switch (GAME_ENV) {
+        switch (get_game_engine()) {
             case ENGINE_ENV_C3:
                 strncpy(str, "", CHANNEL_FILENAME_MAX);
                 break;
@@ -334,11 +334,11 @@ static void correct_channel_filenames(void) {
                 strncpy(str, "AUDIO/", CHANNEL_FILENAME_MAX);
                 break;
         }
-        strncat(str, channel_filenames[GAME_ENV][i], CHANNEL_FILENAME_MAX);
+        strncat(str, channel_filenames[get_game_engine()][i], CHANNEL_FILENAME_MAX);
 
         const char *corrected = dir_get_file(str, MAY_BE_LOCALIZED);
         if (!corrected)
-            channel_filenames[GAME_ENV][i][0] = 0;
+            channel_filenames[get_game_engine()][i][0] = 0;
         else if (corrected != original)
             strncpy(original, corrected, CHANNEL_FILENAME_MAX);
 
@@ -348,7 +348,7 @@ void sound_system_init(void) {
     correct_channel_filenames();
 
     sound_device_open();
-    sound_device_init_channels(SOUND_CHANNEL_MAX, channel_filenames[GAME_ENV]);
+    sound_device_init_channels(SOUND_CHANNEL_MAX, channel_filenames[get_game_engine()]);
 
     sound_city_set_volume(setting_sound(SOUND_CITY)->volume);
     sound_effect_set_volume(setting_sound(SOUND_EFFECTS)->volume);

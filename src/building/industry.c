@@ -58,10 +58,10 @@ int get_farm_image(int grid_offset) {
 }
 int get_crops_image(int type, int growth) {
     int base = 0;
-    if (GAME_ENV == ENGINE_ENV_C3) {
+    if (get_game_engine() == ENGINE_ENV_C3) {
         base = image_id_from_group(GROUP_BUILDING_FARMLAND);
         return (type - BUILDING_BARLEY_FARM) * 5 + growth;
-    } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+    } else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
         base = image_id_from_group(GROUP_BUILDING_FARM_CROPS_PH);
         switch (type) {
             case BUILDING_BARLEY_FARM:
@@ -103,7 +103,7 @@ void draw_ph_crops(int type, int progress, int grid_offset, int x, int y, color_
 }
 
 static int max_progress(const building *b) {
-    if (GAME_ENV == ENGINE_ENV_PHARAOH && building_is_farm(b->type))
+    if (get_game_engine() == ENGINE_ENV_PHARAOH && building_is_farm(b->type))
         return MAX_PROGRESS_FARM_PH;
     return b->subtype.workshop_type ? MAX_PROGRESS_WORKSHOP : MAX_PROGRESS_RAW;
 }
@@ -114,7 +114,7 @@ static void update_farm_image(const building *b) {
 }
 
 int building_determine_worker_needed() {
-    for (int i = 1; i < MAX_BUILDINGS[GAME_ENV]; i++) {
+    for (int i = 1; i < MAX_BUILDINGS[get_game_engine()]; i++) {
         building *b = building_get(i);
         if (b->state != BUILDING_STATE_VALID)
             continue;
@@ -128,7 +128,7 @@ int building_determine_worker_needed() {
 }
 
 void building_industry_update_production(void) {
-    for (int i = 1; i < MAX_BUILDINGS[GAME_ENV]; i++) {
+    for (int i = 1; i < MAX_BUILDINGS[get_game_engine()]; i++) {
         building *b = building_get(i);
         if (b->state != BUILDING_STATE_VALID || !b->output_resource_id)
             continue;
@@ -145,7 +145,7 @@ void building_industry_update_production(void) {
 
             if (b->type == BUILDING_MARBLE_QUARRY)
                 b->data.industry.progress += b->num_workers / 2;
-            else if (building_is_farm(b->type) && GAME_ENV == ENGINE_ENV_PHARAOH && b->data.industry.labor_state >= 1) {
+            else if (building_is_farm(b->type) && get_game_engine() == ENGINE_ENV_PHARAOH && b->data.industry.labor_state >= 1) {
                 int fert = map_get_fertility_average(b->grid_offset);
                 b->data.industry.progress += fert * 0.16;
             } else
@@ -165,7 +165,7 @@ void building_industry_update_production(void) {
 void building_industry_update_wheat_production(void) {
     if (scenario_property_climate() == CLIMATE_NORTHERN)
         return;
-    for (int i = 1; i < MAX_BUILDINGS[GAME_ENV]; i++) {
+    for (int i = 1; i < MAX_BUILDINGS[get_game_engine()]; i++) {
         building *b = building_get(i);
         if (b->state != BUILDING_STATE_VALID || !b->output_resource_id)
             continue;
@@ -213,7 +213,7 @@ void building_industry_start_new_production(building *b) {
 }
 
 void building_bless_farms(void) {
-    for (int i = 1; i < MAX_BUILDINGS[GAME_ENV]; i++) {
+    for (int i = 1; i < MAX_BUILDINGS[get_game_engine()]; i++) {
         building *b = building_get(i);
         if (b->state == BUILDING_STATE_VALID && b->output_resource_id && building_is_farm(b->type)) {
             b->data.industry.progress = MAX_PROGRESS_RAW;
@@ -224,7 +224,7 @@ void building_bless_farms(void) {
     }
 }
 void building_curse_farms(int big_curse) {
-    for (int i = 1; i < MAX_BUILDINGS[GAME_ENV]; i++) {
+    for (int i = 1; i < MAX_BUILDINGS[get_game_engine()]; i++) {
         building *b = building_get(i);
         if (b->state == BUILDING_STATE_VALID && b->output_resource_id && building_is_farm(b->type)) {
             b->data.industry.progress = 0;
@@ -249,7 +249,7 @@ int building_get_workshop_for_raw_material_with_room(int x, int y, int resource,
 
     int min_dist = INFINITE;
     building *min_building = 0;
-    for (int i = 1; i < MAX_BUILDINGS[GAME_ENV]; i++) {
+    for (int i = 1; i < MAX_BUILDINGS[get_game_engine()]; i++) {
         building *b = building_get(i);
         if (b->state != BUILDING_STATE_VALID || !building_is_workshop(b->type))
             continue;
@@ -284,7 +284,7 @@ int building_get_workshop_for_raw_material(int x, int y, int resource, int dista
 
     int min_dist = INFINITE;
     building *min_building = 0;
-    for (int i = 1; i < MAX_BUILDINGS[GAME_ENV]; i++) {
+    for (int i = 1; i < MAX_BUILDINGS[get_game_engine()]; i++) {
         building *b = building_get(i);
         if (b->state != BUILDING_STATE_VALID || !building_is_workshop(b->type))
             continue;

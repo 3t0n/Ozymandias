@@ -350,7 +350,7 @@ void formation_legion_update(void) {
 }
 
 void formation_legion_decrease_damage(void) {
-    for (int i = 1; i < MAX_FIGURES[GAME_ENV]; i++) {
+    for (int i = 1; i < MAX_FIGURES[get_game_engine()]; i++) {
         figure *f = figure_get(i);
         if (f->state == FIGURE_STATE_ALIVE && f->is_legion()) {
             if (f->action_state == FIGURE_ACTION_80_SOLDIER_AT_REST) {

@@ -113,7 +113,7 @@ int figure::take_food_from_granary(int market_id, int granary_id) {
 }
 int figure::take_resource_from_warehouse(int warehouse_id) {
     int resource;
-    if (GAME_ENV == ENGINE_ENV_C3) {
+    if (get_game_engine() == ENGINE_ENV_C3) {
         switch (collecting_item_id) {
             case INVENTORY_GOOD1:
                 resource = RESOURCE_POTTERY_C3;
@@ -130,7 +130,7 @@ int figure::take_resource_from_warehouse(int warehouse_id) {
             default:
                 return 0;
         }
-    } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+    } else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
         switch (collecting_item_id) {
             case INVENTORY_GOOD1:
                 resource = RESOURCE_POTTERY_PH;

@@ -79,7 +79,7 @@ static struct {
 } merge_data;
 
 int house_tile_offsets(int i) {
-    switch (GAME_ENV) {
+    switch (get_game_engine()) {
         case ENGINE_ENV_C3:
             return HOUSE_TILE_OFFSETS_C3[i];
         case ENGINE_ENV_PHARAOH:
@@ -87,7 +87,7 @@ int house_tile_offsets(int i) {
     }
 }
 expand_direction expand_delta(int i) {
-    switch (GAME_ENV) {
+    switch (get_game_engine()) {
         case ENGINE_ENV_C3:
             return EXPAND_DIRECTION_DELTA_C3[i];
         case ENGINE_ENV_PHARAOH:

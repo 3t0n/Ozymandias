@@ -72,25 +72,25 @@ int scenario_ph_mission_selector() {
     return MISSION_SELECTORS_BY_MISSION_PH[scenario_campaign_mission()];
 }
 int game_mission_peaceful(void) {
-    if (GAME_ENV == ENGINE_ENV_C3)
+    if (get_game_engine() == ENGINE_ENV_C3)
         return MISSION_IDS_C3[scenario_campaign_rank()].peaceful;
-    else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+    else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
         int selector = scenario_ph_mission_selector();
         return MISSION_IDS_PH[selector].peaceful;
     }
 }
 int game_mission_military(void) {
-    if (GAME_ENV == ENGINE_ENV_C3)
+    if (get_game_engine() == ENGINE_ENV_C3)
         return MISSION_IDS_C3[scenario_campaign_rank()].military;
-    else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+    else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
         int selector = scenario_ph_mission_selector();
         return MISSION_IDS_PH[selector].military;
     }
 }
 int game_mission_has_choice(void) {
-    if (GAME_ENV == ENGINE_ENV_C3)
+    if (get_game_engine() == ENGINE_ENV_C3)
         return RANK_CHOICE_C3[scenario_campaign_rank()];
-    else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+    else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
         int selector = scenario_ph_mission_selector();
         return MISSION_CHOICE_PH[selector];
     }

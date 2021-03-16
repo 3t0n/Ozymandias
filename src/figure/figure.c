@@ -23,7 +23,7 @@ figure *figure_get(int id) {
 }
 figure *figure_create(int type, int x, int y, int dir) {
     int id = 0;
-    for (int i = 1; i < MAX_FIGURES[GAME_ENV]; i++) {
+    for (int i = 1; i < MAX_FIGURES[get_game_engine()]; i++) {
         if (figure_get(i)->available()) {
             id = i;
             break;
@@ -109,7 +109,7 @@ bool figure::is_herd() {
 }
 
 int figureid_translation(int id, bool reverse = true) {
-    if (GAME_ENV == ENGINE_ENV_C3)
+    if (get_game_engine() == ENGINE_ENV_C3)
         return id;
     int *table = figureid_translation_table_ph;
     for (int i = 0; table[i] < FIGURE_MAX; i += 2) {
@@ -122,7 +122,7 @@ int figureid_translation(int id, bool reverse = true) {
     return id;
 }
 int actionid_translation(int id, bool reverse = true) {
-    if (GAME_ENV == ENGINE_ENV_C3)
+    if (get_game_engine() == ENGINE_ENV_C3)
         return id;
 //    if (id != 0)
 //        id += 300;
@@ -139,7 +139,7 @@ int actionid_translation(int id, bool reverse = true) {
 
 void init_figures() {
     if (!data.initialized) {
-        for (int i = 0; i < MAX_FIGURES[GAME_ENV]; i++) {
+        for (int i = 0; i < MAX_FIGURES[get_game_engine()]; i++) {
             data.figures[i] = new figure(i);
 //        memset(&data.figures[i], 0, sizeof(figure));
 //        data.figures[i].id = i;
@@ -152,7 +152,7 @@ void figure_init_scenario(void) {
     data.created_sequence = 0;
 }
 void figure_kill_all() {
-    for (int i = 1; i < MAX_FIGURES[GAME_ENV]; i++)
+    for (int i = 1; i < MAX_FIGURES[get_game_engine()]; i++)
         figure_get(i)->kill();
 }
 void figure::save(buffer *buf) {
@@ -261,7 +261,7 @@ void figure::load(buffer *buf) {
     f->is_enemy_image = buf->read_u8();
     f->flotsam_visible = buf->read_u8();
     f->sprite_image_id = buf->read_i16() + 18;
-    if (GAME_ENV == ENGINE_ENV_PHARAOH)
+    if (get_game_engine() == ENGINE_ENV_PHARAOH)
         buf->skip(2);
     else
         f->cart_image_id = buf->read_i16();
@@ -276,7 +276,7 @@ void figure::load(buffer *buf) {
     f->direction = buf->read_i8();
     f->previous_tile_direction = buf->read_i8();
     f->attack_direction = buf->read_i8();
-    if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+    if (get_game_engine() == ENGINE_ENV_PHARAOH) {
         f->tile_x = buf->read_u16();
         f->tile_y = buf->read_u16();
         f->previous_tile_x = buf->read_u16();
@@ -291,7 +291,7 @@ void figure::load(buffer *buf) {
         f->missile_damage = buf->read_u8();
         f->damage = buf->read_u8();
     }
-    if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+    if (get_game_engine() == ENGINE_ENV_PHARAOH) {
         f->grid_offset_figure = buf->read_i32();
         f->destination_x = buf->read_u16();
         f->destination_y = buf->read_u16();
@@ -354,7 +354,7 @@ void figure::load(buffer *buf) {
     f->trader_amount_bought = buf->read_u8();
     f->name = buf->read_i16(); // 6
     f->terrain_usage = buf->read_u8();
-    if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+    if (get_game_engine() == ENGINE_ENV_PHARAOH) {
         f->is_boat = buf->read_u8();
 
         int resource_quantity = buf->read_u16(); // 4772 >>>> 112 (resource amount! 2-bytes)
@@ -397,7 +397,7 @@ void figure::load(buffer *buf) {
     f->attacker_id1 = buf->read_i16();
     f->attacker_id2 = buf->read_i16();
     f->opponent_id = buf->read_i16();
-    if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+    if (get_game_engine() == ENGINE_ENV_PHARAOH) {
         buf->skip(239);
         f->cart_image_id = buf->read_i16() + 18;
         buf->skip(2);
@@ -406,13 +406,13 @@ void figure::load(buffer *buf) {
 void figure_save_state(buffer *list, buffer *seq) {
     seq->write_i32(data.created_sequence);
     init_figures();
-    for (int i = 0; i < MAX_FIGURES[GAME_ENV]; i++)
+    for (int i = 0; i < MAX_FIGURES[get_game_engine()]; i++)
         figure_get(i)->save(list);
 }
 void figure_load_state(buffer *list, buffer *seq) {
     data.created_sequence = seq->read_i32();
     init_figures();
-    for (int i = 0; i < MAX_FIGURES[GAME_ENV]; i++) {
+    for (int i = 0; i < MAX_FIGURES[get_game_engine()]; i++) {
         figure_get(i)->load(list);
         figure_get(i)->id = i;
     }

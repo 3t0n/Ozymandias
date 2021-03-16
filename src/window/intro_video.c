@@ -19,7 +19,7 @@ static const char *PH_INTRO_VIDEOS[] = {"BINKS/high/Intro_big.bik"};
 static int start_next_video(void) {
     int videos_num = 0;
     const char **videos;
-    switch (GAME_ENV) {
+    switch (get_game_engine()) {
         case ENGINE_ENV_C3:
             videos_num = 3;
             videos = C3_INTRO_VIDEOS;

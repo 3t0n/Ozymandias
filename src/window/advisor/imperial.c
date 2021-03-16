@@ -87,7 +87,7 @@ static void draw_request(int index, const scenario_request *request) {
 
 static int draw_background(void) {
     int military_resource = RESOURCE_WEAPONS_PH;
-    if (GAME_ENV == ENGINE_ENV_C3) {
+    if (get_game_engine() == ENGINE_ENV_C3) {
         military_resource = RESOURCE_WEAPONS_C3;
     }
     city_emperor_calculate_gift_costs();

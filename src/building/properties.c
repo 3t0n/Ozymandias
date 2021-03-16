@@ -388,11 +388,11 @@ const building_properties dummy_property = {0, 0, 0, 0};
 
 const building_properties *building_properties_for_type(int type) {
     // Roadblock properties, as plaza
-    if (type == 115 && GAME_ENV == ENGINE_ENV_C3)
-        return &properties[GAME_ENV][38];
-    if (type >= BUILD_MAX[GAME_ENV])
+    if (type == 115 && get_game_engine() == ENGINE_ENV_C3)
+        return &properties[get_game_engine()][38];
+    if (type >= BUILD_MAX[get_game_engine()])
         return &dummy_property;
-    auto p = &properties[GAME_ENV][type];
+    auto p = &properties[get_game_engine()][type];
     return p;
 }
 

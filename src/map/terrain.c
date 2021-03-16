@@ -384,7 +384,7 @@ void map_floodplain_rebuild() {
                         }
                         ++grid_offset;
                     }
-                    grid_offset += grid_size[GAME_ENV] - (x_max - x_min + 1);
+                    grid_offset += grid_size[get_game_engine()] - (x_max - x_min + 1);
                 }
             }
         }
@@ -449,13 +449,13 @@ void map_terrain_clear(void) {
 void map_terrain_init_outside_map(void) {
     int map_width, map_height;
     map_grid_size(&map_width, &map_height);
-    int y_start = (grid_size[GAME_ENV] - map_height) / 2;
-    int x_start = (grid_size[GAME_ENV] - map_width) / 2;
-    for (int y = 0; y < grid_size[GAME_ENV]; y++) {
+    int y_start = (grid_size[get_game_engine()] - map_height) / 2;
+    int x_start = (grid_size[get_game_engine()] - map_width) / 2;
+    for (int y = 0; y < grid_size[get_game_engine()]; y++) {
         int y_outside_map = y < y_start || y >= y_start + map_height;
-        for (int x = 0; x < grid_size[GAME_ENV]; x++) {
+        for (int x = 0; x < grid_size[get_game_engine()]; x++) {
             if (y_outside_map || x < x_start || x >= x_start + map_width)
-                map_grid_set(&terrain_grid, x + grid_size[GAME_ENV] * y, TERRAIN_TREE | TERRAIN_WATER);
+                map_grid_set(&terrain_grid, x + grid_size[get_game_engine()] * y, TERRAIN_TREE | TERRAIN_WATER);
 
         }
     }
@@ -510,7 +510,7 @@ void map_unk32_load_state(buffer *buf) {
     if (!grid_unk32_4.initialized)
         map_grid_init(&grid_unk32_4);
 
-    for (int i = 0; i < grid_total_size[GAME_ENV]; i++) {
+    for (int i = 0; i < grid_total_size[get_game_engine()]; i++) {
         ((int8_t*)grid_unk32_1.items_xx)[i] = buf->read_i8();
         ((int8_t*)grid_unk32_2.items_xx)[i] = buf->read_i8();
         ((int8_t*)grid_unk32_3.items_xx)[i] = buf->read_i8();

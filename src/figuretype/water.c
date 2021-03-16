@@ -34,7 +34,7 @@ static const int FLOTSAM_TYPE_3[] = {
 void figure_create_flotsam(void) {
     if (!scenario_map_has_river_entry() || !scenario_map_has_river_exit() || !scenario_map_has_flotsam())
         return;
-    for (int i = 1; i < MAX_FIGURES[GAME_ENV]; i++) {
+    for (int i = 1; i < MAX_FIGURES[get_game_engine()]; i++) {
         figure *f = figure_get(i);
         if (f->state && f->type == FIGURE_FLOTSAM)
             f->figure_delete();
@@ -50,7 +50,7 @@ void figure_create_flotsam(void) {
     }
 }
 void figure_sink_all_ships(void) {
-    for (int i = 1; i < MAX_FIGURES[GAME_ENV]; i++) {
+    for (int i = 1; i < MAX_FIGURES[get_game_engine()]; i++) {
         figure *f = figure_get(i);
         if (f->state != FIGURE_STATE_ALIVE)
             continue;

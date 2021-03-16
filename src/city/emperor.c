@@ -155,7 +155,7 @@ static void process_caesar_invasion(void) {
 
 void city_emperor_update(void) {
     update_debt_state();
-    if (GAME_ENV == ENGINE_ENV_C3) { // Temporary disable Caesar invasion in Egypt
+    if (get_game_engine() == ENGINE_ENV_C3) { // Temporary disable Caesar invasion in Egypt
         process_caesar_invasion();
     }
 }

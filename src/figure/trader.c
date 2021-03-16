@@ -69,10 +69,10 @@ void traders_save_state(buffer *buf) {
         struct trader *t = &data.traders[i];
         buf->write_i32(t->bought_amount);
         buf->write_i32(t->sold_amount);
-        for (int r = 0; r < RESOURCE_MAX[GAME_ENV]; r++) {
+        for (int r = 0; r < RESOURCE_MAX[get_game_engine()]; r++) {
             buf->write_u8(t->bought_resources[r]);
         }
-        for (int r = 0; r < RESOURCE_MAX[GAME_ENV]; r++) {
+        for (int r = 0; r < RESOURCE_MAX[get_game_engine()]; r++) {
             buf->write_u8(t->sold_resources[r]);
         }
         buf->write_i32(t->bought_value);
@@ -86,10 +86,10 @@ void traders_load_state(buffer *buf) {
         struct trader *t = &data.traders[i];
         t->bought_amount = buf->read_i32();
         t->sold_amount = buf->read_i32();
-        for (int r = 0; r < RESOURCE_MAX[GAME_ENV]; r++) {
+        for (int r = 0; r < RESOURCE_MAX[get_game_engine()]; r++) {
             t->bought_resources[r] = buf->read_u8();
         }
-        for (int r = 0; r < RESOURCE_MAX[GAME_ENV]; r++) {
+        for (int r = 0; r < RESOURCE_MAX[get_game_engine()]; r++) {
             t->sold_resources[r] = buf->read_u8();
         }
         t->bought_value = buf->read_i32();

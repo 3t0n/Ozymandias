@@ -43,14 +43,14 @@ static void adjust_to_absolute_xy(int *x, int *y, int size) {
 }
 static void set_crop_tile(int building_id, int x, int y, int dx, int dy, int crop_image_id, int growth) {
     int grid_offset = map_grid_offset(x + dx, y + dy);
-    if (GAME_ENV == ENGINE_ENV_C3) {
+    if (get_game_engine() == ENGINE_ENV_C3) {
         map_terrain_remove(grid_offset, TERRAIN_CLEARABLE);
         map_terrain_add(grid_offset, TERRAIN_BUILDING);
         map_building_set(grid_offset, building_id);
         map_property_clear_constructing(grid_offset);
         map_property_set_multi_tile_xy(grid_offset, dx, dy, 1);
         map_image_set(grid_offset, crop_image_id + (growth < 4 ? growth : 4));
-    } else if (GAME_ENV == ENGINE_ENV_PHARAOH)
+    } else if (get_game_engine() == ENGINE_ENV_PHARAOH)
         image_draw_isometric_footprint(crop_image_id + (growth < 4 ? growth : 4), map_grid_offset_to_x(grid_offset), map_grid_offset_to_y(grid_offset), 0);
 }
 
@@ -91,7 +91,7 @@ void map_building_tiles_add(int building_id, int x, int y, int size, int image_i
     }
 }
 void map_building_tiles_add_farm(int building_id, int x, int y, int crop_image_offset, int progress) {
-    if (GAME_ENV == ENGINE_ENV_C3) {
+    if (get_game_engine() == ENGINE_ENV_C3) {
         crop_image_offset += image_id_from_group(GROUP_BUILDING_FARMLAND);
         if (!map_grid_is_inside(x, y, 3))
             return;
@@ -130,7 +130,7 @@ void map_building_tiles_add_farm(int building_id, int x, int y, int crop_image_o
             }
         }
     }
-    else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+    else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
 //        int image_id = image_id_from_group(GROUP_BUILDING_FARM_HOUSE);
 //        if (map_terrain_is(map_grid_offset(x, y), TERRAIN_FLOODPLAIN))
 //            image_id = image_id_from_group(GROUP_BUILDING_FARMLAND);
@@ -182,7 +182,7 @@ void map_building_tiles_remove(int building_id, int x, int y) {
     building *b = building_get(building_id);
     if (building_id && building_is_farm(b->type))
         size = 3;
-    if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+    if (get_game_engine() == ENGINE_ENV_PHARAOH) {
         switch (b->type) {
             case BUILDING_BOOTH:
                 size = 2;

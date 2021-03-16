@@ -373,7 +373,7 @@ static int is_fully_blocked(int map_x, int map_y, int type, int building_size, i
         return 1;
     if (type == BUILDING_PLAZA && !map_terrain_is(grid_offset, TERRAIN_ROAD))
         return 1;
-    if (((type == BUILDING_ROADBLOCK && GAME_ENV == ENGINE_ENV_C3) || type == BUILDING_ROADBLOCK) &&
+    if (((type == BUILDING_ROADBLOCK && get_game_engine() == ENGINE_ENV_C3) || type == BUILDING_ROADBLOCK) &&
         !map_terrain_is(grid_offset, TERRAIN_ROAD))
         return 1;
     if (city_finance_out_of_money())
@@ -385,7 +385,7 @@ static int is_blocked_for_building(int grid_offset, int num_tiles, int *blocked_
     int blocked = 0;
     for (int i = 0; i < num_tiles; i++) {
         int tile_offset = grid_offset;// + TILE_GRID_OFFSETS[orientation_index][i];
-        switch (GAME_ENV) {
+        switch (get_game_engine()) {
             case ENGINE_ENV_C3:
                 tile_offset += TILE_GRID_OFFSETS_C3[orientation_index][i];
                 break;
@@ -447,16 +447,16 @@ static void draw_regular_building(int type, int image_id, int x, int y, int grid
         image_id = get_farm_image(grid_offset);
         draw_building(image_id, x, y);
         // fields
-        if (GAME_ENV == ENGINE_ENV_C3) {
+        if (get_game_engine() == ENGINE_ENV_C3) {
             for (int i = 4; i < 9; i++)
                 image_draw_isometric_footprint(image_id + 1, x + X_VIEW_OFFSETS[i], y + Y_VIEW_OFFSETS[i], COLOR_MASK_GREEN);
-        } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+        } else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
             draw_ph_crops(type, 0, grid_offset, x - 60, y + 30, COLOR_MASK_GREEN);
         }
     } else if (type == BUILDING_WAREHOUSE)
         image_draw_warehouse(image_id, x, y);
     else if (type == BUILDING_GRANARY) {
-        if (GAME_ENV == ENGINE_ENV_C3) {
+        if (get_game_engine() == ENGINE_ENV_C3) {
             image_draw_isometric_footprint(image_id, x, y, COLOR_MASK_GREEN);
             const image *img = image_get(image_id + 1);
             image_draw(image_id + 1, x + img->get_sprite_offset_x() - 32, y + img->get_sprite_offset_y() - 64, COLOR_MASK_GREEN);
@@ -498,7 +498,7 @@ static void draw_default(const map_tile *tile, int x_view, int y_view, int type)
     int orientation_index = city_view_orientation() / 2;
     for (int i = 0; i < num_tiles; i++) {
         int tile_offset = grid_offset;// + TILE_GRID_OFFSETS[orientation_index][i];
-        switch (GAME_ENV) {
+        switch (get_game_engine()) {
             case ENGINE_ENV_C3:
                 tile_offset += TILE_GRID_OFFSETS_C3[orientation_index][i];
                 break;
@@ -508,7 +508,7 @@ static void draw_default(const map_tile *tile, int x_view, int y_view, int type)
         }
         int forbidden_terrain = map_terrain_get(tile_offset) & TERRAIN_NOT_CLEAR;
         if (type == BUILDING_GATEHOUSE || type == BUILDING_GATEHOUSE_PH || type == BUILDING_TRIUMPHAL_ARCH ||
-            type == BUILDING_PLAZA || (type == BUILDING_ROADBLOCK && GAME_ENV == ENGINE_ENV_C3) ||
+            type == BUILDING_PLAZA || (type == BUILDING_ROADBLOCK && get_game_engine() == ENGINE_ENV_C3) ||
             type == BUILDING_ROADBLOCK)
             forbidden_terrain &= ~TERRAIN_ROAD;
         if (type == BUILDING_TOWER)
@@ -609,7 +609,7 @@ static void draw_draggable_reservoir(const map_tile *tile, int x, int y) {
             }
             if (!draw_later) {
                 if (config_get(CONFIG_UI_SHOW_WATER_STRUCTURE_RANGE)) {
-                    switch (GAME_ENV) {
+                    switch (get_game_engine()) {
                         case ENGINE_ENV_C3:
                             city_view_foreach_tile_in_range(offset + RESERVOIR_GRID_OFFSETS_C3[orientation_index], 3,
                                                             10, draw_first_reservoir_range);
@@ -643,7 +643,7 @@ static void draw_draggable_reservoir(const map_tile *tile, int x, int y) {
         }
     } else {
         if (config_get(CONFIG_UI_SHOW_WATER_STRUCTURE_RANGE) && (!building_construction_in_progress() || draw_later)) {
-            switch (GAME_ENV) {
+            switch (get_game_engine()) {
                 case ENGINE_ENV_C3:
                     if (draw_later)
                         city_view_foreach_tile_in_range(offset + RESERVOIR_GRID_OFFSETS_C3[orientation_index], 3, 10,
@@ -731,7 +731,7 @@ static void draw_bathhouse(const map_tile *tile, int x, int y) {
         int orientation_index = city_view_orientation() / 2;
         for (int i = 0; i < num_tiles; i++) {
             int tile_offset = grid_offset;// + TILE_GRID_OFFSETS[orientation_index][i];
-            switch (GAME_ENV) {
+            switch (get_game_engine()) {
                 case ENGINE_ENV_C3:
                     tile_offset += TILE_GRID_OFFSETS_C3[orientation_index][i];
                     break;
@@ -822,7 +822,7 @@ static void draw_fort(const map_tile *tile, int x, int y) {
 
     int grid_offset_fort = tile->grid_offset;
     int grid_offset_ground = grid_offset_fort;// + FORT_GROUND_GRID_OFFSETS[building_rotation_get_rotation()][city_view_orientation()/2];
-    switch (GAME_ENV) {
+    switch (get_game_engine()) {
         case ENGINE_ENV_C3:
             grid_offset_ground += FORT_GROUND_GRID_OFFSETS_C3[building_rotation_get_rotation()][
                     city_view_orientation() / 2];
@@ -1028,7 +1028,7 @@ static void draw_dock(const map_tile *tile, int x, int y) {
             draw_flat_tile(x + X_VIEW_OFFSETS[i], y + Y_VIEW_OFFSETS[i], COLOR_MASK_RED);
     } else {
         int image_id;
-        if (GAME_ENV == ENGINE_ENV_C3)
+        if (get_game_engine() == ENGINE_ENV_C3)
             switch (dir_relative) {
                 case 0:
                     image_id = image_id_from_group(GROUP_BUILDING_DOCK_1);
@@ -1043,7 +1043,7 @@ static void draw_dock(const map_tile *tile, int x, int y) {
                     image_id = image_id_from_group(GROUP_BUILDING_DOCK_4);
                     break;
             }
-        else if (GAME_ENV == ENGINE_ENV_PHARAOH)
+        else if (get_game_engine() == ENGINE_ENV_PHARAOH)
             image_id = image_id_from_group(GROUP_BUILDING_DOCK_1) + dir_relative;
         draw_building(image_id, x, y);
     }
@@ -1259,7 +1259,7 @@ void city_building_ghost_draw(const map_tile *tile) {
     building_rotation_update_road_orientation();
     switch (type) {
         case BUILDING_DRAGGABLE_RESERVOIR:
-            if (GAME_ENV == ENGINE_ENV_PHARAOH)
+            if (get_game_engine() == ENGINE_ENV_PHARAOH)
 //                draw_draggable_waterlift(tile, x, y);
                 draw_shipyard_wharf(tile, x, y, BUILDING_WATER_LIFT);
             else
@@ -1284,9 +1284,9 @@ void city_building_ghost_draw(const map_tile *tile) {
             draw_fort(tile, x, y);
             break;
         case BUILDING_HIPPODROME:
-            if (GAME_ENV == ENGINE_ENV_C3) {
+            if (get_game_engine() == ENGINE_ENV_C3) {
                 draw_hippodrome(tile, x, y);
-            } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+            } else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
                 draw_default(tile, x, y, type); // Senet house
             }
             break;

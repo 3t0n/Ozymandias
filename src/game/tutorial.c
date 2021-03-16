@@ -63,7 +63,7 @@ void tutorial_init(void) {
                 tut_passed[i] = 0;
     }
 
-    if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+    if (get_game_engine() == ENGINE_ENV_PHARAOH) {
         data.pharaoh.fire = tut_passed[0];
         data.pharaoh.collapse = tut_passed[0];
         data.pharaoh.disease = tut_passed[0];
@@ -104,7 +104,7 @@ void tutorial_init(void) {
         data.pharaoh.flags[38] = tut_passed[3];
         data.pharaoh.flags[39] = tut_passed[3];
 
-    } else if (GAME_ENV == ENGINE_ENV_C3) {
+    } else if (get_game_engine() == ENGINE_ENV_C3) {
         data.tutorial1.fire = tut_passed[0];
         data.tutorial1.crime = tut_passed[0];
         data.tutorial1.collapse = tut_passed[0];
@@ -133,7 +133,7 @@ tutorial_availability tutorial_advisor_empire_availability(void) {
 }
 
 void tutorial_menu_update(int tut) {
-    if (GAME_ENV == ENGINE_ENV_C3) {
+    if (get_game_engine() == ENGINE_ENV_C3) {
         if (tut == 1) {
             building_menu_update(BUILDSET_TUT1_START);
             if (data.tutorial1.fire || data.tutorial1.crime)
@@ -149,7 +149,7 @@ void tutorial_menu_update(int tut) {
             if (data.tutorial2.population_450_reached)
                 building_menu_update(BUILDSET_TUT2_AFTER_450);
         }
-    } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+    } else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
         if (tut == 1) {
             building_menu_update(BUILDSET_TUT1_START);
             if (data.pharaoh.population_150_reached)
@@ -226,7 +226,7 @@ int tutorial_get_population_cap(int current_cap) {
     return current_cap;
 }
 int tutorial_get_immediate_goal_text(void) {
-    if (GAME_ENV == ENGINE_ENV_C3) {
+    if (get_game_engine() == ENGINE_ENV_C3) {
         if (scenario_is_tutorial(1)) {
             if (!data.tutorial1.fire && !data.tutorial1.crime)
                 return 17;
@@ -249,7 +249,7 @@ int tutorial_get_immediate_goal_text(void) {
                 return 25;
         }
         return 0;
-    } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+    } else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
         if (scenario_is_tutorial(1)) {
             if (!data.pharaoh.population_150_reached)
                 return 21;
@@ -311,10 +311,10 @@ int tutorial_handle_fire(void) {
 
     data.tutorial1.fire = 1;
     data.pharaoh.fire = 1;
-    if (GAME_ENV == ENGINE_ENV_C3) {
+    if (get_game_engine() == ENGINE_ENV_C3) {
         building_menu_update(BUILDSET_TUT1_FIRE_C3);
         post_message(MESSAGE_TUTORIAL_FIRE);
-    } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+    } else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
         building_menu_update(BUILDSET_TUT1_FIRE_PH);
         post_message(MESSAGE_TUTORIAL_FIRE_IN_THE_VILLAGE);
     }
@@ -326,10 +326,10 @@ int tutorial_handle_collapse(void) {
 
     data.tutorial1.collapse = 1;
     data.pharaoh.collapse = 1;
-    if (GAME_ENV == ENGINE_ENV_C3) {
+    if (get_game_engine() == ENGINE_ENV_C3) {
         building_menu_update(BUILDSET_TUT1_COLLAPSE_C3);
         post_message(MESSAGE_TUTORIAL_COLLAPSE);
-    } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+    } else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
         building_menu_update(BUILDSET_TUT1_COLLAPSE_PH);
         post_message(MESSAGE_TUTORIAL_COLLAPSED_BUILDING);
     }
@@ -346,11 +346,11 @@ void tutorial_on_disease(void) {
     data.tutorial3.disease = 1;
 }
 void tutorial_on_filled_granary(int quantity) {
-    if (GAME_ENV == ENGINE_ENV_C3 && !data.tutorial2.granary_built && quantity > 400) {
+    if (get_game_engine() == ENGINE_ENV_C3 && !data.tutorial2.granary_built && quantity > 400) {
         data.tutorial2.granary_built = 1;
         building_menu_update(BUILDSET_TUT2_UP_TO_250);
         post_message(MESSAGE_TUTORIAL_WATER);
-    } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+    } else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
         if (scenario_is_tutorial(1) && !data.pharaoh.gamemeat_400_stored && quantity >= 400) {
             data.pharaoh.gamemeat_400_stored = 1;
             building_menu_update(BUILDSET_TUT1_WATER);
@@ -370,7 +370,7 @@ void tutorial_on_add_to_warehouse(void) {
         building_menu_update(BUILDSET_NORMAL);
         post_message(MESSAGE_TUTORIAL_TRADE);
     }
-    else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+    else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
         if (!data.pharaoh.pottery_made && city_resource_count(RESOURCE_POTTERY_PH) >= 2) {
             data.pharaoh.pottery_made = 1;
             building_menu_update(BUILDSET_TUT3_GARDENS);
@@ -448,7 +448,7 @@ void tutorial_on_day_tick(void) {
     if (data.tutorial1.fire || data.pharaoh.fire)
         city_mission_tutorial_set_fire_message_shown(1);
 
-    if (GAME_ENV == ENGINE_ENV_C3) {
+    if (get_game_engine() == ENGINE_ENV_C3) {
         if (data.tutorial3.disease && city_mission_tutorial_show_disease_message())
             post_message(MESSAGE_TUTORIAL_HEALTH);
         if (data.tutorial2.granary_built) {
@@ -477,7 +477,7 @@ void tutorial_on_day_tick(void) {
                 }
             }
         }
-    } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+    } else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
         if (scenario_is_tutorial(1)) {
             if (!data.pharaoh.population_150_reached && city_population() >= 150) {
                 data.pharaoh.population_150_reached = 1;
@@ -510,7 +510,7 @@ void tutorial_save_state(buffer *buf1, buffer *buf2, buffer *buf3) {
     buf3->write_i32(data.tutorial3.disease);
 }
 void tutorial_load_state(buffer *buf1, buffer *buf2, buffer *buf3) {
-    if (GAME_ENV == ENGINE_ENV_C3) {
+    if (get_game_engine() == ENGINE_ENV_C3) {
         data.tutorial1.fire = buf1->read_i32();
         data.tutorial1.crime = buf1->read_i32();
         data.tutorial1.collapse = buf1->read_i32();
@@ -521,7 +521,7 @@ void tutorial_load_state(buffer *buf1, buffer *buf2, buffer *buf3) {
         data.tutorial2.pottery_made = buf1->read_i32();
         data.tutorial2.pottery_made_year = buf2->read_i32();
         data.tutorial3.disease = buf3->read_i32();
-    } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+    } else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
         data.pharaoh.fire = buf1->read_u8();
         data.pharaoh.population_150_reached = buf1->read_u8();
         data.pharaoh.gamemeat_400_stored = buf1->read_u8();

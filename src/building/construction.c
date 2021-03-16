@@ -548,21 +548,21 @@ static void add_to_map(int type, building *b, int size, int orientation, int wat
             break;
             // entertainment
         case BUILDING_AMPHITHEATER:
-            if (GAME_ENV == ENGINE_ENV_C3)
+            if (get_game_engine() == ENGINE_ENV_C3)
                 add_building_tiles_image(b, image_id_from_group(GROUP_BUILDING_AMPHITHEATER));
-            else if (GAME_ENV == ENGINE_ENV_PHARAOH)
+            else if (get_game_engine() == ENGINE_ENV_PHARAOH)
                 add_entertainment_venue(b);
             break;
         case BUILDING_THEATER:
-            if (GAME_ENV == ENGINE_ENV_C3)
+            if (get_game_engine() == ENGINE_ENV_C3)
                 add_building_tiles_image(b, image_id_from_group(GROUP_BUILDING_THEATER));
-            else if (GAME_ENV == ENGINE_ENV_PHARAOH)
+            else if (get_game_engine() == ENGINE_ENV_PHARAOH)
                 add_entertainment_venue(b);
             break;
         case BUILDING_COLOSSEUM:
-            if (GAME_ENV == ENGINE_ENV_C3)
+            if (get_game_engine() == ENGINE_ENV_C3)
                 add_building_tiles_image(b, image_id_from_group(GROUP_BUILDING_COLOSSEUM));
-            else if (GAME_ENV == ENGINE_ENV_PHARAOH)
+            else if (get_game_engine() == ENGINE_ENV_PHARAOH)
                 add_entertainment_venue(b);
             break;
         case BUILDING_FESTIVAL_SQUARE:
@@ -623,19 +623,19 @@ static void add_to_map(int type, building *b, int size, int orientation, int wat
             map_building_tiles_add_farm(b->id, b->x, b->y, 0, 0);
             break;
         case BUILDING_VEGETABLE_FARM:
-            map_building_tiles_add_farm(b->id, b->x, b->y, CROPS_OFFSETS[GAME_ENV], 0);
+            map_building_tiles_add_farm(b->id, b->x, b->y, CROPS_OFFSETS[get_game_engine()], 0);
             break;
         case BUILDING_FRUIT_FARM:
-            map_building_tiles_add_farm(b->id, b->x, b->y, CROPS_OFFSETS[GAME_ENV] * 2, 0);
+            map_building_tiles_add_farm(b->id, b->x, b->y, CROPS_OFFSETS[get_game_engine()] * 2, 0);
             break;
         case BUILDING_OLIVE_FARM:
-            map_building_tiles_add_farm(b->id, b->x, b->y, CROPS_OFFSETS[GAME_ENV] * 3, 0);
+            map_building_tiles_add_farm(b->id, b->x, b->y, CROPS_OFFSETS[get_game_engine()] * 3, 0);
             break;
         case BUILDING_VINES_FARM:
-            map_building_tiles_add_farm(b->id, b->x, b->y, CROPS_OFFSETS[GAME_ENV] * 4, 0);
+            map_building_tiles_add_farm(b->id, b->x, b->y, CROPS_OFFSETS[get_game_engine()] * 4, 0);
             break;
         case BUILDING_PIG_FARM:
-            map_building_tiles_add_farm(b->id, b->x, b->y, CROPS_OFFSETS[GAME_ENV] * 5, 0);
+            map_building_tiles_add_farm(b->id, b->x, b->y, CROPS_OFFSETS[get_game_engine()] * 5, 0);
             break;
             // industry
         case BUILDING_MARBLE_QUARRY:
@@ -722,37 +722,37 @@ static void add_to_map(int type, building *b, int size, int orientation, int wat
             add_building_tiles_image(b, image_id_from_group(GROUP_BUILDING_TEMPLE_VENUS));
             break;
         case BUILDING_LARGE_TEMPLE_CERES:
-            if (GAME_ENV == ENGINE_ENV_C3) {
+            if (get_game_engine() == ENGINE_ENV_C3) {
                 add_building_tiles_image(b, image_id_from_group(GROUP_BUILDING_TEMPLE_CERES) + 1);
-            } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+            } else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
                 add_temple_complex(b);
             }
             break;
         case BUILDING_LARGE_TEMPLE_NEPTUNE:
-            if (GAME_ENV == ENGINE_ENV_C3) {
+            if (get_game_engine() == ENGINE_ENV_C3) {
                 add_building_tiles_image(b, image_id_from_group(GROUP_BUILDING_TEMPLE_NEPTUNE) + 1);
-            } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+            } else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
                 add_temple_complex(b);
             }
             break;
         case BUILDING_LARGE_TEMPLE_MERCURY:
-            if (GAME_ENV == ENGINE_ENV_C3) {
+            if (get_game_engine() == ENGINE_ENV_C3) {
                 add_building_tiles_image(b, image_id_from_group(GROUP_BUILDING_TEMPLE_MERCURY) + 1);
-            } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+            } else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
                 add_temple_complex(b);
             }
             break;
         case BUILDING_LARGE_TEMPLE_MARS:
-            if (GAME_ENV == ENGINE_ENV_C3) {
+            if (get_game_engine() == ENGINE_ENV_C3) {
                 add_building_tiles_image(b, image_id_from_group(GROUP_BUILDING_TEMPLE_MARS) + 1);
-            } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+            } else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
                 add_temple_complex(b);
             }
             break;
         case BUILDING_LARGE_TEMPLE_VENUS:
-            if (GAME_ENV == ENGINE_ENV_C3) {
+            if (get_game_engine() == ENGINE_ENV_C3) {
                 add_building_tiles_image(b, image_id_from_group(GROUP_BUILDING_TEMPLE_VENUS) + 1);
-            } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+            } else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
                 add_temple_complex(b);
             }
             break;
@@ -856,9 +856,9 @@ static void add_to_map(int type, building *b, int size, int orientation, int wat
             add_warehouse(b);
             break;
         case BUILDING_HIPPODROME:
-            if (GAME_ENV == ENGINE_ENV_C3) {
+            if (get_game_engine() == ENGINE_ENV_C3) {
                 add_hippodrome(b);
-            } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+            } else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
                 add_building_tiles_image(b, image_id_from_group(GROUP_BUILDING_SENET_HOUSE));
             }
             break;
@@ -883,7 +883,7 @@ static void add_to_map(int type, building *b, int size, int orientation, int wat
             break;
         case BUILDING_DRAGGABLE_RESERVOIR:
         case BUILDING_RESERVOIR:
-            if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+            if (get_game_engine() == ENGINE_ENV_PHARAOH) {
                 b->data.industry.orientation = waterside_orientation_abs;
                 map_water_add_building(b->id, b->x, b->y, 2,
                                        image_id_from_group(GROUP_BUILDING_RESERVOIR) + waterside_orientation_rel);
@@ -957,13 +957,13 @@ int building_construction_place_building(int type, int x, int y) {
         }
     }
     int waterside_orientation_abs = 0, waterside_orientation_rel = 0;
-    if ((type == BUILDING_SHIPYARD && GAME_ENV == ENGINE_ENV_C3) || type == BUILDING_WHARF ||
-        (type == BUILDING_WATER_LIFT && GAME_ENV == ENGINE_ENV_PHARAOH)) {
+    if ((type == BUILDING_SHIPYARD && get_game_engine() == ENGINE_ENV_C3) || type == BUILDING_WHARF ||
+        (type == BUILDING_WATER_LIFT && get_game_engine() == ENGINE_ENV_PHARAOH)) {
         if (map_water_determine_orientation_size2(x, y, 0, &waterside_orientation_abs, &waterside_orientation_rel)) {
             city_warning_show(WARNING_SHORE_NEEDED);
             return 0;
         }
-    } else if ((type == BUILDING_SHIPYARD && GAME_ENV == ENGINE_ENV_PHARAOH) || type == BUILDING_DOCK) {
+    } else if ((type == BUILDING_SHIPYARD && get_game_engine() == ENGINE_ENV_PHARAOH) || type == BUILDING_DOCK) {
         if (map_water_determine_orientation_size3(x, y, 0, &waterside_orientation_abs, &waterside_orientation_rel)) {
             city_warning_show(WARNING_SHORE_NEEDED);
             return 0;
@@ -972,7 +972,7 @@ int building_construction_place_building(int type, int x, int y) {
             city_warning_show(WARNING_DOCK_OPEN_WATER_NEEDED);
             return 0;
         }
-    } else if (GAME_ENV == ENGINE_ENV_PHARAOH && type == BUILDING_BOOTH ||
+    } else if (get_game_engine() == ENGINE_ENV_PHARAOH && type == BUILDING_BOOTH ||
         type == BUILDING_BANDSTAND || type == BUILDING_PAVILLION || type == BUILDING_FESTIVAL_SQUARE) {
         int booth_warning = 0;
         if (type == BUILDING_BOOTH)
@@ -1023,7 +1023,7 @@ int building_construction_place_building(int type, int x, int y) {
             return 0;
         }
     }
-    if (GAME_ENV == ENGINE_ENV_C3 && type == BUILDING_HIPPODROME) {
+    if (get_game_engine() == ENGINE_ENV_C3 && type == BUILDING_HIPPODROME) {
         if (city_buildings_has_hippodrome()) {
             city_warning_show(WARNING_ONE_BUILDING_OF_TYPE);
             return 0;
@@ -1070,7 +1070,7 @@ static void mark_construction(int x, int y, int size, int terrain, int absolute_
 
 }
 static int has_nearby_enemy(int x_start, int y_start, int x_end, int y_end) {
-    for (int i = 1; i < MAX_FIGURES[GAME_ENV]; i++) {
+    for (int i = 1; i < MAX_FIGURES[get_game_engine()]; i++) {
         figure *f = figure_get(i);
         if (config_get(CONFIG_GP_CH_WOLVES_BLOCK)) {
             if (f->state != FIGURE_STATE_ALIVE || (!f->is_enemy() && f->type != FIGURE_WOLF))
@@ -1316,7 +1316,7 @@ void building_construction_set_type(int type) { // select building for construct
                 data.required_terrain.ore = true;
                 break;
             case BUILDING_TIMBER_YARD:
-                if (GAME_ENV == ENGINE_ENV_C3)
+                if (get_game_engine() == ENGINE_ENV_C3)
                     data.required_terrain.tree = true;
                 break;
             case BUILDING_CLAY_PIT:
@@ -1336,7 +1336,7 @@ void building_construction_set_type(int type) { // select building for construct
             case BUILDING_VILLAGE_PALACE:
             case BUILDING_TOWN_PALACE:
             case BUILDING_CITY_PALACE:
-                if (GAME_ENV == ENGINE_ENV_PHARAOH)
+                if (get_game_engine() == ENGINE_ENV_PHARAOH)
                     data.required_terrain.groundwater = true;
                 break;
             default:
@@ -1519,7 +1519,7 @@ void building_construction_update(int x, int y, int grid_offset) {// update ghos
     } else if (data.required_terrain.meadow || data.required_terrain.rock || data.required_terrain.tree ||
                data.required_terrain.water || data.required_terrain.wall || data.required_terrain.groundwater) {
         // never mark as constructing
-    } else if (GAME_ENV == ENGINE_ENV_PHARAOH && type == BUILDING_BOOTH || type == BUILDING_BANDSTAND
+    } else if (get_game_engine() == ENGINE_ENV_PHARAOH && type == BUILDING_BOOTH || type == BUILDING_BANDSTAND
         || type == BUILDING_PAVILLION || type == BUILDING_FESTIVAL_SQUARE) {
         // never mark as constructing; todo?
     } else {
@@ -1548,7 +1548,7 @@ void building_construction_place(void) { // confirm final placement
         city_warning_show(WARNING_OUT_OF_MONEY);
         return;
     }
-    if (GAME_ENV == ENGINE_ENV_C3 && building_is_large_temple(type) && city_resource_count(RESOURCE_MARBLE_C3) < 2) {
+    if (get_game_engine() == ENGINE_ENV_C3 && building_is_large_temple(type) && city_resource_count(RESOURCE_MARBLE_C3) < 2) {
         map_property_clear_constructing_and_deleted();
         city_warning_show(WARNING_MARBLE_NEEDED_LARGE_TEMPLE);
         return;
@@ -1625,7 +1625,7 @@ void building_construction_place(void) { // confirm final placement
             map_routing_update_land();
             break;
         case BUILDING_DRAGGABLE_RESERVOIR: {
-            if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+            if (get_game_engine() == ENGINE_ENV_PHARAOH) {
                 if (!building_construction_place_building(type, x_end, y_end))
                     return;
                 break;
@@ -1668,7 +1668,7 @@ void building_construction_place(void) { // confirm final placement
     }
     placement_cost *= length;
 
-    if (GAME_ENV == ENGINE_ENV_C3 && building_is_large_temple(type) || type == BUILDING_ORACLE) {
+    if (get_game_engine() == ENGINE_ENV_C3 && building_is_large_temple(type) || type == BUILDING_ORACLE) {
         building_warehouses_remove_resource(RESOURCE_MARBLE_C3, 2);
     }
     if (data.type == BUILDING_MENU_SMALL_TEMPLES) {
@@ -1698,7 +1698,7 @@ int building_construction_can_place_on_terrain(int x, int y, int *warning_id, in
             set_warning(warning_id, WARNING_MEADOW_NEEDED);
             can_place = 1;
         }
-        if (GAME_ENV == ENGINE_ENV_PHARAOH && map_terrain_all_tiles_in_radius_are(x, y, size, 0, TERRAIN_FLOODPLAIN)) { // todo: add inundable lands
+        if (get_game_engine() == ENGINE_ENV_PHARAOH && map_terrain_all_tiles_in_radius_are(x, y, size, 0, TERRAIN_FLOODPLAIN)) { // todo: add inundable lands
             set_warning(warning_id, WARNING_MEADOW_NEEDED);
             can_place = 1;
         }

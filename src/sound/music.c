@@ -144,7 +144,7 @@ static void play_track(int track) {
         return;
     int volume = setting_sound(SOUND_MUSIC)->volume;
 
-    switch (GAME_ENV) {
+    switch (get_game_engine()) {
         const char *mp3_track;
         case ENGINE_ENV_C3:
             mp3_track = dir_get_file(c3_mp3[track], NOT_LOCALIZED);

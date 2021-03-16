@@ -5,7 +5,7 @@
 #include "core/game_environment.h"
 
 int resource_image_offset(int resource, int type) {
-    if (GAME_ENV == ENGINE_ENV_C3) {
+    if (get_game_engine() == ENGINE_ENV_C3) {
         if (resource == RESOURCE_MEAT_C3 && scenario_building_allowed(BUILDING_WHARF)) {
             switch (type) {
                 case RESOURCE_IMAGE_STORAGE:
@@ -22,7 +22,7 @@ int resource_image_offset(int resource, int type) {
         } else {
             return 0;
         }
-    } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+    } else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
         switch (type) {
             case RESOURCE_IMAGE_STORAGE:
                 return 0;
@@ -39,10 +39,10 @@ int resource_image_offset(int resource, int type) {
 }
 
 int resource_is_food(int resource) {
-    if (GAME_ENV == ENGINE_ENV_C3) {
+    if (get_game_engine() == ENGINE_ENV_C3) {
         return resource == RESOURCE_WHEAT || resource == RESOURCE_VEGETABLES ||
                resource == RESOURCE_FRUIT || resource == RESOURCE_MEAT_C3;
-    } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+    } else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
         return resource == RESOURCE_GRAIN || resource == RESOURCE_MEAT_PH ||
                resource == RESOURCE_LETTUCE || resource == RESOURCE_CHICKPEAS ||
                resource == RESOURCE_POMEGRANATES || resource == RESOURCE_FIGS ||
@@ -51,7 +51,7 @@ int resource_is_food(int resource) {
 }
 
 int resource_to_workshop_type(int resource) {
-    if (GAME_ENV == ENGINE_ENV_C3) {
+    if (get_game_engine() == ENGINE_ENV_C3) {
         switch (resource) {
             case RESOURCE_OLIVES:
                 return WORKSHOP_OLIVES_TO_OIL;
@@ -66,7 +66,7 @@ int resource_to_workshop_type(int resource) {
             default:
                 return WORKSHOP_NONE;
         }
-    } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+    } else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
         switch (resource) {
             case RESOURCE_CLAY:
                 return WORKSHOP_CLAY_TO_POTTERY;
@@ -90,9 +90,9 @@ int resource_to_workshop_type(int resource) {
 }
 
 int resource_get_gold() {
-    if (GAME_ENV == ENGINE_ENV_C3) {
+    if (get_game_engine() == ENGINE_ENV_C3) {
         return RESOURCE_DENARII;
-    } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+    } else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
         return RESOURCE_GOLD;
     }
 }

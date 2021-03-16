@@ -46,7 +46,7 @@ static void mark_well_access(int well_id, int radius) {
 
 void map_water_supply_update_houses(void) {
     building_list_small_clear();
-    for (int i = 1; i < MAX_BUILDINGS[GAME_ENV]; i++) {
+    for (int i = 1; i < MAX_BUILDINGS[get_game_engine()]; i++) {
         building *b = building_get(i);
         if (b->state != BUILDING_STATE_VALID)
             continue;
@@ -65,9 +65,9 @@ void map_water_supply_update_houses(void) {
     int total_wells = building_list_small_size();
     const int *wells = building_list_small_items();
     for (int i = 0; i < total_wells; i++) {
-        if (GAME_ENV == ENGINE_ENV_C3)
+        if (get_game_engine() == ENGINE_ENV_C3)
             mark_well_access(wells[i], 2);
-        else if (GAME_ENV == ENGINE_ENV_PHARAOH)
+        else if (get_game_engine() == ENGINE_ENV_PHARAOH)
             mark_well_access(wells[i], 1);
     }
 }
@@ -96,7 +96,7 @@ static void fill_aqueducts_from_offset(int grid_offset) {
     int next_offset;
     int image_without_water = image_id_from_group(GROUP_BUILDING_AQUEDUCT) + 15;
     do {
-        if (++guard >= grid_total_size[GAME_ENV])
+        if (++guard >= grid_total_size[get_game_engine()])
             break;
 
         map_aqueduct_set(grid_offset, 1);
@@ -106,7 +106,7 @@ static void fill_aqueducts_from_offset(int grid_offset) {
 
         next_offset = -1;
         for (int i = 0; i < 4; i++) {
-            const int ADJACENT_OFFSETS[] = {-grid_size[GAME_ENV], 1, grid_size[GAME_ENV], -1};
+            const int ADJACENT_OFFSETS[] = {-grid_size[get_game_engine()], 1, grid_size[get_game_engine()], -1};
             int new_offset = grid_offset + ADJACENT_OFFSETS[i];
             building *b = building_get(map_building_at(new_offset));
             if (b->id && b->type == BUILDING_RESERVOIR) {
@@ -143,7 +143,7 @@ static void fill_aqueducts_from_offset(int grid_offset) {
 }
 
 static int OFFSET(int x, int y) {
-    switch (GAME_ENV) {
+    switch (get_game_engine()) {
         case ENGINE_ENV_C3:
             return OFFSET_C3(x, y);
             break;
@@ -159,7 +159,7 @@ void map_water_supply_update_reservoir_fountain_C3(void) {
     set_all_aqueducts_to_no_water();
     building_list_large_clear(1);
     // mark reservoirs next to water
-    for (int i = 1; i < MAX_BUILDINGS[GAME_ENV]; i++) {
+    for (int i = 1; i < MAX_BUILDINGS[get_game_engine()]; i++) {
         building *b = building_get(i);
         if (b->state == BUILDING_STATE_VALID && b->type == BUILDING_RESERVOIR) {
             building_list_large_add(i);
@@ -194,7 +194,7 @@ void map_water_supply_update_reservoir_fountain_C3(void) {
             map_terrain_add_with_radius(b->x, b->y, 3, 10, TERRAIN_GROUNDWATER);
     }
     // fountains
-    for (int i = 1; i < MAX_BUILDINGS[GAME_ENV]; i++) {
+    for (int i = 1; i < MAX_BUILDINGS[get_game_engine()]; i++) {
         building *b = building_get(i);
         if (b->state != BUILDING_STATE_VALID || b->type != BUILDING_FOUNTAIN)
             continue;

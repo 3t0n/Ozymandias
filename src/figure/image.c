@@ -73,7 +73,7 @@ void figure::figure_image_update() {
 void figure::cart_update_image() {
 
     // determine cart sprite
-    if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+    if (get_game_engine() == ENGINE_ENV_PHARAOH) {
         cart_image_id = image_id_from_group(GROUP_FIGURE_CARTPUSHER_CART);
         if (loads_counter > 0) {
             short amount_offset = 2;

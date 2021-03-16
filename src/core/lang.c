@@ -72,7 +72,7 @@ static int file_exists_in_dir(const char *dir, const char *file) {
     return file_exists(path, NOT_LOCALIZED);
 }
 int lang_dir_is_valid(const char *dir) {
-    lang_files_collection *lfc = &lfcs[GAME_ENV];
+    lang_files_collection *lfc = &lfcs[get_game_engine()];
     if (file_exists_in_dir(dir, lfc->FILE_TEXT_ENG) && file_exists_in_dir(dir, lfc->FILE_MM_ENG))
         return 1;
 
@@ -118,7 +118,7 @@ static void parse_MM_file(buffer *buf) {
         m->subtitle.text = get_message_text(buf->read_i32());
         m->content.text = get_message_text(buf->read_i32());
     }
-    switch (GAME_ENV) {
+    switch (get_game_engine()) {
         case ENGINE_ENV_C3:
             buf->set_offset(32024);
             buf->read_raw(&data.message_data, 262704);
@@ -157,7 +157,7 @@ static int load_files(const char *text_filename, const char *message_filename, i
     return 1;
 }
 int lang_load(int is_editor) {
-    lang_files_collection *lfc = &lfcs[GAME_ENV];
+    lang_files_collection *lfc = &lfcs[get_game_engine()];
     if (is_editor)
         return load_files(lfc->FILE_EDITOR_TEXT_ENG, lfc->FILE_EDITOR_MM_ENG, MAY_BE_LOCALIZED);
 
@@ -170,7 +170,7 @@ int lang_load(int is_editor) {
 }
 const uint8_t *lang_get_string(int group, int index) {
     // Add new strings
-    if (GAME_ENV == ENGINE_ENV_C3) {
+    if (get_game_engine() == ENGINE_ENV_C3) {
         if ((group == 28) && (index == 115))
             return translation_for(TR_BUILDING_ROADBLOCK);
         if ((group == 28) && (index == 116))

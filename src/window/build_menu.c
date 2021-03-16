@@ -120,17 +120,17 @@ static int set_submenu_for_type(int type) {
             data.selected_submenu = BUILD_MENU_FORTS;
             break;
         case BUILDING_MENU_MONUMENTS:
-            if (GAME_ENV == ENGINE_ENV_C3)
+            if (get_game_engine() == ENGINE_ENV_C3)
                 return 0;
             data.selected_submenu = BUILD_MENU_MONUMENTS;
             break;
         case BUILDING_MENU_WATER_CROSSINGS:
-            if (GAME_ENV == ENGINE_ENV_C3)
+            if (get_game_engine() == ENGINE_ENV_C3)
                 return 0;
             data.selected_submenu = BUILD_MENU_WATER_CROSSINGS;
             break;
         case BUILDING_MENU_BEAUTIFICATION:
-            if (GAME_ENV == ENGINE_ENV_C3)
+            if (get_game_engine() == ENGINE_ENV_C3)
                 return 0;
             data.selected_submenu = BUILD_MENU_BEAUTIFICATION;
             break;
@@ -156,13 +156,13 @@ static void draw_menu_buttons(void) {
     int label_width = (BTN_W_TOT) / 16;
     int label_margin = BTN_W_TOT + 10;
     int label_offset = 0;
-    if (GAME_ENV == ENGINE_ENV_PHARAOH)
+    if (get_game_engine() == ENGINE_ENV_PHARAOH)
         label_offset = 20;
 
     font_t font = FONT_NORMAL_GREEN;
     int item_index = -1;
     for (int i = 0; i < data.num_items; i++) {
-        if (GAME_ENV == ENGINE_ENV_PHARAOH)
+        if (get_game_engine() == ENGINE_ENV_PHARAOH)
             font = FONT_NORMAL_BLACK;
         if (data.focus_button_id == i + 1)
             font = FONT_NORMAL_GREEN;
@@ -235,7 +235,7 @@ static void button_menu_item(int item) {
 
 int window_build_menu_image(void) {
     int image_base = image_id_from_group(GROUP_PANEL_WINDOWS);
-    switch (GAME_ENV) {
+    switch (get_game_engine()) {
         case ENGINE_ENV_C3:
             if (building_construction_type() == BUILDING_NONE)
                 return image_base + 12;

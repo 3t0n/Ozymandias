@@ -222,7 +222,7 @@ static int has_adjacent_deletion(int grid_offset) {
     int size = map_property_multi_tile_size(grid_offset);
     int total_adjacent_offsets = size * 2 + 1;
     const int *adjacent_offset;// = ADJACENT_OFFSETS[size - 2][city_view_orientation() / 2];
-    switch (GAME_ENV) {
+    switch (get_game_engine()) {
         case ENGINE_ENV_C3:
             adjacent_offset = ADJACENT_OFFSETS_C3[size - 2][city_view_orientation() / 2];
             break;
@@ -280,7 +280,7 @@ static void draw_senate_rating_flags(const building *b, int x, int y, color_t co
 }
 static void draw_workshop_raw_material_storage(const building *b, int x, int y, color_t color_mask) {
     int image_base = 0;
-    if (GAME_ENV == ENGINE_ENV_C3) {
+    if (get_game_engine() == ENGINE_ENV_C3) {
         image_base = image_id_from_group(GROUP_BUILDING_WORKSHOP_RAW_MATERIAL);
         switch (b->type) {
             case BUILDING_WINE_WORKSHOP:
@@ -304,7 +304,7 @@ static void draw_workshop_raw_material_storage(const building *b, int x, int y, 
                     image_draw(image_base + 4, x + 47, y + 24, color_mask);
                 break;
         }
-    } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+    } else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
         image_base = image_id_from_group(GROUP_EMPIRE_RESOURCES);
         switch (b->type) {
             case BUILDING_HUNTING_LODGE:
@@ -339,11 +339,11 @@ static void draw_dock_workers(const building *b, int x, int y, color_t color_mas
 }
 static void draw_warehouse_ornaments(const building *b, int x, int y, color_t color_mask) {
     image_draw(image_id_from_group(GROUP_BUILDING_WAREHOUSE) + 17, x - 4, y - 42, color_mask);
-    if (b->id == city_buildings_get_trade_center() && GAME_ENV == ENGINE_ENV_C3)
+    if (b->id == city_buildings_get_trade_center() && get_game_engine() == ENGINE_ENV_C3)
         image_draw(image_id_from_group(GROUP_BUILDING_TRADE_CENTER_FLAG), x + 19, y - 56, color_mask);
 }
 static void draw_granary_stores(const building *b, int x, int y, color_t color_mask) {
-    if (GAME_ENV == ENGINE_ENV_C3) {
+    if (get_game_engine() == ENGINE_ENV_C3) {
         image_draw(image_id_from_group(GROUP_BUILDING_GRANARY) + 1, x, y + 60, color_mask);
         if (b->data.granary.resource_stored[RESOURCE_NONE] < 2400)
             image_draw(image_id_from_group(GROUP_BUILDING_GRANARY) + 2, x + 33, y - 60, color_mask);
@@ -353,7 +353,7 @@ static void draw_granary_stores(const building *b, int x, int y, color_t color_m
             image_draw(image_id_from_group(GROUP_BUILDING_GRANARY) + 4, x + 91, y - 50, color_mask);
         if (b->data.granary.resource_stored[RESOURCE_NONE] < 600)
             image_draw(image_id_from_group(GROUP_BUILDING_GRANARY) + 5, x + 117, y - 62, color_mask);
-    } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+    } else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
         int last_spot_filled = 0;
         int spot_x = 0;
         int spot_y = 0;
@@ -585,7 +585,7 @@ static void draw_figures(int x, int y, int grid_offset) {
 void draw_debug(int x, int y, int grid_offset) {
 
     // draw terrain data
-    if (true) {
+    if (is_debug_mode()) {
         uint32_t tile_data = map_moisture_get(grid_offset);
         uint8_t str[10];
         int flag_data = 0;
@@ -604,24 +604,25 @@ void draw_debug(int x, int y, int grid_offset) {
         }
 
         building *b = building_get(map_building_at(grid_offset));
-        if (map_building_at(grid_offset) && false && b->grid_offset == grid_offset) {
+        if (map_building_at(grid_offset) && b->grid_offset == grid_offset) {
             string_from_int(str, b->type, 0);
             draw_text_shadow(str, x + 13, y, COLOR_GREEN);
 
-//            string_from_int(str, b->id, 0);
-//            draw_text_shadow(str, x + 23, y + 15, COLOR_WHITE);
+            string_from_int(str, b->id, 0);
+            draw_text_shadow(str, x + 23, y + 20, COLOR_WHITE);
 
-//            string_from_int(str, map_image_at(grid_offset), 0);
-//            draw_text_shadow(str, x + 13, y - 5, COLOR_BLUE);
+            string_from_int(str, map_image_at(grid_offset), 0);
+            draw_text_shadow(str, x + 13, y - 10, COLOR_BLUE);
 
-//            int p = map_bitfield_get(grid_offset);
-//            if (p & 32)
-//                p -= 32;
-//            string_from_int(str, p, 0);
-//            draw_text_shadow(str, x + 23, y + 10, COLOR_RED);
+            int p = map_bitfield_get(grid_offset);
+            if (p & 32) {
+                p -= 32;
+            }
+            string_from_int(str, p, 0);
+            draw_text_shadow(str, x + 23, y + 10, COLOR_RED);
 
 //            string_from_int(str, b->next_part_building_id, 0);
-//            draw_text_shadow(str, x + 23, y + 20, COLOR_GREEN);
+//            draw_text_shadow(str, x + 23, y + 30, COLOR_BLACK);
 
             if (b->data.entertainment.days1 && false) {
                 string_from_int(str, b->data.entertainment.play, 0);
@@ -717,16 +718,17 @@ void draw_debug(int x, int y, int grid_offset) {
 //        string_from_int(str, grid_offset, 0);
 //        draw_text_shadow(str, x + 15, y + 15, COLOR_GREEN);
 //    text_draw(str, x, y, FONT_NORMAL_PLAIN, 0);
-    }
 
-    int figure_id = map_figure_at(grid_offset);
-    while (figure_id) {
-        figure *f = figure_get(figure_id);
-        f->draw_debug();
-        if (figure_id != f->next_figure)
-            figure_id = f->next_figure;
-        else
-            figure_id = 0;
+
+        int figure_id = map_figure_at(grid_offset);
+        while (figure_id) {
+            figure *f = figure_get(figure_id);
+            f->draw_debug();
+            if (figure_id != f->next_figure)
+                figure_id = f->next_figure;
+            else
+                figure_id = 0;
+        }
     }
 }
 
@@ -840,16 +842,16 @@ static void draw_animation(int x, int y, int grid_offset) {
             break;
         case BUILDING_GRANARY:
             draw_granary_stores(b, x, y, color_mask);
-            if (GAME_ENV == ENGINE_ENV_C3)
+            if (get_game_engine() == ENGINE_ENV_C3)
                 draw_normal_anim(x + 77, y - 109, b, image_id + 5, color_mask);
-            else if (GAME_ENV == ENGINE_ENV_PHARAOH)
+            else if (get_game_engine() == ENGINE_ENV_PHARAOH)
                 draw_normal_anim(x + 114, y + 2, b, image_id_from_group(GROUP_GRANARY_ANIM_PH) - 1, color_mask);
             break;
         case BUILDING_WAREHOUSE:
             draw_warehouse_ornaments(b, x, y, color_mask);
-            if (GAME_ENV == ENGINE_ENV_C3)
+            if (get_game_engine() == ENGINE_ENV_C3)
                 draw_normal_anim(x + 77, y - 109, b, image_id, color_mask);
-            else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+            else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
                 draw_normal_anim(x + 21, y + 24, b, image_id_from_group(GROUP_WAREHOUSE_ANIM_PH) - 1, color_mask);
                 image_draw(image_id + 17, x - 5, y - 42, color_mask);
             }
@@ -901,7 +903,7 @@ static void draw_animation(int x, int y, int grid_offset) {
         case BUILDING_BANDSTAND:
         case BUILDING_BOOTH:
         case BUILDING_PAVILLION:
-            if (GAME_ENV == ENGINE_ENV_C3)
+            if (get_game_engine() == ENGINE_ENV_C3)
                 draw_entertainment_spectators(b, x, y, color_mask);
             else if (grid_offset == b->grid_offset && building_get(b->prev_part_building_id)->type != b->type)
                 draw_entertainment_anim_ph(x, y, b, color_mask);
@@ -987,75 +989,114 @@ void city_without_overlay_draw(int selected_figure_id, pixel_coordinate *figure_
         city_view_foreach_map_tile(draw_debug);
     }
 
-    /////// TEMP
-    if (false) return;
-    auto data = give_me_da_time();
-    uint8_t str[10];
-    string_from_int(str, data->tick, 0);
-    draw_text_shadow((uint8_t*)string_from_ascii("tick:"), 13, 15, COLOR_WHITE);
-    draw_text_shadow(str, 50 + 13, 15, COLOR_WHITE);
-    string_from_int(str, data->day, 0);
-    draw_text_shadow((uint8_t*)string_from_ascii("day:"), 13, 25, COLOR_WHITE);
-    draw_text_shadow(str, 50 + 13, 25, COLOR_WHITE);
-    string_from_int(str, data->month, 0);
-    draw_text_shadow((uint8_t*)string_from_ascii("month:"), 13, 35, COLOR_WHITE);
-    draw_text_shadow(str, 50 + 13, 35, COLOR_WHITE);
-    string_from_int(str, data->year, 0);
-    draw_text_shadow((uint8_t*)string_from_ascii("year:"), 13, 45, COLOR_WHITE);
-    draw_text_shadow(str, 50 + 13, 45, COLOR_WHITE);
+    // Additional information for debug
+    if (is_debug_mode()) {
+        auto data = give_me_da_time();
+        uint8_t str[10];
+        string_from_int(str, data->tick, 0);
+        draw_text_shadow((uint8_t *) string_from_ascii("tick:"), 13, 15, COLOR_WHITE);
+        draw_text_shadow(str, 50 + 13, 15, COLOR_WHITE);
+        string_from_int(str, data->day, 0);
+        draw_text_shadow((uint8_t *) string_from_ascii("day:"), 13, 25, COLOR_WHITE);
+        draw_text_shadow(str, 50 + 13, 25, COLOR_WHITE);
+        string_from_int(str, data->month, 0);
+        draw_text_shadow((uint8_t *) string_from_ascii("month:"), 13, 35, COLOR_WHITE);
+        draw_text_shadow(str, 50 + 13, 35, COLOR_WHITE);
+        string_from_int(str, data->year, 0);
+        draw_text_shadow((uint8_t *) string_from_ascii("year:"), 13, 45, COLOR_WHITE);
+        draw_text_shadow(str, 50 + 13, 45, COLOR_WHITE);
 
-    string_from_int(str, data->month*16+data->day, 0);
-    draw_text_shadow((uint8_t*)string_from_ascii("total:"), 13, 65, COLOR_WHITE);
-    draw_text_shadow(str, 50 + 13, 65, COLOR_WHITE);
-    string_from_int(str, city_data.floods.month/15*8, 0);
-    draw_text_shadow((uint8_t*)string_from_ascii("coming:"), 13, 75, COLOR_WHITE);
-    draw_text_shadow(str, 50 + 13, 75, COLOR_WHITE);
-    string_from_int(str, city_data.floods.month, 0);
-    draw_text_shadow((uint8_t*)string_from_ascii("flood:"), 13, 85, COLOR_WHITE);
-    draw_text_shadow(str, 50 + 13, 85, COLOR_WHITE);
+        string_from_int(str, data->month * 16 + data->day, 0);
+        draw_text_shadow((uint8_t *) string_from_ascii("total:"), 13, 65, COLOR_WHITE);
+        draw_text_shadow(str, 50 + 13, 65, COLOR_WHITE);
+        string_from_int(str, city_data.floods.month / 15 * 8, 0);
+        draw_text_shadow((uint8_t *) string_from_ascii("coming:"), 13, 75, COLOR_WHITE);
+        draw_text_shadow(str, 50 + 13, 75, COLOR_WHITE);
+        string_from_int(str, city_data.floods.month, 0);
+        draw_text_shadow((uint8_t *) string_from_ascii("flood:"), 13, 85, COLOR_WHITE);
+        draw_text_shadow(str, 50 + 13, 85, COLOR_WHITE);
 
-    auto flags = give_me_da_tut_flags();
-    const char* const flagnames[41] = {
-        "fire","pop_150","meat_400","collapse","gold_500","temples_done","disease","figs_800","???","pottery_200",
-        "beer_300","","","","","tut1 start","tut2 start","tut3 start","tut4 start","tut5 start",
-        "tut6 start","tut7 start","tut8 start","","","","// bazaar","// pottery","","",
-        "// tut4 ???","","","// water supply","// tut4 ???","","// entertainment","// temples","// taxes","// mansion",
-        "",
-    };
-    for (int i = 0; i < 41; i++) {
+        auto flags = give_me_da_tut_flags();
+        const char *const flagnames[41] = {
+                "fire", "pop_150", "meat_400", "collapse", "gold_500", "temples_done", "disease", "figs_800", "???",
+                "pottery_200",
+                "beer_300", "", "", "", "", "tut1 start", "tut2 start", "tut3 start", "tut4 start", "tut5 start",
+                "tut6 start", "tut7 start", "tut8 start", "", "", "", "// bazaar", "// pottery", "", "",
+                "// tut4 ???", "", "", "// water supply", "// tut4 ???", "", "// entertainment", "// temples",
+                "// taxes", "// mansion",
+                "",
+        };
+        for (int i = 0; i < 41; i++) {
 
-        int f = flags->pharaoh.flags[i];
-        switch (i) {
-            case 0: f = flags->pharaoh.fire; break;
-            case 1: f = flags->pharaoh.population_150_reached; break;
-            case 2: f = flags->pharaoh.gamemeat_400_stored; break;
-            case 3: f = flags->pharaoh.collapse; break;
-            case 4: f = flags->pharaoh.gold_mined_500; break;
-            case 5: f = flags->pharaoh.temples_built; break;
+            int f = flags->pharaoh.flags[i];
+            switch (i) {
+                case 0:
+                    f = flags->pharaoh.fire;
+                    break;
+                case 1:
+                    f = flags->pharaoh.population_150_reached;
+                    break;
+                case 2:
+                    f = flags->pharaoh.gamemeat_400_stored;
+                    break;
+                case 3:
+                    f = flags->pharaoh.collapse;
+                    break;
+                case 4:
+                    f = flags->pharaoh.gold_mined_500;
+                    break;
+                case 5:
+                    f = flags->pharaoh.temples_built;
+                    break;
 //            case 6: ??? crime?
-            case 7: f = flags->pharaoh.figs_800_stored; break;
-            case 8: f = flags->pharaoh.disease; break;
-            case 9: f = flags->pharaoh.pottery_made; break;
-            case 10: f = flags->pharaoh.beer_made; break;
-            //
-            case 15: f = flags->pharaoh.tut1_start; break;
-            case 16: f = flags->pharaoh.tut2_start; break;
-            case 17: f = flags->pharaoh.tut3_start; break;
-            case 18: f = flags->pharaoh.tut4_start; break;
-            case 19: f = flags->pharaoh.tut5_start; break;
-            case 20: f = flags->pharaoh.tut6_start; break;
-            case 21: f = flags->pharaoh.tut7_start; break;
-            case 22: f = flags->pharaoh.tut8_start; break;
-        }
+                case 7:
+                    f = flags->pharaoh.figs_800_stored;
+                    break;
+                case 8:
+                    f = flags->pharaoh.disease;
+                    break;
+                case 9:
+                    f = flags->pharaoh.pottery_made;
+                    break;
+                case 10:
+                    f = flags->pharaoh.beer_made;
+                    break;
+                    //
+                case 15:
+                    f = flags->pharaoh.tut1_start;
+                    break;
+                case 16:
+                    f = flags->pharaoh.tut2_start;
+                    break;
+                case 17:
+                    f = flags->pharaoh.tut3_start;
+                    break;
+                case 18:
+                    f = flags->pharaoh.tut4_start;
+                    break;
+                case 19:
+                    f = flags->pharaoh.tut5_start;
+                    break;
+                case 20:
+                    f = flags->pharaoh.tut6_start;
+                    break;
+                case 21:
+                    f = flags->pharaoh.tut7_start;
+                    break;
+                case 22:
+                    f = flags->pharaoh.tut8_start;
+                    break;
+            }
 
-        int color = COLOR_WHITE;
-        if (f)
-            color = COLOR_GREEN;
-        string_from_int(str, i, 0);
-        draw_text_shadow(str, 13, 115 + i*10, color);
-        draw_text_shadow((uint8_t*)string_from_ascii(":"), 13+20, 115 + i*10, color);
-        string_from_int(str, f, 0);
-        draw_text_shadow(str, 13+30, 115 + i*10, color);
-        draw_text_shadow((uint8_t*)string_from_ascii(flagnames[i]), 13+45, 115 + i*10, color);
+            int color = COLOR_WHITE;
+            if (f)
+                color = COLOR_GREEN;
+            string_from_int(str, i, 0);
+            draw_text_shadow(str, 13, 115 + i * 10, color);
+            draw_text_shadow((uint8_t *) string_from_ascii(":"), 13 + 20, 115 + i * 10, color);
+            string_from_int(str, f, 0);
+            draw_text_shadow(str, 13 + 30, 115 + i * 10, color);
+            draw_text_shadow((uint8_t *) string_from_ascii(flagnames[i]), 13 + 45, 115 + i * 10, color);
+        }
     }
 }

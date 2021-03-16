@@ -60,7 +60,7 @@ static int blocked_land_terrain(void) {
 }
 
 static int OFFSET(int x, int y) {
-    switch (GAME_ENV) {
+    switch (get_game_engine()) {
         case ENGINE_ENV_C3:
             return OFFSET_C3(x, y);
             break;
@@ -232,7 +232,7 @@ int map_water_determine_orientation_size3(int x, int y, int adjust_xy, int *orie
 
 int map_water_get_wharf_for_new_fishing_boat(figure *boat, map_point *tile) {
     building *wharf = 0;
-    for (int i = 1; i < MAX_BUILDINGS[GAME_ENV]; i++) {
+    for (int i = 1; i < MAX_BUILDINGS[get_game_engine()]; i++) {
         building *b = building_get(i);
         if (b->state == BUILDING_STATE_VALID && b->type == BUILDING_WHARF) {
             int wharf_boat_id = b->data.industry.fishing_boat_id;

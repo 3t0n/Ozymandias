@@ -126,9 +126,9 @@ void figure_generate_criminals(void) {
         if (sentiment < 30) {
             if (random_byte() >= sentiment + 50) {
                 if (min_happiness <= 10)
-                    if (GAME_ENV == ENGINE_ENV_C3) { // Temporary disable rioters in Egypt
+                    if (get_game_engine() == ENGINE_ENV_C3) { // Temporary disable rioters in Egypt
                         generate_rioter(min_building);
-                    } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+                    } else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
                         generate_mugger(min_building);
                     }
                 else if (min_happiness < 30)

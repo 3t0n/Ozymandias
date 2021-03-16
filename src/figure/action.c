@@ -454,7 +454,7 @@ void figure::action_perform() {
             case 67: shipwreck_action();                break;
             case 68: sheep_action();                    break;
             case 69:
-                if (GAME_ENV == ENGINE_ENV_C3)
+                if (get_game_engine() == ENGINE_ENV_C3)
                     wolf_action();
                 else
                     ostrich_action();                   break;
@@ -486,6 +486,6 @@ void figure_action_handle(void) {
 //    return;
     city_figures_reset();
     city_entertainment_set_hippodrome_has_race(0);
-    for (int i = 1; i < MAX_FIGURES[GAME_ENV]; i++)
+    for (int i = 1; i < MAX_FIGURES[get_game_engine()]; i++)
         figure_get(i)->action_perform();
 }

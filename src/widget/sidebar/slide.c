@@ -29,7 +29,7 @@ static struct {
 static void draw_sliding_foreground(void) {
     window_request_refresh();
     data.position += speed_get_delta(&data.slide_speed);
-    if (data.position >= SIDEBAR_EXPANDED_WIDTH[GAME_ENV]) {
+    if (data.position >= SIDEBAR_EXPANDED_WIDTH[get_game_engine()]) {
         data.finished_callback();
         return;
     }
@@ -41,12 +41,12 @@ static void draw_sliding_foreground(void) {
     if (data.direction == SLIDE_DIRECTION_IN) {
         if (data.position > SIDEBAR_DECELERATION_OFFSET)
             speed_set_target(&data.slide_speed, 1, SLIDE_ACCELERATION_MILLIS, 1);
-        rel_offset = SIDEBAR_EXPANDED_WIDTH[GAME_ENV] - data.position;
+        rel_offset = SIDEBAR_EXPANDED_WIDTH[get_game_engine()] - data.position;
     } else
         rel_offset = data.position;
     x_offset += rel_offset;
 
-    if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+    if (get_game_engine() == ENGINE_ENV_PHARAOH) {
         int block_width = 96;
         int s_end = screen_width() - 1000 - 24 + (rel_offset <= 162 - 18 ? rel_offset : 162 - 18);
 

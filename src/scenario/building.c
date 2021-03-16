@@ -4,7 +4,7 @@
 #include "scenario/data.h"
 
 int scenario_building_allowed(int building_type) {
-    if (GAME_ENV == ENGINE_ENV_C3)
+    if (get_game_engine() == ENGINE_ENV_C3)
         switch (building_type) {
             case BUILDING_ROAD:
                 return scenario.allowed_buildings[ALLOWED_BUILDING_ROAD];
@@ -107,7 +107,7 @@ int scenario_building_allowed(int building_type) {
             case BUILDING_SHIP_BRIDGE:
                 return scenario.allowed_buildings[ALLOWED_BUILDING_BRIDGE];
         }
-    else if (GAME_ENV == ENGINE_ENV_PHARAOH)
+    else if (get_game_engine() == ENGINE_ENV_PHARAOH)
         switch (building_type) {
             case BUILDING_GOLD_MINE:
                 return scenario.allowed_buildings[2];

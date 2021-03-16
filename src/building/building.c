@@ -33,13 +33,13 @@ static struct {
 } extra = {0, 0, 0};
 
 int building_find(int type) {
-    for (int i = 1; i < MAX_BUILDINGS[GAME_ENV]; ++i) {
+    for (int i = 1; i < MAX_BUILDINGS[get_game_engine()]; ++i) {
         building *b = building_get(i);
         if (b->state == BUILDING_STATE_VALID && b->type == type)
             return i;
 
     }
-    return MAX_BUILDINGS[GAME_ENV];
+    return MAX_BUILDINGS[get_game_engine()];
 }
 building *building_get(int id) {
     return &all_buildings[id];
@@ -71,7 +71,7 @@ building *building_next(building *b) {
 }
 building *building_create(int type, int x, int y) {
     building *b = 0;
-    for (int i = 1; i < MAX_BUILDINGS[GAME_ENV]; i++) {
+    for (int i = 1; i < MAX_BUILDINGS[get_game_engine()]; i++) {
         if (all_buildings[i].state == BUILDING_STATE_UNUSED && !game_undo_contains_building(i)) {
             b = &all_buildings[i];
             break;
@@ -113,7 +113,7 @@ building *building_create(int type, int x, int y) {
         b->subtype.house_level = 0;
 
     // input/output resources
-    if (GAME_ENV == ENGINE_ENV_C3)
+    if (get_game_engine() == ENGINE_ENV_C3)
         switch (type) {
             case BUILDING_WHEAT_FARM:
                 b->output_resource_id = RESOURCE_WHEAT;
@@ -169,7 +169,7 @@ building *building_create(int type, int x, int y) {
                 b->output_resource_id = RESOURCE_NONE;
                 break;
         }
-    else if (GAME_ENV == ENGINE_ENV_PHARAOH)
+    else if (get_game_engine() == ENGINE_ENV_PHARAOH)
         switch (type) {
             case BUILDING_BARLEY_FARM:
                 b->output_resource_id = RESOURCE_BARLEY;
@@ -278,9 +278,9 @@ building *building_create(int type, int x, int y) {
         }
 
     if (type == BUILDING_GRANARY) {
-        if (GAME_ENV == ENGINE_ENV_C3)
+        if (get_game_engine() == ENGINE_ENV_C3)
             b->data.granary.resource_stored[RESOURCE_NONE] = 2400;
-        else if (GAME_ENV == ENGINE_ENV_PHARAOH)
+        else if (get_game_engine() == ENGINE_ENV_PHARAOH)
             b->data.granary.resource_stored[RESOURCE_NONE] = 3200;
     }
     if (type == BUILDING_MARKET) // Set it as accepting all goods
@@ -333,7 +333,7 @@ void building_clear_related_data(building *b) {
     }
 }
 void building_clear_all(void) {
-    for (int i = 0; i < MAX_BUILDINGS[GAME_ENV]; i++) {
+    for (int i = 0; i < MAX_BUILDINGS[get_game_engine()]; i++) {
         memset(&all_buildings[i], 0, sizeof(building));
         all_buildings[i].id = i;
     }
@@ -419,7 +419,7 @@ int building_get_highest_id(void) {
 }
 void building_update_highest_id(void) {
     extra.highest_id_in_use = 0;
-    for (int i = 1; i < MAX_BUILDINGS[GAME_ENV]; i++) {
+    for (int i = 1; i < MAX_BUILDINGS[get_game_engine()]; i++) {
         if (all_buildings[i].state != BUILDING_STATE_UNUSED)
             extra.highest_id_in_use = i;
 
@@ -433,7 +433,7 @@ void building_update_state(void) {
     int wall_recalc = 0;
     int road_recalc = 0;
     int aqueduct_recalc = 0;
-    for (int i = 1; i < MAX_BUILDINGS[GAME_ENV]; i++) {
+    for (int i = 1; i < MAX_BUILDINGS[get_game_engine()]; i++) {
         building *b = &all_buildings[i];
         if (b->state == BUILDING_STATE_CREATED)
             b->state = BUILDING_STATE_VALID;
@@ -476,7 +476,7 @@ void building_update_state(void) {
 
 }
 void building_update_desirability(void) {
-    for (int i = 1; i < MAX_BUILDINGS[GAME_ENV]; i++) {
+    for (int i = 1; i < MAX_BUILDINGS[get_game_engine()]; i++) {
         building *b = &all_buildings[i];
         if (b->state != BUILDING_STATE_VALID)
             continue;
@@ -531,7 +531,7 @@ int building_mothball_set(building *b, int mothball) {
 }
 
 void building_save_state(buffer *buf, buffer *highest_id, buffer *highest_id_ever) {
-    for (int i = 0; i < MAX_BUILDINGS[GAME_ENV]; i++) {
+    for (int i = 0; i < MAX_BUILDINGS[get_game_engine()]; i++) {
         building_state_save_to_buffer(buf, &all_buildings[i]);
     }
     highest_id->write_i32(extra.highest_id_in_use);
@@ -543,7 +543,7 @@ void building_save_state(buffer *buf, buffer *highest_id, buffer *highest_id_eve
 //    corrupt_houses->write_i32(extra.unfixable_houses);
 }
 void building_load_state(buffer *buf, buffer *highest_id, buffer *highest_id_ever) {
-    for (int i = 0; i < MAX_BUILDINGS[GAME_ENV]; i++) {
+    for (int i = 0; i < MAX_BUILDINGS[get_game_engine()]; i++) {
         if (!buf->is_valid(1))
             break;
         building_state_load_from_buffer(buf, &all_buildings[i]);

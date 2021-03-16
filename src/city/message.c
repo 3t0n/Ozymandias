@@ -159,7 +159,7 @@ void city_message_post(int use_popup, int message_id, int param1, int param2) {
     data.current_message_id = id;
 
     city_message *msg = &data.messages[id];
-    if (GAME_ENV == ENGINE_ENV_PHARAOH)
+    if (get_game_engine() == ENGINE_ENV_PHARAOH)
         message_id += 99;
     msg->message_id = message_id;
     msg->is_read = 0;
@@ -269,12 +269,12 @@ void city_message_sort_and_compact(void) {
 }
 
 int city_message_get_text_id(int message_id) {
-    if (GAME_ENV == ENGINE_ENV_C3) {
+    if (get_game_engine() == ENGINE_ENV_C3) {
         if (message_id > 50)
             return message_id + 199;
         else
             return message_id + 99;
-    } else if (GAME_ENV == ENGINE_ENV_PHARAOH)
+    } else if (get_game_engine() == ENGINE_ENV_PHARAOH)
         return message_id;
 }
 int city_message_get_advisor(int message_type) {
@@ -509,13 +509,13 @@ void city_message_save_state(buffer *messages, buffer *extra, buffer *counts, bu
 void city_message_load_state(buffer *messages, buffer *extra, buffer *counts, buffer *delays, buffer *population) {
     for (int i = 0; i < MAX_MESSAGES; i++) {
         city_message *msg = &data.messages[i];
-        if (GAME_ENV == ENGINE_ENV_C3) {
+        if (get_game_engine() == ENGINE_ENV_C3) {
             msg->param1 = messages->read_i32();
             msg->year = messages->read_i16();
             msg->param2 = messages->read_i16();
 //            msg->message_id = messages->read_i16();
 //            msg->message_id = city_message_get_text_id(msg->message_id);
-        } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+        } else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
             msg->param1 = messages->read_i32();
             msg->param2 = messages->read_i32();
             msg->year = messages->read_i16();
@@ -526,9 +526,9 @@ void city_message_load_state(buffer *messages, buffer *extra, buffer *counts, bu
         msg->sequence = messages->read_i16();
         msg->is_read = messages->read_u8();
         msg->month = messages->read_u8();
-        if (GAME_ENV == ENGINE_ENV_C3)
+        if (get_game_engine() == ENGINE_ENV_C3)
             messages->skip(2);
-        else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+        else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
             messages->skip(32); // ?????
         }
     }

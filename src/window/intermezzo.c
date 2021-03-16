@@ -103,9 +103,9 @@ static void draw_background(void) {
         if (scenario_is_custom())
             image_draw(image_base + 1, x_offset, y_offset);
         else {
-            if (GAME_ENV == ENGINE_ENV_C3)
+            if (get_game_engine() == ENGINE_ENV_C3)
                 image_draw(image_base + 1 + 2 * mission, x_offset, y_offset);
-            else if (GAME_ENV == ENGINE_ENV_PHARAOH)
+            else if (get_game_engine() == ENGINE_ENV_PHARAOH)
                 image_draw(image_base + 1 + (mission >= 20), x_offset, y_offset);
         }
     } else if (data.type == INTERMEZZO_FIRED)
@@ -114,9 +114,9 @@ static void draw_background(void) {
         if (scenario_is_custom())
             image_draw(image_base + 2, x_offset, y_offset);
         else
-            if (GAME_ENV == ENGINE_ENV_C3)
+            if (get_game_engine() == ENGINE_ENV_C3)
                 image_draw(image_base + 2 + 2 * mission, x_offset, y_offset);
-            else if (GAME_ENV == ENGINE_ENV_PHARAOH)
+            else if (get_game_engine() == ENGINE_ENV_PHARAOH)
                 image_draw(image_base, x_offset, y_offset);
     }
 }

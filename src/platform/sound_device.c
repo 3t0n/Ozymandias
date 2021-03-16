@@ -234,7 +234,7 @@ void sound_device_play_channel(int channel, int volume_pct) {
         sound_channel *ch = &data.channels[channel];
         if (load_channel(ch)) {
 
-            switch (GAME_ENV) {
+            switch (get_game_engine()) {
                 const char *mp3_track;
                 case ENGINE_ENV_C3:
                     sound_device_set_channel_volume(channel, volume_pct);

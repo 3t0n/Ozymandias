@@ -4,27 +4,31 @@
 
 #include <assert.h>
 
-int GAME_ENV = ENGINE_ENV_MAX;
-const char *game_name;
-const char *pref_filename;
+static int game_engine = ENGINE_ENV_MAX;
+static const char *game_name;
+static const char *pref_filename;
+static bool debug_mode = false;
+
+void init_debug_mode(bool debug_flag) {
+    debug_mode = debug_flag;
+}
 
 void init_game_environment(int env) {
     assert(env != ENGINE_ENV_MAX);
-    GAME_ENV = env;
-    switch (env) {
-        case ENGINE_ENV_C3:
-            game_name = "Caesar 3";
-            pref_filename = "data_dir_c3.txt";
-            break;
-        case ENGINE_ENV_PHARAOH:
-            game_name = "Pharaoh";
-            pref_filename = "data_dir_pharaoh.txt";
-            break;
+    game_engine = env;
+
+    if (is_game_caesar3()) {
+        game_name = "Caesar 3";
+        pref_filename = "data_dir_c3.txt";
+    } else if (is_game_pharaoh()) {
+        game_name = "Pharaoh";
+        pref_filename = "data_dir_pharaoh.txt";
     }
+
     SDL_Log("Engine set to %s", game_name);
 }
 void assert_env_init(void) {
-    assert(GAME_ENV < ENGINE_ENV_MAX);
+    assert(game_engine < ENGINE_ENV_MAX);
 }
 
 const char *get_game_title(void) {
@@ -35,53 +39,71 @@ const char *get_engine_pref_path(void) {
     assert_env_init();
     return pref_filename;
 }
+
 engine_sizes env_sizes(void) {
     assert_env_init();
-    switch (GAME_ENV) {
-        case ENGINE_ENV_C3: {
-            engine_sizes s = {
-                    20,
-                    20,
-                    20,
-                    20,
+    engine_sizes result = {};
 
-                    4,
-                    8,
-                    8,
+    if (is_game_caesar3()) {
+        result = {
+                20,
+                20,
+                20,
+                20,
 
-                    50,
+                4,
+                8,
+                8,
 
-                    32,
-                    65,
-                    64,
-                    522,
+                50,
 
-                    250
-            };
-            return s;
-        }
-        case ENGINE_ENV_PHARAOH: {
-            engine_sizes s = {
-                    20,
-                    20,
-                    20,
-                    20,
+                32,
+                65,
+                64,
+                522,
 
-                    4,
-                    8,
-                    8,
-
-                    114,
-
-                    32,
-                    65,
-                    64,
-                    522,
-
-                    50
-            };
-            return s;
-        }
+                250
+        };
     }
+
+    if (is_game_pharaoh()) {
+        result = {
+                20,
+                20,
+                20,
+                20,
+
+                4,
+                8,
+                8,
+
+                114,
+
+                32,
+                65,
+                64,
+                522,
+
+                50
+        };
+    }
+
+    return result;
+}
+
+bool is_debug_mode() {
+    return debug_mode;
+}
+
+bool is_game_pharaoh() {
+    return game_engine == ENGINE_ENV_PHARAOH;
+}
+
+bool is_game_caesar3() {
+    return game_engine == ENGINE_ENV_C3;
+}
+
+int get_game_engine() {
+    return game_engine;
 }
 

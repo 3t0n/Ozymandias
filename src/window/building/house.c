@@ -134,19 +134,19 @@ void window_building_draw_house(building_info_context *c) {
 
     // goods inventory
     // pottery
-    image_draw(resource_image + INV_RESOURCES[GAME_ENV][0], c->x_offset + 32, c->y_offset + Y_GOODS);
+    image_draw(resource_image + INV_RESOURCES[get_game_engine()][0], c->x_offset + 32, c->y_offset + Y_GOODS);
     text_draw_number(b->data.house.inventory[INVENTORY_GOOD1], '@', " ", c->x_offset + 64, c->y_offset + Y_GOODS + 4,
                      FONT_NORMAL_BLACK);
     // furniture
-    image_draw(resource_image + INV_RESOURCES[GAME_ENV][1], c->x_offset + 142, c->y_offset + Y_GOODS);
+    image_draw(resource_image + INV_RESOURCES[get_game_engine()][1], c->x_offset + 142, c->y_offset + Y_GOODS);
     text_draw_number(b->data.house.inventory[INVENTORY_GOOD2], '@', " ", c->x_offset + 174, c->y_offset + Y_GOODS + 4,
                      FONT_NORMAL_BLACK);
     // oil
-    image_draw(resource_image + INV_RESOURCES[GAME_ENV][2], c->x_offset + 252, c->y_offset + Y_GOODS);
+    image_draw(resource_image + INV_RESOURCES[get_game_engine()][2], c->x_offset + 252, c->y_offset + Y_GOODS);
     text_draw_number(b->data.house.inventory[INVENTORY_GOOD3], '@', " ", c->x_offset + 284, c->y_offset + Y_GOODS + 4,
                      FONT_NORMAL_BLACK);
     // wine
-    image_draw(resource_image + INV_RESOURCES[GAME_ENV][3], c->x_offset + 362, c->y_offset + Y_GOODS);
+    image_draw(resource_image + INV_RESOURCES[get_game_engine()][3], c->x_offset + 362, c->y_offset + Y_GOODS);
     text_draw_number(b->data.house.inventory[INVENTORY_GOOD4], '@', " ", c->x_offset + 394, c->y_offset + Y_GOODS + 4,
                      FONT_NORMAL_BLACK);
 

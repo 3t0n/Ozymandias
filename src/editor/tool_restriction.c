@@ -90,7 +90,7 @@ int editor_tool_can_place_access_ramp(const map_tile *tile, int *orientation_ind
         int top_elevation = 0;
         for (int index = 0; index < 6; index++) {
             int tile_offset = tile->grid_offset;// + ACCESS_RAMP_TILE_OFFSETS_BY_ORIENTATION[orientation][index];
-            switch (GAME_ENV) {
+            switch (get_game_engine()) {
                 case ENGINE_ENV_C3:
                     tile_offset += ACCESS_RAMP_TILE_OFFSETS_BY_ORIENTATION_C3[orientation][index];
                     break;
@@ -142,7 +142,7 @@ int editor_tool_can_place_building(const map_tile *tile, int num_tiles, int *blo
     int blocked = 0;
     for (int i = 0; i < num_tiles; i++) {
         int tile_offset = tile->grid_offset;// + TILE_GRID_OFFSETS[i];
-        switch (GAME_ENV) {
+        switch (get_game_engine()) {
             case ENGINE_ENV_C3:
                 tile_offset += TILE_GRID_OFFSETS_C3[i];
                 break;

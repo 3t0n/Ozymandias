@@ -199,7 +199,7 @@ static void draw_extra_info_panel(void) {
     if (data.info_to_display & SIDEBAR_EXTRA_DISPLAY_UNEMPLOYMENT) {
         y_current_line += EXTRA_INFO_VERTICAL_PADDING;
 
-        if (GAME_ENV == ENGINE_ENV_C3)
+        if (get_game_engine() == ENGINE_ENV_C3)
             lang_text_draw(68, 148, data.x_offset + 11, y_current_line, FONT_NORMAL_WHITE);
         else
             lang_text_draw(68, 135, data.x_offset + 11, y_current_line, FONT_NORMAL_WHITE);
@@ -214,9 +214,9 @@ static void draw_extra_info_panel(void) {
     if (data.info_to_display & SIDEBAR_EXTRA_DISPLAY_RATINGS) {
         y_current_line += EXTRA_INFO_VERTICAL_PADDING;
 
-        if (GAME_ENV == ENGINE_ENV_C3)
+        if (get_game_engine() == ENGINE_ENV_C3)
             y_current_line += draw_extra_info_objective(data.x_offset, y_current_line, 4, 6, &data.population, 1);
-        else if (GAME_ENV == ENGINE_ENV_PHARAOH)
+        else if (get_game_engine() == ENGINE_ENV_PHARAOH)
             y_current_line += draw_extra_info_objective(data.x_offset, y_current_line, 53, 6, &data.population, 1);
 //            y_current_line += draw_extra_info_objective(data.x_offset, y_current_line, 44, 56, &data.population, 1);
         y_current_line += draw_extra_info_objective(data.x_offset, y_current_line, 53, 1, &data.culture, 0);

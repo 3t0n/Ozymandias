@@ -59,8 +59,8 @@ static void route_queue(int source, int dest, void (*callback)(int next_offset, 
             break;
         int dist = 1 + map_grid_get(&routing_distance, offset);
         for (int i = 0; i < 4; i++) {
-            if (valid_offset(offset + ROUTE_OFFSETS[GAME_ENV][i]))
-                callback(offset + ROUTE_OFFSETS[GAME_ENV][i], dist);
+            if (valid_offset(offset + ROUTE_OFFSETS[get_game_engine()][i]))
+                callback(offset + ROUTE_OFFSETS[get_game_engine()][i], dist);
         }
         if (++queue.head >= MAX_QUEUE)
             queue.head = 0;
@@ -74,8 +74,8 @@ static void route_queue_until(int source, int (*callback)(int next_offset, int d
         int offset = queue.items[queue.head];
         int dist = 1 + map_grid_get(&routing_distance, offset);
         for (int i = 0; i < 4; i++) {
-            if (valid_offset(offset + ROUTE_OFFSETS[GAME_ENV][i])) {
-                if (!callback(offset + ROUTE_OFFSETS[GAME_ENV][i], dist))
+            if (valid_offset(offset + ROUTE_OFFSETS[get_game_engine()][i])) {
+                if (!callback(offset + ROUTE_OFFSETS[get_game_engine()][i], dist))
                     break;
 
             }
@@ -96,8 +96,8 @@ static void route_queue_max(int source, int dest, int max_tiles, void (*callback
         if (++tiles > max_tiles) break;
         int dist = 1 + map_grid_get(&routing_distance, offset);
         for (int i = 0; i < 4; i++) {
-            if (valid_offset(offset + ROUTE_OFFSETS[GAME_ENV][i]))
-                callback(offset + ROUTE_OFFSETS[GAME_ENV][i], dist);
+            if (valid_offset(offset + ROUTE_OFFSETS[get_game_engine()][i]))
+                callback(offset + ROUTE_OFFSETS[get_game_engine()][i], dist);
         }
         if (++queue.head >= MAX_QUEUE)
             queue.head = 0;
@@ -123,8 +123,8 @@ static void route_queue_boat(int source, void (*callback)(int, int)) {
         } else {
             int dist = 1 + map_grid_get(&routing_distance, offset);
             for (int i = 0; i < 4; i++) {
-                if (valid_offset(offset + ROUTE_OFFSETS[GAME_ENV][i]))
-                    callback(offset + ROUTE_OFFSETS[GAME_ENV][i], dist);
+                if (valid_offset(offset + ROUTE_OFFSETS[get_game_engine()][i]))
+                    callback(offset + ROUTE_OFFSETS[get_game_engine()][i], dist);
             }
         }
         map_grid_set(&water_drag, offset, v + 1);
@@ -143,8 +143,8 @@ static void route_queue_dir8(int source, void (*callback)(int, int)) {
         int offset = queue.items[queue.head];
         int dist = 1 + map_grid_get(&routing_distance, offset);
         for (int i = 0; i < 8; i++) {
-            if (valid_offset(offset + ROUTE_OFFSETS[GAME_ENV][i]))
-                callback(offset + ROUTE_OFFSETS[GAME_ENV][i], dist);
+            if (valid_offset(offset + ROUTE_OFFSETS[get_game_engine()][i]))
+                callback(offset + ROUTE_OFFSETS[get_game_engine()][i], dist);
         }
         if (++queue.head >= MAX_QUEUE)
             queue.head = 0;

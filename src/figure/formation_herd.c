@@ -121,12 +121,12 @@ static void move_animals(const formation *m, int attacking_animals) {
             f->action_state == FIGURE_ACTION_150_ATTACK) {
             continue;
         }
-        if (GAME_ENV == ENGINE_ENV_C3)
+        if (get_game_engine() == ENGINE_ENV_C3)
             f->wait_ticks = 401;
         if (attacking_animals) {
             int target_id = figure_combat_get_target_for_wolf(f->tile_x, f->tile_y, 6);
             if (target_id) {
-                if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+                if (get_game_engine() == ENGINE_ENV_PHARAOH) {
                     f->destination_x = 0;
                     f->destination_y = 0;
 //                    while (f->destination_x == 0 || f->destination_y == 0)
@@ -144,7 +144,7 @@ static void move_animals(const formation *m, int attacking_animals) {
                     f->route_remove();
                 }
             } else {
-                if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+                if (get_game_engine() == ENGINE_ENV_PHARAOH) {
                     f->advance_action(14);
                     f->destination_x = 0;
                     f->destination_y = 0;
@@ -161,7 +161,7 @@ static int can_spawn_wolf(formation *m) {
     if (m->num_figures < m->max_figures && m->figure_type == FIGURE_WOLF) {
         m->herd_wolf_spawn_delay++;
         int delay = 32;
-        if (GAME_ENV == ENGINE_ENV_PHARAOH)
+        if (get_game_engine() == ENGINE_ENV_PHARAOH)
             delay = 4;
         if (m->herd_wolf_spawn_delay > delay) {
             m->herd_wolf_spawn_delay = 0;
@@ -184,7 +184,7 @@ static void set_figures_to_initial(const formation *m) {
                 f->wait_ticks = 0;
 
                 // ostriches!
-                if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+                if (get_game_engine() == ENGINE_ENV_PHARAOH) {
                     random_generate_next();
                     f->wait_ticks = 255 + (random_byte()) - 64;
                     if (f->type == FIGURE_OSTRICH)
@@ -201,7 +201,7 @@ static void update_herd_formation(formation *m) {
         if (!map_terrain_is(map_grid_offset(m->x, m->y), TERRAIN_IMPASSABLE_WOLF)) {
             figure *wolf = figure_create(m->figure_type, m->x, m->y, DIR_0_TOP_RIGHT);
             wolf->action_state = FIGURE_ACTION_196_HERD_ANIMAL_AT_REST;
-            if (GAME_ENV == ENGINE_ENV_PHARAOH)
+            if (get_game_engine() == ENGINE_ENV_PHARAOH)
                 wolf->action_state = 24;
             wolf->formation_id = m->id;
             wolf->wait_ticks = wolf->id & 0x1f;
@@ -217,7 +217,7 @@ static void update_herd_formation(formation *m) {
         attacking_animals = 1;
         m->missile_attack_timeout--;
     }
-    if (m->figures[0] && GAME_ENV != ENGINE_ENV_PHARAOH) {
+    if (m->figures[0] && get_game_engine() != ENGINE_ENV_PHARAOH) {
         figure *f = figure_get(m->figures[0]);
         if (f->state == FIGURE_STATE_ALIVE)
             formation_set_home(m, f->tile_x, f->tile_y);
@@ -255,7 +255,7 @@ static void update_herd_formation(formation *m) {
             move_animals(m, attacking_animals);
         } else {
             int x_tile, y_tile;
-            if (GAME_ENV == ENGINE_ENV_PHARAOH)
+            if (get_game_engine() == ENGINE_ENV_PHARAOH)
                 set_figures_to_initial(m);
             if (get_roaming_destination(m->id, allow_negative_desirability, m->x_home, m->y_home, roam_distance, m->herd_direction, &x_tile, &y_tile)) {
                 m->herd_direction = 0;

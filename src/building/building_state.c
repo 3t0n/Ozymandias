@@ -57,7 +57,7 @@ static void write_type_data(buffer *buf, const building *b) {
         }
     } else if (b->type == BUILDING_GRANARY) {
         buf->write_i16(0);
-        for (int i = 0; i < RESOURCE_MAX[GAME_ENV]; i++) {
+        for (int i = 0; i < RESOURCE_MAX[get_game_engine()]; i++) {
             buf->write_i16(b->data.granary.resource_stored[i]);
         }
         buf->write_i32(0);
@@ -176,10 +176,10 @@ void building_state_save_to_buffer(buffer *buf, const building *b) {
 
 static void read_type_data(buffer *buf, building *b) {
     if (building_is_house(b->type)) {
-        if (GAME_ENV == ENGINE_ENV_C3) {
+        if (get_game_engine() == ENGINE_ENV_C3) {
             for (int i = 0; i < INVENTORY_MAX; i++)
                 b->data.house.inventory[i] = buf->read_i16();
-        } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+        } else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
             for (int i = 0; i < 9; i++)
                 b->data.house.foods_ph[i] = buf->read_i16();
             for (int i = 0; i < 4; i++) {
@@ -228,11 +228,11 @@ static void read_type_data(buffer *buf, building *b) {
         buf->skip(9);
     } else if (b->type == BUILDING_GRANARY) {
         buf->skip(2);
-        if (GAME_ENV == ENGINE_ENV_PHARAOH)
+        if (get_game_engine() == ENGINE_ENV_PHARAOH)
             buf->skip(2);
-        for (int i = 0; i < RESOURCE_MAX[GAME_ENV]; i++)
+        for (int i = 0; i < RESOURCE_MAX[get_game_engine()]; i++)
             b->data.granary.resource_stored[i] = buf->read_i16();
-        if (GAME_ENV == ENGINE_ENV_PHARAOH)
+        if (get_game_engine() == ENGINE_ENV_PHARAOH)
             buf->skip(6);
         else
             buf->skip(8);
@@ -248,7 +248,7 @@ static void read_type_data(buffer *buf, building *b) {
         }
         b->data.dock.trade_ship_id = buf->read_i16();
     } else if (is_industry_type(b)) {
-        if (GAME_ENV == ENGINE_ENV_PHARAOH)
+        if (get_game_engine() == ENGINE_ENV_PHARAOH)
             buf->skip(2);
         b->data.industry.progress = buf->read_i16();
 //        b->data.farm.progress = buf->read_u16(); // determines amount of stuff produced, by value = x / 250 * 100
@@ -262,7 +262,7 @@ static void read_type_data(buffer *buf, building *b) {
         b->data.industry.curse_days_left = buf->read_u8();
         buf->skip(6);
         b->data.industry.fishing_boat_id = buf->read_i16();
-        if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+        if (get_game_engine() == ENGINE_ENV_PHARAOH) {
             buf->skip(40);
             b->data.industry.labor_state = buf->read_u8();
             b->data.industry.labor_days_left = buf->read_u8();
@@ -271,12 +271,12 @@ static void read_type_data(buffer *buf, building *b) {
         }
     } else {
         buf->skip(26);
-        if (GAME_ENV == ENGINE_ENV_C3) {
+        if (get_game_engine() == ENGINE_ENV_C3) {
             b->data.entertainment.num_shows = buf->read_u8();
             b->data.entertainment.days1 = buf->read_u8();
             b->data.entertainment.days2 = buf->read_u8();
             b->data.entertainment.play = buf->read_u8();
-        } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+        } else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
             buf->skip(58);
             b->data.entertainment.num_shows = buf->read_u8();
             b->data.entertainment.days1 = buf->read_u8();
@@ -302,11 +302,11 @@ void building_state_load_from_buffer(buffer *buf, building *b) {
     b->size = buf->read_u8();
     b->house_is_merged = buf->read_u8();
     b->house_size = buf->read_u8();
-    if (GAME_ENV == ENGINE_ENV_C3) {
+    if (get_game_engine() == ENGINE_ENV_C3) {
         b->x = buf->read_u8();
         b->y = buf->read_u8();
         b->grid_offset = buf->read_i16();
-    } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+    } else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
         b->x = buf->read_u16();
         b->y = buf->read_u16();
         buf->skip(2);
@@ -325,10 +325,10 @@ void building_state_load_from_buffer(buffer *buf, building *b) {
     b->house_highest_population = buf->read_i16();
 
     b->house_unreachable_ticks = buf->read_i16();
-    if (GAME_ENV == ENGINE_ENV_C3) {
+    if (get_game_engine() == ENGINE_ENV_C3) {
         b->road_access_x = buf->read_u8();
         b->road_access_y = buf->read_u8();
-    } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+    } else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
         b->road_access_x = buf->read_u16();
         b->road_access_y = buf->read_u16();
     }
@@ -344,7 +344,7 @@ void building_state_load_from_buffer(buffer *buf, building *b) {
     buf->skip(2);
     b->prev_part_building_id = buf->read_i16();
     b->next_part_building_id = buf->read_i16();
-    if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+    if (get_game_engine() == ENGINE_ENV_PHARAOH) {
         int resource_quantity = buf->read_u16(); // 4772 >>>> 112 (resource amount! 2-bytes)
 
         // ignore partial loads (for now....)
@@ -384,7 +384,7 @@ void building_state_load_from_buffer(buffer *buf, building *b) {
     read_type_data(buf, b); // 42 bytes for C3, 102 for PH
 
     int currind = buf->get_offset() - sind;
-    if (GAME_ENV == ENGINE_ENV_PHARAOH)
+    if (get_game_engine() == ENGINE_ENV_PHARAOH)
         buf->skip(184 - currind);
 
     b->tax_income_or_storage = buf->read_i32();
@@ -401,7 +401,7 @@ void building_state_load_from_buffer(buffer *buf, building *b) {
 
     // 68 additional bytes
 
-    if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+    if (get_game_engine() == ENGINE_ENV_PHARAOH) {
         buf->skip(68); // temp for debugging
         assert(buf->get_offset() - sind == 264);
     }

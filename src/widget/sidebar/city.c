@@ -191,13 +191,13 @@ static struct {
 } data;
 
 static void draw_overlay_text(int x_offset) {
-    if (GAME_ENV == ENGINE_ENV_C3) {
+    if (get_game_engine() == ENGINE_ENV_C3) {
         if (game_state_overlay())
             lang_text_draw_centered(14, game_state_overlay(), x_offset, 32, 117, FONT_NORMAL_GREEN);
         else
             lang_text_draw_centered(6, 4, x_offset, 32, 117, FONT_NORMAL_GREEN);
     }
-    if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+    if (get_game_engine() == ENGINE_ENV_PHARAOH) {
         if (game_state_overlay())
             lang_text_draw_centered(14, game_state_overlay(), x_offset - 15, 30, 117, FONT_NORMAL_GREEN);
         else
@@ -205,11 +205,11 @@ static void draw_overlay_text(int x_offset) {
     }
 }
 static void draw_sidebar_remainder(int x_offset, bool is_collapsed) {
-    int width = SIDEBAR_EXPANDED_WIDTH[GAME_ENV];
+    int width = SIDEBAR_EXPANDED_WIDTH[get_game_engine()];
     if (is_collapsed)
         width = SIDEBAR_COLLAPSED_WIDTH;
     int available_height = sidebar_common_get_height() - SIDEBAR_MAIN_SECTION_HEIGHT;
-    int extra_height = sidebar_extra_draw_background(x_offset, SIDEBAR_MAIN_SECTION_HEIGHT + TOP_MENU_HEIGHT[GAME_ENV], 162, available_height, is_collapsed, SIDEBAR_EXTRA_DISPLAY_ALL);
+    int extra_height = sidebar_extra_draw_background(x_offset, SIDEBAR_MAIN_SECTION_HEIGHT + TOP_MENU_HEIGHT[get_game_engine()], 162, available_height, is_collapsed, SIDEBAR_EXTRA_DISPLAY_ALL);
     sidebar_extra_draw_foreground();
     int relief_y_offset =
             SIDEBAR_MAIN_SECTION_HEIGHT + TOP_MENU_HEIGHT[0] + extra_height; // + (GAME_ENV == ENGINE_ENV_PHARAOH) * 6;
@@ -217,8 +217,8 @@ static void draw_sidebar_remainder(int x_offset, bool is_collapsed) {
 }
 static void draw_number_of_messages(int x_offset) {
     int messages = city_message_count();
-    buttons_build_expanded[GAME_ENV][13].enabled = messages > 0;
-    buttons_build_expanded[GAME_ENV][14].enabled = city_message_problem_area_count();
+    buttons_build_expanded[get_game_engine()][13].enabled = messages > 0;
+    buttons_build_expanded[get_game_engine()][14].enabled = city_message_problem_area_count();
     if (messages) {
         text_draw_number_centered_colored(messages, x_offset + 74, 452, 32, FONT_SMALL_PLAIN, COLOR_BLACK);
         text_draw_number_centered_colored(messages, x_offset + 73, 453, 32, FONT_SMALL_PLAIN, COLOR_WHITE);
@@ -226,52 +226,52 @@ static void draw_number_of_messages(int x_offset) {
 }
 
 static void draw_buttons_collapsed(int x_offset) {
-    image_buttons_draw(x_offset, TOP_MENU_HEIGHT[GAME_ENV], button_expand_sidebar[GAME_ENV], 1);
-    image_buttons_draw(x_offset, TOP_MENU_HEIGHT[GAME_ENV], buttons_build_collapsed[GAME_ENV], 12);
+    image_buttons_draw(x_offset, TOP_MENU_HEIGHT[get_game_engine()], button_expand_sidebar[get_game_engine()], 1);
+    image_buttons_draw(x_offset, TOP_MENU_HEIGHT[get_game_engine()], buttons_build_collapsed[get_game_engine()], 12);
 }
 static void draw_buttons_expanded(int x_offset) {
-    buttons_build_expanded[GAME_ENV][12].enabled = game_can_undo();
-    if (GAME_ENV == ENGINE_ENV_C3) {
-        image_buttons_draw(x_offset, TOP_MENU_HEIGHT[GAME_ENV], buttons_overlays_collapse_sidebar[GAME_ENV], 2);
-        image_buttons_draw(x_offset, TOP_MENU_HEIGHT[GAME_ENV], buttons_build_expanded[GAME_ENV], 15);
-        image_buttons_draw(x_offset, TOP_MENU_HEIGHT[GAME_ENV], buttons_top_expanded[GAME_ENV], 6);
-    } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
-        image_buttons_draw(x_offset, TOP_MENU_HEIGHT[GAME_ENV], buttons_overlays_collapse_sidebar[GAME_ENV], 1);
-        image_buttons_draw(x_offset, TOP_MENU_HEIGHT[GAME_ENV], buttons_build_expanded[GAME_ENV], 15);
-        image_buttons_draw(x_offset, TOP_MENU_HEIGHT[GAME_ENV], buttons_top_expanded[GAME_ENV], 3);
+    buttons_build_expanded[get_game_engine()][12].enabled = game_can_undo();
+    if (get_game_engine() == ENGINE_ENV_C3) {
+        image_buttons_draw(x_offset, TOP_MENU_HEIGHT[get_game_engine()], buttons_overlays_collapse_sidebar[get_game_engine()], 2);
+        image_buttons_draw(x_offset, TOP_MENU_HEIGHT[get_game_engine()], buttons_build_expanded[get_game_engine()], 15);
+        image_buttons_draw(x_offset, TOP_MENU_HEIGHT[get_game_engine()], buttons_top_expanded[get_game_engine()], 6);
+    } else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
+        image_buttons_draw(x_offset, TOP_MENU_HEIGHT[get_game_engine()], buttons_overlays_collapse_sidebar[get_game_engine()], 1);
+        image_buttons_draw(x_offset, TOP_MENU_HEIGHT[get_game_engine()], buttons_build_expanded[get_game_engine()], 15);
+        image_buttons_draw(x_offset, TOP_MENU_HEIGHT[get_game_engine()], buttons_top_expanded[get_game_engine()], 3);
     }
 }
 
 static void refresh_build_menu_buttons(void) {
     int num_buttons = 12;
     for (int i = 0; i < num_buttons; i++) {
-        buttons_build_expanded[GAME_ENV][i].enabled = 1;
-        if (building_menu_count_items(buttons_build_expanded[GAME_ENV][i].parameter1) <= 0)
-            buttons_build_expanded[GAME_ENV][i].enabled = 0;
+        buttons_build_expanded[get_game_engine()][i].enabled = 1;
+        if (building_menu_count_items(buttons_build_expanded[get_game_engine()][i].parameter1) <= 0)
+            buttons_build_expanded[get_game_engine()][i].enabled = 0;
 
-        buttons_build_collapsed[GAME_ENV][i].enabled = 1;
-        if (building_menu_count_items(buttons_build_collapsed[GAME_ENV][i].parameter1) <= 0)
-            buttons_build_collapsed[GAME_ENV][i].enabled = 0;
+        buttons_build_collapsed[get_game_engine()][i].enabled = 1;
+        if (building_menu_count_items(buttons_build_collapsed[get_game_engine()][i].parameter1) <= 0)
+            buttons_build_collapsed[get_game_engine()][i].enabled = 0;
     }
 }
 static void draw_collapsed_background(void) {
     int x_offset = sidebar_common_get_x_offset_collapsed();
-    if (GAME_ENV == ENGINE_ENV_C3)
-        image_draw(image_id_from_group(GROUP_SIDE_PANEL), x_offset, TOP_MENU_HEIGHT[GAME_ENV]);
-    else if (GAME_ENV == ENGINE_ENV_PHARAOH)
-        image_draw(image_id_from_group(GROUP_SIDE_PANEL) + 1, x_offset, TOP_MENU_HEIGHT[GAME_ENV]);
+    if (get_game_engine() == ENGINE_ENV_C3)
+        image_draw(image_id_from_group(GROUP_SIDE_PANEL), x_offset, TOP_MENU_HEIGHT[get_game_engine()]);
+    else if (get_game_engine() == ENGINE_ENV_PHARAOH)
+        image_draw(image_id_from_group(GROUP_SIDE_PANEL) + 1, x_offset, TOP_MENU_HEIGHT[get_game_engine()]);
     draw_buttons_collapsed(x_offset);
     draw_sidebar_remainder(x_offset, true);
 }
 static void draw_expanded_background(int x_offset) {
-    if (GAME_ENV == ENGINE_ENV_C3) {
-        image_draw(image_id_from_group(GROUP_SIDE_PANEL) + 1, x_offset, TOP_MENU_HEIGHT[GAME_ENV]);
-        image_draw(window_build_menu_image(), x_offset + 6, 225 + TOP_MENU_HEIGHT[GAME_ENV]);
+    if (get_game_engine() == ENGINE_ENV_C3) {
+        image_draw(image_id_from_group(GROUP_SIDE_PANEL) + 1, x_offset, TOP_MENU_HEIGHT[get_game_engine()]);
+        image_draw(window_build_menu_image(), x_offset + 6, 225 + TOP_MENU_HEIGHT[get_game_engine()]);
         widget_minimap_draw(x_offset + 8, MINIMAP_Y_OFFSET, MINIMAP_WIDTH, MINIMAP_HEIGHT, 1);
         draw_number_of_messages(x_offset);
-    } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
-        image_draw(image_id_from_group(GROUP_SIDE_PANEL), x_offset, TOP_MENU_HEIGHT[GAME_ENV]);
-        image_draw(window_build_menu_image(), x_offset + 11, 181 + TOP_MENU_HEIGHT[GAME_ENV]);
+    } else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
+        image_draw(image_id_from_group(GROUP_SIDE_PANEL), x_offset, TOP_MENU_HEIGHT[get_game_engine()]);
+        image_draw(window_build_menu_image(), x_offset + 11, 181 + TOP_MENU_HEIGHT[get_game_engine()]);
         widget_minimap_draw(x_offset + 12, MINIMAP_Y_OFFSET, MINIMAP_WIDTH, MINIMAP_HEIGHT, 1);
 
         // extra bar spacing on the right
@@ -307,10 +307,10 @@ void widget_sidebar_city_draw_foreground(void) {
         draw_buttons_expanded(x_offset);
         draw_overlay_text(x_offset + 4);
 
-        if (GAME_ENV == ENGINE_ENV_C3) {
+        if (get_game_engine() == ENGINE_ENV_C3) {
             widget_minimap_draw(x_offset + 8, MINIMAP_Y_OFFSET, MINIMAP_WIDTH, MINIMAP_HEIGHT, 0);
             draw_number_of_messages(x_offset);
-        } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+        } else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
             widget_minimap_draw(x_offset + 12, MINIMAP_Y_OFFSET, MINIMAP_WIDTH, MINIMAP_HEIGHT, 0);
             draw_number_of_messages(x_offset - 26);
         }
@@ -330,11 +330,11 @@ int widget_sidebar_city_handle_mouse(const mouse *m) {
     data.focus_button_for_tooltip = 0;
     if (city_view_is_sidebar_collapsed()) {
         int x_offset = sidebar_common_get_x_offset_collapsed();
-        handled |= image_buttons_handle_mouse(m, x_offset, 24, button_expand_sidebar[GAME_ENV], 1, &button_id);
+        handled |= image_buttons_handle_mouse(m, x_offset, 24, button_expand_sidebar[get_game_engine()], 1, &button_id);
         if (button_id)
             data.focus_button_for_tooltip = 12;
 
-        handled |= image_buttons_handle_mouse(m, x_offset, 24, buttons_build_collapsed[GAME_ENV], 12, &button_id);
+        handled |= image_buttons_handle_mouse(m, x_offset, 24, buttons_build_collapsed[get_game_engine()], 12, &button_id);
         if (button_id)
             data.focus_button_for_tooltip = button_id + 19;
 
@@ -343,16 +343,16 @@ int widget_sidebar_city_handle_mouse(const mouse *m) {
             return 1;
 
         int x_offset = sidebar_common_get_x_offset_expanded();
-        handled |= image_buttons_handle_mouse(m, x_offset, 24, buttons_overlays_collapse_sidebar[GAME_ENV], 2,
+        handled |= image_buttons_handle_mouse(m, x_offset, 24, buttons_overlays_collapse_sidebar[get_game_engine()], 2,
                                               &button_id);
         if (button_id)
             data.focus_button_for_tooltip = button_id + 9;
 
-        handled |= image_buttons_handle_mouse(m, x_offset, 24, buttons_build_expanded[GAME_ENV], 15, &button_id);
+        handled |= image_buttons_handle_mouse(m, x_offset, 24, buttons_build_expanded[get_game_engine()], 15, &button_id);
         if (button_id)
             data.focus_button_for_tooltip = button_id + 19;
 
-        handled |= image_buttons_handle_mouse(m, x_offset, 24, buttons_top_expanded[GAME_ENV], 6, &button_id);
+        handled |= image_buttons_handle_mouse(m, x_offset, 24, buttons_top_expanded[get_game_engine()], 6, &button_id);
         if (button_id)
             data.focus_button_for_tooltip = button_id + 39;
 
@@ -364,10 +364,10 @@ int widget_sidebar_city_handle_mouse(const mouse *m) {
 int widget_sidebar_city_handle_mouse_build_menu(const mouse *m) {
     if (city_view_is_sidebar_collapsed())
         return image_buttons_handle_mouse(m, sidebar_common_get_x_offset_collapsed(), 24,
-                                          buttons_build_collapsed[GAME_ENV], 12, 0);
+                                          buttons_build_collapsed[get_game_engine()], 12, 0);
     else
         return image_buttons_handle_mouse(m, sidebar_common_get_x_offset_expanded(), 24,
-                                          buttons_build_expanded[GAME_ENV], 15, 0);
+                                          buttons_build_expanded[get_game_engine()], 15, 0);
 }
 int widget_sidebar_city_get_tooltip_text(void) {
     return data.focus_button_for_tooltip;

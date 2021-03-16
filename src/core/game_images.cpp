@@ -37,7 +37,7 @@ int game_images::image_groupid_translation(int table[], int group) {
     return group;
 }
 int32_t game_images::get_image_id(int group) {
-    switch (GAME_ENV) {
+    switch (get_game_engine()) {
         case ENGINE_ENV_C3:
             return get_collection(MAIN_FILENAME_C3).get_id(group);
         case ENGINE_ENV_PHARAOH:
@@ -265,9 +265,9 @@ const image_collection &game_images::get_collection(const char *collection_name)
 
 image_collection &game_images::get_enemy() {
     std::string enemy_filename;
-    if (GAME_ENV == ENGINE_ENV_C3) {
+    if (get_game_engine() == ENGINE_ENV_C3) {
         enemy_filename = ENEMY_FILENAMES_C3[enemy_id];
-    } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+    } else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
         enemy_filename = ENEMY_FILENAMES_PH[enemy_id];
     }
 
@@ -276,9 +276,9 @@ image_collection &game_images::get_enemy() {
 
 image_collection &game_images::get_font() {
     std::string font_filename;
-    if (GAME_ENV == ENGINE_ENV_C3) {
+    if (get_game_engine() == ENGINE_ENV_C3) {
         font_filename = FONTS_FILENAMES_C3[0];
-    } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+    } else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
         font_filename = FONTS_FILENAMES_PH[0];
     }
 

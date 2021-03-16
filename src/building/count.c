@@ -48,7 +48,7 @@ void building_count_update(void) {
     city_buildings_reset_dock_wharf_counters();
     city_health_reset_hospital_workers();
 
-    for (int i = 1; i < MAX_BUILDINGS[GAME_ENV]; i++) {
+    for (int i = 1; i < MAX_BUILDINGS[get_game_engine()]; i++) {
         building *b = building_get(i);
         if (b->state != BUILDING_STATE_VALID || b->house_size)
             continue;
@@ -218,10 +218,10 @@ int building_count_industry_total(int resource) {
 void building_count_save_state(buffer *industry, buffer *culture1, buffer *culture2, buffer *culture3, buffer *military,
                                buffer *support) {
     // industry
-    for (int i = 0; i < RESOURCE_MAX[GAME_ENV]; i++) {
+    for (int i = 0; i < RESOURCE_MAX[get_game_engine()]; i++) {
         industry->write_i32(data.industry[i].total);
     }
-    for (int i = 0; i < RESOURCE_MAX[GAME_ENV]; i++) {
+    for (int i = 0; i < RESOURCE_MAX[get_game_engine()]; i++) {
         industry->write_i32(data.industry[i].active);
     }
 
@@ -299,9 +299,9 @@ void building_count_save_state(buffer *industry, buffer *culture1, buffer *cultu
 void building_count_load_state(buffer *industry, buffer *culture1, buffer *culture2, buffer *culture3, buffer *military,
                                buffer *support) {
     // industry
-    for (int i = 0; i < RESOURCE_MAX[GAME_ENV]; i++)
+    for (int i = 0; i < RESOURCE_MAX[get_game_engine()]; i++)
         data.industry[i].total = industry->read_i32();
-    for (int i = 0; i < RESOURCE_MAX[GAME_ENV]; i++)
+    for (int i = 0; i < RESOURCE_MAX[get_game_engine()]; i++)
         data.industry[i].active = industry->read_i32();
 
     // culture 1

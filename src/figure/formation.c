@@ -443,7 +443,7 @@ void formation_move_herds_away(int x, int y) {
 
 void formation_calculate_figures(void) {
     formation_clear_figures();
-    for (int i = 1; i < MAX_FIGURES[GAME_ENV]; i++) {
+    for (int i = 1; i < MAX_FIGURES[get_game_engine()]; i++) {
         figure *f = figure_get(i);
         if (f->state != FIGURE_STATE_ALIVE)
             continue;
@@ -630,7 +630,7 @@ void formations_save_state(buffer *buf, buffer *totals) {
         buf->write_u8(f->invasion_id);
         buf->write_u8(f->herd_wolf_spawn_delay);
         buf->write_u8(f->herd_direction);
-        if (GAME_ENV == ENGINE_ENV_PHARAOH)
+        if (get_game_engine() == ENGINE_ENV_PHARAOH)
             buf->skip(16);
         buf->skip(17);
         buf->write_i16(f->invasion_sequence);
@@ -662,7 +662,7 @@ void formations_load_state(buffer *buf, buffer *totals) {
         f->max_figures = buf->read_u8();                                // 7
         f->layout = buf->read_i16();                                    // 9
         f->morale = buf->read_i16();                                    // 100
-        if (GAME_ENV == ENGINE_ENV_C3) {
+        if (get_game_engine() == ENGINE_ENV_C3) {
             f->x_home = buf->read_u8();
             f->y_home = buf->read_u8();
             f->standard_x = buf->read_u8();
@@ -672,7 +672,7 @@ void formations_load_state(buffer *buf, buffer *totals) {
             f->destination_x = buf->read_u8();
             f->destination_y = buf->read_u8();
         }
-        else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+        else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
             f->x_home = buf->read_u16();                                // 44
             f->y_home = buf->read_u16();                                // 58
             f->standard_x = buf->read_u16();                            //
@@ -689,7 +689,7 @@ void formations_load_state(buffer *buf, buffer *totals) {
         f->attack_type = buf->read_i16();
         f->legion_recruit_type = buf->read_i16();
         f->has_military_training = buf->read_i16();
-        if (GAME_ENV == ENGINE_ENV_C3) {
+        if (get_game_engine() == ENGINE_ENV_C3) {
             f->total_damage = buf->read_i16();                              //     vv 6 hp per ostich?
             f->max_total_damage = buf->read_i16();                          // --> 18
             f->wait_ticks = buf->read_i16();                                // 50
@@ -699,7 +699,7 @@ void formations_load_state(buffer *buf, buffer *totals) {
             f->enemy_state.duration_halt = buf->read_i16();
             f->enemy_legion_index = buf->read_i16();
         }
-        else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+        else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
             buf->skip(2);                                                //     vv 6 hp per ostich?
             f->total_damage = buf->read_i16();                              // --> 18
             f->max_total_damage = buf->read_i16();                          // 50
@@ -729,10 +729,10 @@ void formations_load_state(buffer *buf, buffer *totals) {
         f->is_herd = buf->read_u8();                                    // 2
         f->enemy_type = buf->read_u8();
         f->direction = buf->read_u8();
-        if (GAME_ENV == ENGINE_ENV_C3) {
+        if (get_game_engine() == ENGINE_ENV_C3) {
             f->prev.x_home = buf->read_u8();
             f->prev.y_home = buf->read_u8();
-        } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+        } else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
             f->prev.x_home = buf->read_u16();
             f->prev.y_home = buf->read_u16();
         }
@@ -746,7 +746,7 @@ void formations_load_state(buffer *buf, buffer *totals) {
         if (i == 10) {
             int a = 24;
         }
-        if (GAME_ENV == ENGINE_ENV_PHARAOH)
+        if (get_game_engine() == ENGINE_ENV_PHARAOH)
             buf->skip(6);
         buf->skip(17);
         f->invasion_sequence = buf->read_i16();

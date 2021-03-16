@@ -44,7 +44,7 @@ void map_image_save_state(buffer *buf) {
 }
 void map_image_load_state(buffer *buf, int shift) {
     map_grid_load_buffer(&images, buf);
-    for (int i = 0; i < grid_total_size[GAME_ENV]; i++) {
+    for (int i = 0; i < grid_total_size[get_game_engine()]; i++) {
         auto nv = map_grid_get(&images, i) - shift;
         map_grid_set(&images, i, nv);
     }

@@ -63,9 +63,9 @@ static void draw_buttons(void) {
     width += lang_text_draw_amount(8, 10, city_festival_grand_alcohol(), 120 + width, 284, FONT_NORMAL_BLACK);
 
     int resource_image_id = 0;
-    if (GAME_ENV == ENGINE_ENV_C3) {
+    if (get_game_engine() == ENGINE_ENV_C3) {
         resource_image_id = image_id_from_group(GROUP_RESOURCE_ICONS) + RESOURCE_WINE;
-    } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+    } else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
         resource_image_id = image_id_from_group(GROUP_RESOURCE_ICONS) + RESOURCE_BEER;
     }
 

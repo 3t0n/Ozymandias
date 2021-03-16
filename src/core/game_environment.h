@@ -27,9 +27,15 @@ typedef struct engine_sizes {
     int MAX_FORMATIONS;
 } engine_sizes;
 
-extern int GAME_ENV;
-
+// init
+void init_debug_mode(bool new_debug);
 void init_game_environment(int env);
+
+// getters
+bool is_debug_mode();
+bool is_game_pharaoh();
+bool is_game_caesar3();
+int get_game_engine();
 const char *get_game_title(void);
 const char *get_engine_pref_path(void);
 engine_sizes env_sizes(void);

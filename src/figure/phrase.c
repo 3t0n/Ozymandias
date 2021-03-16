@@ -423,8 +423,8 @@ static void play_sound_file(int sound_id, int phrase_id) {
         char path[SOUND_FILENAME_MAX];
         strcpy(path, "wavs/");
 
-        strcat(path, FIGURE_SOUNDS[GAME_ENV][sound_id]);
-        strcat(path, FIGURE_PHRASE_VARIANTS[GAME_ENV][phrase_id]);
+        strcat(path, FIGURE_SOUNDS[get_game_engine()][sound_id]);
+        strcat(path, FIGURE_PHRASE_VARIANTS[get_game_engine()][phrase_id]);
         sound_speech_play_file(path);
     }
 }

@@ -165,7 +165,7 @@ void scenario_save_state(scenario_data_buffers *buf) {
         buf->win_criteria->write_i32(scenario.win_criteria.prosperity.goal);
         buf->win_criteria->write_i32(scenario.win_criteria.peace.goal);
         buf->win_criteria->write_i32(scenario.win_criteria.favor.goal);
-        if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+        if (get_game_engine() == ENGINE_ENV_PHARAOH) {
             buf->win_criteria->write_i32(scenario.win_criteria.ph_goal1.goal);
             buf->win_criteria->write_i32(scenario.win_criteria.ph_goal2.goal);
         }
@@ -173,7 +173,7 @@ void scenario_save_state(scenario_data_buffers *buf) {
         buf->win_criteria->write_u8(scenario.win_criteria.prosperity.enabled);
         buf->win_criteria->write_u8(scenario.win_criteria.peace.enabled);
         buf->win_criteria->write_u8(scenario.win_criteria.favor.enabled);
-        if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+        if (get_game_engine() == ENGINE_ENV_PHARAOH) {
             buf->win_criteria->write_u8(scenario.win_criteria.ph_goal1.enabled);
             buf->win_criteria->write_u8(scenario.win_criteria.ph_goal2.enabled);
         }
@@ -182,9 +182,9 @@ void scenario_save_state(scenario_data_buffers *buf) {
         buf->win_criteria->write_i32(scenario.win_criteria.survival_time.enabled);
         buf->win_criteria->write_i32(scenario.win_criteria.survival_time.years);
         buf->win_criteria->write_i32(scenario.earthquake.severity);
-        if (GAME_ENV == ENGINE_ENV_C3)
+        if (get_game_engine() == ENGINE_ENV_C3)
             buf->win_criteria->write_i32(scenario.earthquake.year);
-        else if (GAME_ENV == ENGINE_ENV_PHARAOH)
+        else if (get_game_engine() == ENGINE_ENV_PHARAOH)
             buf->win_criteria->write_i16(0);
         buf->win_criteria->write_i32(scenario.win_criteria.population.enabled);
         buf->win_criteria->write_i32(scenario.win_criteria.population.goal);
@@ -330,7 +330,7 @@ void scenario_load_state(scenario_data_buffers *buf) {
         scenario.win_criteria.prosperity.goal = buf->win_criteria->read_i32(); // 4
         scenario.win_criteria.peace.goal = buf->win_criteria->read_i32(); // 4
         scenario.win_criteria.favor.goal = buf->win_criteria->read_i32(); // 4
-        if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+        if (get_game_engine() == ENGINE_ENV_PHARAOH) {
             scenario.win_criteria.ph_goal1.goal = buf->win_criteria->read_i32(); // 4
             scenario.win_criteria.ph_goal2.goal = buf->win_criteria->read_i32(); // 4
         }
@@ -338,7 +338,7 @@ void scenario_load_state(scenario_data_buffers *buf) {
         scenario.win_criteria.prosperity.enabled = buf->win_criteria->read_u8(); // 1
         scenario.win_criteria.peace.enabled = buf->win_criteria->read_u8(); // 1
         scenario.win_criteria.favor.enabled = buf->win_criteria->read_u8(); // 1
-        if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+        if (get_game_engine() == ENGINE_ENV_PHARAOH) {
             scenario.win_criteria.ph_goal1.enabled = buf->win_criteria->read_u8(); // 1
             scenario.win_criteria.ph_goal2.enabled = buf->win_criteria->read_u8(); // 1
         }
@@ -347,9 +347,9 @@ void scenario_load_state(scenario_data_buffers *buf) {
         scenario.win_criteria.survival_time.enabled = buf->win_criteria->read_i32(); // 4
         scenario.win_criteria.survival_time.years = buf->win_criteria->read_i32(); // 4
         scenario.earthquake.severity = buf->win_criteria->read_i32(); // 4
-        if (GAME_ENV == ENGINE_ENV_C3)
+        if (get_game_engine() == ENGINE_ENV_C3)
             scenario.earthquake.year = buf->win_criteria->read_i32(); // 4
-        else if (GAME_ENV == ENGINE_ENV_PHARAOH)
+        else if (get_game_engine() == ENGINE_ENV_PHARAOH)
             buf->win_criteria->skip(2); // 2
         scenario.win_criteria.population.enabled = buf->win_criteria->read_i32(); // 4
         scenario.win_criteria.population.goal = buf->win_criteria->read_i32(); // 4
@@ -428,12 +428,12 @@ void scenario_load_state(scenario_data_buffers *buf) {
 
     // 6. animal herds (16 : 32)
     if (buf->herds->is_valid(1)) {
-        if (GAME_ENV == ENGINE_ENV_C3) {
+        if (get_game_engine() == ENGINE_ENV_C3) {
             for (int i = 0; i < env_sizes().MAX_HERD_POINTS; i++)
                 scenario.herd_points[i].x = buf->herds->read_i16(); // 2
             for (int i = 0; i < env_sizes().MAX_HERD_POINTS; i++)
                 scenario.herd_points[i].y = buf->herds->read_i16(); // 2
-        } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+        } else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
             for (int i = 0; i < env_sizes().MAX_HERD_POINTS; i++)
                 scenario.herd_points[i].x = buf->herds->read_i32(); // 4
             for (int i = 0; i < env_sizes().MAX_HERD_POINTS; i++)
@@ -519,7 +519,7 @@ void scenario_fix_patch_trade(int mission_id) { // todo: only C3
 }
 
 void scenario_settings_save_state(buffer *part1, buffer *part2, buffer *part3, buffer *player_name, buffer *scenario_name) {
-    switch (GAME_ENV) {
+    switch (get_game_engine()) {
         case ENGINE_ENV_C3:
             part1->write_i32(scenario.settings.campaign_mission);
             break;
@@ -540,7 +540,7 @@ void scenario_settings_save_state(buffer *part1, buffer *part2, buffer *part3, b
     scenario_name->write_raw(scenario.scenario_name, env_sizes().MAX_SCENARIO_NAME);
 }
 void scenario_settings_load_state(buffer *part1, buffer *part2, buffer *part3, buffer *player_name, buffer *scenario_name) {
-    switch (GAME_ENV) {
+    switch (get_game_engine()) {
         case ENGINE_ENV_C3:
             scenario.settings.campaign_mission = part1->read_i32();
             break;

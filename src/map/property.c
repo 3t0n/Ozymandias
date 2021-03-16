@@ -84,7 +84,7 @@ void map_property_clear_multi_tile_xy(int grid_offset) {
 int map_property_multi_tile_size(int grid_offset) {
     auto bfield = map_grid_get(&bitfields_grid, grid_offset);
 
-    if (GAME_ENV == ENGINE_ENV_PHARAOH)
+    if (get_game_engine() == ENGINE_ENV_PHARAOH)
         switch (bfield & BIT_SIZES) {
             case 0x01:
                 return 2;

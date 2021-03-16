@@ -22,7 +22,7 @@ static struct {
 } queue;
 
 int adjacent_offsets(int i) {
-    switch (GAME_ENV) {
+    switch (get_game_engine()) {
         case ENGINE_ENV_C3:
             return ADJACENT_OFFSETS_C3[i];
         case ENGINE_ENV_PHARAOH:
@@ -43,7 +43,7 @@ static int mark_road_network(int grid_offset, uint8_t network_id) {
     int next_offset;
     int size = 1;
     do {
-        if (++guard >= grid_total_size[GAME_ENV])
+        if (++guard >= grid_total_size[get_game_engine()])
             break;
 
         map_grid_set(&network, grid_offset, network_id);

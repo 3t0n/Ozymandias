@@ -237,7 +237,7 @@ void highlight_waypoints(building *b) // highlight the 4 routing tiles for roams
 }
 
 int OFFSET(int x, int y) {
-    switch (GAME_ENV) {
+    switch (get_game_engine()) {
         case ENGINE_ENV_C3:
             return OFFSET_C3(x, y);
             break;

@@ -239,7 +239,7 @@ void draw_text_shadow(uint8_t *str, int _x, int _y, color_t color) {
     text_draw(str, _x, _y, FONT_NORMAL_PLAIN, color);
 }
 int text_draw(const uint8_t *str, int x, int y, font_t font, color_t color) {
-    if (GAME_ENV == ENGINE_ENV_PHARAOH)
+    if (get_game_engine() == ENGINE_ENV_PHARAOH)
         y = y - 3;
 
     const font_definition *def = font_definition_for(font);

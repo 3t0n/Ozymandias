@@ -49,9 +49,9 @@ static struct {
 
 static int big_people_image(int type) {
     int result = 0;
-    if (GAME_ENV == ENGINE_ENV_C3) {
+    if (get_game_engine() == ENGINE_ENV_C3) {
         result = image_id_from_group(GROUP_BIG_PEOPLE) + FIGURE_TYPE_TO_BIG_FIGURE_IMAGE[type] - 1;
-    } else if (GAME_ENV == ENGINE_ENV_PHARAOH) {
+    } else if (get_game_engine() == ENGINE_ENV_PHARAOH) {
         result = image_id_from_group(GROUP_BIG_PEOPLE) + type;
     }
     return result;
@@ -142,7 +142,7 @@ void figure::draw_trader(building_info_context *c) {
         // bought
         int y_base = c->y_offset + 180;
         width = lang_text_draw(129, 4, c->x_offset + 40, y_base, FONT_NORMAL_GREEN);
-        for (int r = RESOURCE_MIN; r < RESOURCE_MAX[GAME_ENV]; r++) {
+        for (int r = RESOURCE_MIN; r < RESOURCE_MAX[get_game_engine()]; r++) {
             if (trader_bought_resources(trader_id, r)) {
                 width += text_draw_number(trader_bought_resources(trader_id, r),
                                           '@', " ", c->x_offset + 40 + width, y_base, FONT_NORMAL_GREEN);
@@ -155,7 +155,7 @@ void figure::draw_trader(building_info_context *c) {
         // sold
         y_base = c->y_offset + 210;
         width = lang_text_draw(129, 5, c->x_offset + 40, y_base, FONT_NORMAL_GREEN);
-        for (int r = RESOURCE_MIN; r < RESOURCE_MAX[GAME_ENV]; r++) {
+        for (int r = RESOURCE_MIN; r < RESOURCE_MAX[get_game_engine()]; r++) {
             if (trader_sold_resources(trader_id, r)) {
                 width += text_draw_number(trader_sold_resources(trader_id, r),
                                           '@', " ", c->x_offset + 40 + width, y_base, FONT_NORMAL_GREEN);
@@ -169,7 +169,7 @@ void figure::draw_trader(building_info_context *c) {
         // buying
         int y_base = c->y_offset + 180;
         width = lang_text_draw(129, 2, c->x_offset + 40, y_base, FONT_NORMAL_GREEN);
-        for (int r = RESOURCE_MIN; r < RESOURCE_MAX[GAME_ENV]; r++) {
+        for (int r = RESOURCE_MIN; r < RESOURCE_MAX[get_game_engine()]; r++) {
             if (city->buys_resource[r]) {
                 int image_id =
                         image_id_from_group(GROUP_RESOURCE_ICONS) + r + resource_image_offset(r, RESOURCE_IMAGE_ICON);
@@ -180,7 +180,7 @@ void figure::draw_trader(building_info_context *c) {
         // selling
         y_base = c->y_offset + 210;
         width = lang_text_draw(129, 3, c->x_offset + 40, y_base, FONT_NORMAL_GREEN);
-        for (int r = RESOURCE_MIN; r < RESOURCE_MAX[GAME_ENV]; r++) {
+        for (int r = RESOURCE_MIN; r < RESOURCE_MAX[get_game_engine()]; r++) {
             if (city->sells_resource[r]) {
                 int image_id =
                         image_id_from_group(GROUP_RESOURCE_ICONS) + r + resource_image_offset(r, RESOURCE_IMAGE_ICON);
@@ -364,7 +364,7 @@ void figure::draw_normal_figure(building_info_context *c) {
     image_draw(image_id, c->x_offset + 28, c->y_offset + 112);
 
     int16_t name_group_id = 254;
-    if (GAME_ENV == ENGINE_ENV_C3) {
+    if (get_game_engine() == ENGINE_ENV_C3) {
         name_group_id = 65;
     }
     lang_text_draw(name_group_id, name, c->x_offset + 90, c->y_offset + 108, FONT_LARGE_BROWN);

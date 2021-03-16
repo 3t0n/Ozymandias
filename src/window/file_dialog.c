@@ -99,7 +99,7 @@ static void init(file_type type, file_dialog_type dialog_type) {
     data.message_not_exist_start_time = 0;
 
     // populate file list
-    switch (GAME_ENV) {
+    switch (get_game_engine()) {
         case ENGINE_ENV_C3:
             if (type == FILE_TYPE_SCENARIO)
                 data.file_list = dir_find_files_with_extension(".", scenario_data.extension);
@@ -186,7 +186,7 @@ static void button_ok_cancel(int is_ok, int param2) {
 
     char filename[200] = "";
 //    const char *fn = get_chosen_filename();
-    switch (GAME_ENV) {
+    switch (get_game_engine()) {
         case ENGINE_ENV_PHARAOH:
             strcat(filename, "Save/Banderus/");
     }

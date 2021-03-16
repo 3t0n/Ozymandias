@@ -287,22 +287,22 @@ void window_building_draw_market(building_info_context *c) {
         }
         // good stocks
         font = is_good_accepted(INVENTORY_GOOD1, b) ? FONT_NORMAL_BLACK : FONT_NORMAL_RED;
-        image_draw(image_id + INV_RESOURCES[GAME_ENV][0], c->x_offset + 32, c->y_offset + Y_GOODS);
+        image_draw(image_id + INV_RESOURCES[get_game_engine()][0], c->x_offset + 32, c->y_offset + Y_GOODS);
         text_draw_number(b->data.market.inventory[INVENTORY_GOOD1], '@', " ",
                          c->x_offset + 64, c->y_offset + Y_GOODS + 4, font);
 
         font = is_good_accepted(INVENTORY_GOOD2, b) ? FONT_NORMAL_BLACK : FONT_NORMAL_RED;
-        image_draw(image_id + INV_RESOURCES[GAME_ENV][1], c->x_offset + 142, c->y_offset + Y_GOODS);
+        image_draw(image_id + INV_RESOURCES[get_game_engine()][1], c->x_offset + 142, c->y_offset + Y_GOODS);
         text_draw_number(b->data.market.inventory[INVENTORY_GOOD2], '@', " ",
                          c->x_offset + 174, c->y_offset + Y_GOODS + 4, font);
 
         font = is_good_accepted(INVENTORY_GOOD3, b) ? FONT_NORMAL_BLACK : FONT_NORMAL_RED;
-        image_draw(image_id + INV_RESOURCES[GAME_ENV][2], c->x_offset + 252, c->y_offset + Y_GOODS);
+        image_draw(image_id + INV_RESOURCES[get_game_engine()][2], c->x_offset + 252, c->y_offset + Y_GOODS);
         text_draw_number(b->data.market.inventory[INVENTORY_GOOD3], '@', " ",
                          c->x_offset + 284, c->y_offset + Y_GOODS + 4, font);
 
         font = is_good_accepted(INVENTORY_GOOD4, b) ? FONT_NORMAL_BLACK : FONT_NORMAL_RED;
-        image_draw(image_id + INV_RESOURCES[GAME_ENV][3], c->x_offset + 362, c->y_offset + Y_GOODS);
+        image_draw(image_id + INV_RESOURCES[get_game_engine()][3], c->x_offset + 362, c->y_offset + Y_GOODS);
         text_draw_number(b->data.market.inventory[INVENTORY_GOOD4], '@', " ",
                          c->x_offset + 394, c->y_offset + Y_GOODS + 4, font);
     }
@@ -392,7 +392,7 @@ void window_building_draw_granary(building_info_context *c) {
         window_building_draw_description_at(c, 40, 98, 4);
     else {
         int total_stored = 0;
-        for (int i = RESOURCE_MIN_FOOD; i < RESOURCE_MAX_FOOD[GAME_ENV]; i++)
+        for (int i = RESOURCE_MIN_FOOD; i < RESOURCE_MAX_FOOD[get_game_engine()]; i++)
             total_stored += b->data.granary.resource_stored[i];
         int width = lang_text_draw(98, 2, c->x_offset + 34, c->y_offset + 40, FONT_NORMAL_BLACK);
         lang_text_draw_amount(8, 16, total_stored, c->x_offset + 34 + width, c->y_offset + 40, FONT_NORMAL_BLACK);
